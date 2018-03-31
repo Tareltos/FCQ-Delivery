@@ -15,7 +15,6 @@
           type="text/css">
     <link rel="stylesheet" href="../css/theme.css" type="text/css">
     <title><fmt:message key="loginForm.singin"/></title>
-    <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css'>
     <link rel="stylesheet" href="../css/style.css" media="screen" type="text/css"/>
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
@@ -31,16 +30,21 @@
     <div class="containerWrapper">
         <!-- login container -->
         <div id="containerLogin" class="tabContainer active">
-            <form method="POST" action="${pageContext.request.contextPath}/doLogin?action=login">
+            <form method="POST" action="${pageContext.request.contextPath}/doLogin">
+                <input hidden name="action" value="login">
                 <h2 class="loginTitle"><fmt:message key="loginForm.loginTitle"/></h2>
                 <h6 style="color: red">${errorLoginMessage}${successfulMsg}</h6>
                 <br>
                 <div class="loginContent">
                     <div class="inputWrapper">
-                        <input type="text" name="mail" placeholder="<fmt:message key="emailField"/>"/>
+                        <input required type="text" name="mail"
+                               pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+                               title="<fmt:message key="emailFieldTitle"/>"
+                               placeholder="<fmt:message key="emailField"/>"/>
                     </div>
                     <div class="inputWrapper">
-                        <input type="password" name="password" placeholder="<fmt:message key="passField"/>"/>
+                        <input required minlength="5" type="password" name="password"
+                               placeholder="<fmt:message key="passField"/>"/>
                     </div>
                 </div>
                 <button class="blueBox"><span class="iconLogin"></span> <fmt:message key="button.singin"/></button>
@@ -51,20 +55,26 @@
         <!-- register container -->
         <div id="containerRegister" class="tabContainer">
             <form method="POST" action="${pageContext.request.contextPath}/doRegistration">
+                <input hidden name="action" value="registration">
                 <h2 class="loginTitle"><fmt:message key="loginForm.regTitle"/></h2>
                 <div class="registerContent">
                     <div class="inputWrapper">
-                        <input name="fName" type="text" placeholder="<fmt:message key="fNameField"/>"/>
+                        <input required minlength="1" name="fName" type="text"
+                               placeholder="<fmt:message key="fNameField"/>"/>
                     </div>
                     <div class="inputWrapper">
-                        <input name="lName" type="text" placeholder="<fmt:message key="lNameField"/>"/>
+                        <input required minlength="1" name="lName" type="text"
+                               placeholder="<fmt:message key="lNameField"/>"/>
                     </div>
 
                     <div class="inputWrapper">
-                        <input name="mail" type="text" placeholder="<fmt:message key="emailField"/>"/>
+                        <input required type="text" name="mail"
+                               pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+                               title="<fmt:message key="emailFieldTitle"/>" placeholder="<fmt:message key="emailField"/>"/>
                     </div>
-                    <div class="inputWrapper">
-                        <input name="phone" type="text" placeholder="<fmt:message key="phoneField"/>"/>
+                    <div class=" inputWrapper">
+                        <input required minlength="13" maxlength="13" name="phone" type="text"
+                               placeholder="<fmt:message key="phoneField"/>"/>
                     </div>
                 </div>
                 <button class="greenBox"><span class="iconRegister"></span> <fmt:message key="button.register"/>
@@ -76,11 +86,14 @@
 
         <!-- forgot container -->
         <div id="containerForgot" class="tabContainer">
-            <form method="POST" action="${pageContext.request.contextPath}/reset?action=resetPass">
+            <form method="POST" action="${pageContext.request.contextPath}/reset">
+                <input hidden name="action" value="resetpass">
                 <h2 class="loginTitle"><fmt:message key="loginForm.forgotTitle"/></h2>
                 <div class="loginContent">
                     <div class="inputWrapper">
-                        <input name="mail" type="text" placeholder="<fmt:message key="emailField"/>"/>
+                        <input required type="text" name="mail"
+                               pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+                               title="<fmt:message key="emailFieldTitle"/>" placeholder="<fmt:message key="emailField"/>"/>
                     </div>
                     <div class="placeholder"></div>
                 </div>

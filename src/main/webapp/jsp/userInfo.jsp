@@ -19,10 +19,27 @@
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
-
-<h2>User Email: ${user}</h2>
-
-
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 bg-light">
+            <h3><fmt:message key="emailField"/>: ${loginedUser.email}, <fmt:message
+                    key="userInfo.label.role"/>${loginedUser.role.role}</h3>
+            <h6 style="color: red">${errorLoginMessage}${successfulMsg}</h6>
+            <form method="POST" action="${pageContext.request.contextPath}/doLogin">
+                <input hidden name="action" value="saveUser">
+                <div class="form-group"><label><fmt:message key="fNameField"/></label>
+                    <input required type="text" class="form-control" name="fName" value="${loginedUser.firstName}"></div>
+                <div class="form-group"><label><fmt:message key="lNameField"/></label>
+                    <input required type="text" class="form-control" name="lName" value="${loginedUser.lastName}"></div>
+                <div class="form-group"><label><fmt:message key="userInfo.label.phone"/></label>
+                    <input required minlength="13" maxlength="13" name="phone" type="text" class="form-control" name=""
+                           value="${loginedUser.phone}"></div>
+                <button type="submit" class="btn btn-secondary" style="background-color: green; margin-left: 45%">
+                    <fmt:message key="button.saveButtob"/></button>
+            </form>
+        </div>
+    </div>
+</div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="../js/index.js"></script>
 </body>

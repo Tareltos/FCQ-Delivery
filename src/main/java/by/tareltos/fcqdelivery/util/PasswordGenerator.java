@@ -11,7 +11,8 @@ public class PasswordGenerator {
     final static Logger LOGGER = LogManager.getLogger();
 
     public static String generatePassword(String mail) {
-        String password = String.valueOf(mail.hashCode() + mail.toCharArray()[0]) + "psw";
+
+        String password ="pass"+ new Random().nextInt(200)+"n";
         LOGGER.log(Level.DEBUG, "Generated Password: " + password);
         return password;
 

@@ -24,7 +24,7 @@
 
     <Loggers>
         <Logger name='by.tareltos' level='debug' additivity='false'>
-            <appender-ref ref='console' level='INFO'/>
+            <appender-ref ref='console' level='DEBUG'/>
             <appender-ref ref='fileLogger' level='INFO'/>
         </Logger>
         <Root level="error">

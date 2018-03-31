@@ -5,6 +5,8 @@ import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import by.tareltos.fcqdelivery.validator.DataValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 
 public class LoginCommand implements Command {
 
@@ -18,14 +20,15 @@ public class LoginCommand implements Command {
         receiver = userReceiver;
     }
 
-
-    public String execute(HttpServletRequest request) {
+    public String execute(HttpServletRequest request) throws SQLException, ClassNotFoundException {
         String page;
         String email = request.getParameter(EMAIL_PRM);
         String password = request.getParameter(PASSWORD_PRM);
+        HttpSession session = request.getSession(true);
+
         if (DataValidator.validateEmail(email) && DataValidator.validatePassword(password)) {
             if (receiver.checkUser(email, password)) {
-                request.setAttribute("user", email);
+                session.setAttribute("loginedUser", receiver.getUserForSession(email));
                 page = PATH_USER_INFO_PAGE;
             } else {
                 request.setAttribute("errorLoginMessage", "Неверный пароль");
@@ -34,7 +37,6 @@ public class LoginCommand implements Command {
         } else {
             request.setAttribute("errorLoginMessage", "Короткий пароль");
             page = PATH_SINGIN_PAGE;
-
         }
         return page;
     }

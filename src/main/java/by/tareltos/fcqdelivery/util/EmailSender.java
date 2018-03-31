@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class EmailSender {
 
-    private static void sendMail(String to, String subject, String body, Properties props) {
+    public static void sendMail(String to, String subject, String body, Properties props) {
 
         Session session = Session.getDefaultInstance(props);
         MimeMessage message = new MimeMessage(session);

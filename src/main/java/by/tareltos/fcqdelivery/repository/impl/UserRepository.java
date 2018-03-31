@@ -33,7 +33,12 @@ public class UserRepository implements Repository<User> {
         pstm.setString(4, u.getFirstName());
         pstm.setString(5, u.getLastName());
         pstm.setString(6, u.getPhone());
-        result = Boolean.valueOf(String.valueOf(pstm.executeUpdate()));
+        int r = pstm.executeUpdate();
+        if (r == 1) {
+            result = true;
+        } else {
+            result = false;
+        }
         ConnectionPool.getInstance().freeConnection(connection);
         return result;
     }
@@ -54,12 +59,17 @@ public class UserRepository implements Repository<User> {
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(UPDATE_USER_QUERY);
         pstm.setString(1, user.getPassword());
-        pstm.setString(2, user.getRole().getRole());
-        pstm.setString(3, user.getFirstName());
-        pstm.setString(4, user.getLastName());
+        pstm.setString(2, user.getFirstName());
+        pstm.setString(3, user.getLastName());
+        pstm.setString(4, user.getRole().getRole());
         pstm.setString(5, user.getPhone());
         pstm.setString(6, user.getEmail());
-        result = Boolean.valueOf(String.valueOf(pstm.executeUpdate()));
+        int r = pstm.executeUpdate();
+        if (r == 1) {
+            result = true;
+        } else {
+            result = false;
+        }
         ConnectionPool.getInstance().freeConnection(connection);
         return result;
     }

@@ -24,7 +24,7 @@ public class ConnectionPool {
 			DriverManager.registerDriver(new Driver());
 			poolSize = 10;
 			user = "root";
-			password = "Privat";
+			password = "Privet";
 			url = "jdbc:mysql://localhost:3306/delivery";
 			connectionPool = new LinkedBlockingQueue<Connection>(poolSize);
 			for (int i = 0; i < poolSize; i++) {

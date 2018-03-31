@@ -69,7 +69,7 @@ public class UserRepository implements Repository<User> {
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
         ResultSet rs = pstm.executeQuery();
-        List<User> userList = new ArrayList<>();
+        List<User> userList = new ArrayList<User>();
         while (rs.next()) {
             User user = new User();
             user.setEmail(rs.getString("email"));

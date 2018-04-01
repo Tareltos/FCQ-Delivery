@@ -1,7 +1,9 @@
 package by.tareltos.fcqdelivery.receiver;
 
 import by.tareltos.fcqdelivery.entity.User;
+import by.tareltos.fcqdelivery.entity.UserRole;
 import by.tareltos.fcqdelivery.repository.impl.UserRepository;
+import by.tareltos.fcqdelivery.specification.impl.AllUserSpecification;
 import by.tareltos.fcqdelivery.specification.impl.UserByEmailSpecification;
 import by.tareltos.fcqdelivery.util.EmailSender;
 import by.tareltos.fcqdelivery.util.PasswordGenerator;
@@ -77,9 +79,23 @@ public class UserReceiver {
         return result;
     }
 
-    public boolean createUser(User newUser, Properties props) {
+    public boolean createUser(String email, String fName, String lName, String phone, String role, Properties props) {
         boolean result = false;
         try {
+            String pass = PasswordGenerator.generatePassword(email);
+            UserRole userRole = null;
+            switch (role.toUpperCase()) {
+                case "CUSTOMER":
+                    userRole = UserRole.CUSTOMER;
+                    break;
+                case "MANAGER":
+                    userRole = UserRole.MANAGER;
+                    break;
+                case "ADMIN":
+                    userRole = UserRole.ADMIN;
+                    break;
+            }
+            User newUser = new User(email, pass, fName, lName, phone, userRole);
             result = REPOSITORY.add(newUser);
             EmailSender.sendMail(newUser.getEmail(), "FCQ-Delivery-Registration", "Password:" + newUser.getPassword(), props);
         } catch (SQLException e) {
@@ -92,8 +108,7 @@ public class UserReceiver {
 
     public User getUserForSession(String email) throws SQLException, ClassNotFoundException {
         User u = null;
-        UserRepository rep = new UserRepository();
-        List<User> listUser = rep.query(new UserByEmailSpecification(email));
+        List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
         LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
         if (listUser.size() > 0) {
             u = listUser.get(0);
@@ -105,6 +120,33 @@ public class UserReceiver {
         boolean result = false;
         try {
             result = REPOSITORY.update(loginedUser);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public List<User> getAllUsers() {
+        List<User> users = null;
+        try {
+            users = REPOSITORY.query(new AllUserSpecification());
+            LOGGER.log(Level.DEBUG, "Found : " + users.size());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public boolean deleteUser(String email){
+        boolean result = false;
+        User u;
+        try {
+            u = (User) REPOSITORY.query(new UserByEmailSpecification(email)).get(0);
+            result = REPOSITORY.remove(u);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {

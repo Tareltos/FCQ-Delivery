@@ -10,9 +10,10 @@ public enum CommandType {
     REGISTRATION(new RegistrationCommand(new UserReceiver())),
     RESETPASS(new ResetPasswordCommand(new UserReceiver())),
     LOGOUT(new LogoutCommand()),
-    SAVEUSER(new SaveUserCommand(new UserReceiver()));
-
-
+    SAVEUSER(new SaveUserCommand(new UserReceiver())),
+    GETUSERS(new AllUsersCommand(new UserReceiver())),
+    CREATEUSER(new CreateUserCommand(new UserReceiver())),
+    DELETEUSER(new DeleteUserCommand(new UserReceiver()));
     private Command command;
 
     CommandType(Command command) {

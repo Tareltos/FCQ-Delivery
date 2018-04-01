@@ -21,6 +21,7 @@ public class RegistrationCommand implements Command {
     private static final String LAST_NAME_PRM = "lName";
     private static final String PHONE_PRM = "phone";
     private static final String PATH_SINGIN_PAGE = "/jsp/singin.jsp";
+    private static final String CUSTOMER_ROLE = "customer";
     private UserReceiver receiver;
 
     public RegistrationCommand(UserReceiver userReceiver) {
@@ -34,7 +35,6 @@ public class RegistrationCommand implements Command {
         String filename = context.getInitParameter("mail");
         properties.load(context.getResourceAsStream(filename));
         String email = request.getParameter(EMAIL_PRM);
-        String pass = PasswordGenerator.generatePassword(email);
         String fname = request.getParameter(FIRST_NAME_PRM);
         String lname = request.getParameter(LAST_NAME_PRM);
         String phone = request.getParameter(PHONE_PRM);
@@ -42,10 +42,9 @@ public class RegistrationCommand implements Command {
             request.setAttribute("errorLoginMessage", "Пользователя уже существует. Воспользуйтесь восстановлением пароля!");
             return PATH_SINGIN_PAGE;
         }
-        if (DataValidator.validateEmail(email) && DataValidator.validatePassword(pass) && DataValidator.validateName(fname)
+        if (DataValidator.validateEmail(email) && DataValidator.validateName(fname)
                 && DataValidator.validateName(lname) && DataValidator.validatePassword(phone)) {
-            User newUser = new User(email, pass, fname, lname, phone, UserRole.CUSTOMER);
-            boolean result = receiver.createUser(newUser, properties);
+            boolean result = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties);
             if (result) {
                 request.setAttribute("successfulMsg", "Ругистрация завершена, пароль выслан на почту.");
                 return PATH_SINGIN_PAGE;

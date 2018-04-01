@@ -19,7 +19,7 @@ import java.util.List;
 public class UserRepository implements Repository<User> {
     final static Logger LOGGER = LogManager.getLogger();
     final String ADD_USER_QUERY = "INSERT INTO user(email, password, role, firstName, lastName, phone) VALUES (?,?,?,?,?,?) ";
-    final String REMOVE_USER_QUERY = "DELETE FROM user WHERE email=%s ";
+    final String REMOVE_USER_QUERY = "DELETE FROM user WHERE email=\"%s\" ";
     final String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=? where email=? ";
 
     @Override
@@ -44,11 +44,16 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public boolean remove(User user) throws SQLException, ClassNotFoundException {
-        boolean result = false;
+    public boolean remove(User u) throws SQLException, ClassNotFoundException {
+        boolean result;
         Connection connection = ConnectionPool.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement(String.format(REMOVE_USER_QUERY, user.getEmail()));
-        result = Boolean.valueOf(String.valueOf(pstm.executeUpdate()));
+        PreparedStatement pstm = connection.prepareStatement(String.format(REMOVE_USER_QUERY, u.getEmail()));
+        int r = pstm.executeUpdate();
+        if (r == 1) {
+            result = true;
+        } else {
+            result = false;
+        }
         ConnectionPool.getInstance().freeConnection(connection);
         return result;
     }

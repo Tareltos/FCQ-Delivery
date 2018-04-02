@@ -37,8 +37,6 @@ public class UserReceiver {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return result;
     }
@@ -52,8 +50,6 @@ public class UserReceiver {
                 result = true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
@@ -72,8 +68,6 @@ public class UserReceiver {
                 EmailSender.sendMail(email, "FCQ-Delivery-Info", "New Password:" + password, props);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;
@@ -100,13 +94,11 @@ public class UserReceiver {
             EmailSender.sendMail(newUser.getEmail(), "FCQ-Delivery-Registration", "Password:" + newUser.getPassword(), props);
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return result;
     }
 
-    public User getUserForSession(String email) throws SQLException, ClassNotFoundException {
+    public User getUserForSession(String email) throws SQLException {
         User u = null;
         List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
         LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
@@ -122,8 +114,6 @@ public class UserReceiver {
             result = REPOSITORY.update(loginedUser);
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return result;
     }
@@ -135,21 +125,17 @@ public class UserReceiver {
             LOGGER.log(Level.DEBUG, "Found : " + users.size());
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return users;
     }
 
-    public boolean deleteUser(String email){
+    public boolean deleteUser(String email) {
         boolean result = false;
         User u;
         try {
             u = (User) REPOSITORY.query(new UserByEmailSpecification(email)).get(0);
             result = REPOSITORY.remove(u);
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return result;

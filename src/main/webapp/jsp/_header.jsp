@@ -39,15 +39,17 @@
                 </c:if>
                 <c:if test="${loginedUser !=null}">
                     <c:if test="${loginedUser.role.role !='admin'}">
-                        <form method="POST" action="${pageContext.request.contextPath}/doApplication">
-                            <li class="nav-item">
-                                <input type="hidden" name="action" value="getCouriers"/>
-                                <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
-                                        class="fa d-inline fa-lg fa-hand-o-right"></i>&nbsp;<fmt:message
-                                        key="menu.button.doapplication"/>
-                                </button>
-                            </li>
-                        </form>
+                        <c:if test="${loginedUser.role.role !='manager'}">
+                            <form method="POST" action="${pageContext.request.contextPath}/doApplication">
+                                <li class="nav-item">
+                                    <input type="hidden" name="action" value="getCouriers"/>
+                                    <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
+                                            class="fa d-inline fa-lg fa-hand-o-right"></i>&nbsp;<fmt:message
+                                            key="menu.button.doapplication"/>
+                                    </button>
+                                </li>
+                            </form>
+                        </c:if>
                     </c:if>
                 </c:if>
                 <c:if test="${loginedUser !=null}">

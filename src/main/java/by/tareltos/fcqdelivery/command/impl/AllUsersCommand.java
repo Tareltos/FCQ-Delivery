@@ -15,6 +15,7 @@ import java.util.List;
 public class AllUsersCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
+    private static final String LOGINED_USER_PRM= "loginedUser";
     private static final String PATH_USERS_PAGE = "/jsp/users.jsp";
     private UserReceiver receiver;
 
@@ -26,7 +27,7 @@ public class AllUsersCommand implements Command {
     public String execute(HttpServletRequest request) throws IOException, SQLException, ClassNotFoundException {
         String page;
         HttpSession session = request.getSession(true);
-        User user = (User) session.getAttribute("loginedUser");
+        User user = (User) session.getAttribute(LOGINED_USER_PRM);
         if ("admin".equals(user.getRole().getRole())) {
             List<User> list = receiver.getAllUsers();
             if (!list.isEmpty()) {

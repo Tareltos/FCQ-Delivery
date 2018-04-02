@@ -23,7 +23,7 @@ public class UserRepository implements Repository<User> {
     final String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=? where email=? ";
 
     @Override
-    public boolean add(User u) throws SQLException, ClassNotFoundException {
+    public boolean add(User u) throws SQLException {
         boolean result;
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(ADD_USER_QUERY);
@@ -44,7 +44,7 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public boolean remove(User u) throws SQLException, ClassNotFoundException {
+    public boolean remove(User u) throws SQLException {
         boolean result;
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(String.format(REMOVE_USER_QUERY, u.getEmail()));
@@ -59,7 +59,7 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public boolean update(User user) throws SQLException, ClassNotFoundException {
+    public boolean update(User user) throws SQLException {
         boolean result;
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(UPDATE_USER_QUERY);
@@ -80,7 +80,7 @@ public class UserRepository implements Repository<User> {
     }
 
     @Override
-    public List query(SqlSpecification specification) throws SQLException, ClassNotFoundException {
+    public List query(SqlSpecification specification) throws SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
         ResultSet rs = pstm.executeQuery();

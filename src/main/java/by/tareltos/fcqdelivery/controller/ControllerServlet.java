@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users"})
+@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers"})
 public class ControllerServlet extends HttpServlet {
     final static Logger LOGGER = LogManager.getLogger();
 

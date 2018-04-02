@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command;
 
 import by.tareltos.fcqdelivery.command.impl.*;
+import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 
 public enum CommandType {
@@ -13,7 +14,8 @@ public enum CommandType {
     SAVEUSER(new SaveUserCommand(new UserReceiver())),
     GETUSERS(new AllUsersCommand(new UserReceiver())),
     CREATEUSER(new CreateUserCommand(new UserReceiver())),
-    DELETEUSER(new DeleteUserCommand(new UserReceiver()));
+    DELETEUSER(new DeleteUserCommand(new UserReceiver())),
+    GETCOURIERS(new GetCouriersCommand(new CourierReceiver()));
     private Command command;
 
     CommandType(Command command) {

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class DeleteUserCommand implements Command {
+public class ChangeUserStatusCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();
 
     private static final String EMAIL_PRM = "mail";
@@ -21,7 +21,7 @@ public class DeleteUserCommand implements Command {
     private UserReceiver receiver;
 
 
-    public DeleteUserCommand(UserReceiver userReceiver) {
+    public ChangeUserStatusCommand(UserReceiver userReceiver) {
         receiver = userReceiver;
     }
 
@@ -33,11 +33,11 @@ public class DeleteUserCommand implements Command {
         if (null != admin) {
             String email = request.getParameter(EMAIL_PRM);
             LOGGER.log(Level.DEBUG, email);
-            if (!receiver.checkEmail(email) && receiver.deleteUser(email)) {
-                request.setAttribute("successfulMsg", "Пользователь успешно удален!");
+            if (!receiver.checkEmail(email) && receiver.changeUserStatus(email)) {
+                request.setAttribute("successfulMsg", "Статус успешно изменен!");
                 return PATH_INF_PAGE;
             } else {
-                request.setAttribute("errorMessage", "Пользователь с таким Email уже удален");
+                request.setAttribute("errorMessage", "Статус Пользователя не изменен");
                 return PATH_INF_PAGE;
             }
 

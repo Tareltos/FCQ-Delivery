@@ -19,98 +19,18 @@
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
-<div class="container" style="height: 80%;">
-    <h6 style="color: red">${errorMessage}${successfulMsg}</h6>
+<div class="container" style="min-height: 80%;">
     <div class="row">
-        <table class="table table-hover">
-            <thead class="thead-inverse">
-            <tr>
-                <th>Номер</th>
-                <th>Марка</th>
-                <th>Модель</th>
-                <th>Фото</th>
-                <th>Имя водителя</th>
-                <th>Телефон водителя</th>
-                <th>
-                    <c:if test="${loginedUser.role.role =='manager'}">
-                    <a data-toggle="modal" data-target="#newUserModal" title="<fmt:message key="addUserImg"/>"><img
-                            src="img/createUser.png" width="30"
-                            height="30"></a
-                    </c:if>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach items="${courierList}" var="courier">
-                <tr>
-                    <td>${courier.carNumber}</td>
-                    <td>${courier.carProducer}</td>
-                    <td>${courier.carModel}</td>
-                    <td><image src="${courier.image}"></image></td>
-                    <td>${courier.driverPhone}</td>
-                    <td>${courier.driverName}</td>
-                    <td>
-                        <c:if test="${loginedUser.role.role =='manager'}">
-                        <form method="POST" action="${pageContext.request.contextPath}/users?mail=${user.email}">
-                            <input hidden name="action" value="deleteUser">
-                            <button title="<fmt:message key="deleteImg"/> ">
-                                <img src="img/delete.png" width="30" height="30"/>
-                            </button>
-                        </form>
-                        </c:if>
-                    </td>
-                </tr>
-            </c:forEach>
-            </tbody>
-        </table>
+
+        <c:forEach items="${courierList}" var="courier">
+            <div class="col-md-4 p-4" style="border: 4px double black; background: #b69c80;">
+                <img class="img-fluid d-block rounded-circle mx-auto" src="${courier.image}">
+                <p><i>Автомобиль: ${courier.carProducer} ${courier.carModel}</i></p>
+                <p><i>Грузоподъемность: ${courier.maxCargo}</i></p>
+                <p><i>Тарив за км: ${courier.kmTax}</i></p>
+            </div>
+        </c:forEach>
     </div>
-</div>
-<div id="newUserModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b">Заполните форму</h5>
-            <form method="POST" action="${pageContext.request.contextPath}/users">
-                <input hidden name="action" value="createUser">
-                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
-                        key="emailField"/></label>
-                    <input required type="text" class="form-control" name="mail">
-                </div>
-                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
-                        key="fNameField"/></label>
-                    <input required type="text" class="form-control" name="fName">
-                </div>
-                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
-                        key="lNameField"/></label>
-                    <input required type="text" class="form-control" name="lName"></div>
-                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
-                        key="userInfo.label.phone"/></label>
-                    <input required minlength="13" maxlength="13" name="phone" type="text" class="form-control">
-                </div>
-                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
-                        key="userInfo.label.role"/></label>
-                    <select required name="role" type="text" class="form-control">
-                        <option value="admin">Администратор</option>
-                        <option value="customer">Клиент</option>
-                        <option value="manager">Менеджер</option>
-                    </select>
-                </div>
-            </form>
-            <span>
-                <button style="margin-left: 35%; margin-bottom: 2%;" type="button" class="btn btn-warning"
-                        data-dismiss="modal">Отмена
-                </button>
-                <button id="formSubmit" style="margin-bottom: 2%;" type="button" class="btn btn-success"
-                        onclick="formSubmit">Создать
-                </button>
-            <script language="javascript">
-                 $('#formSubmit').on('click', function () {
-                     $('form').submit();
-                 })
-	        </script>
-            </span>
-        </div><!-- /.модальное окно-Содержание -->
-    </div><!-- /.модальное-->
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="../js/index.js"></script>

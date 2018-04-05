@@ -2,6 +2,7 @@ package by.tareltos.fcqdelivery.repository.impl;
 
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.entity.UserRole;
+import by.tareltos.fcqdelivery.entity.UserStatus;
 import by.tareltos.fcqdelivery.repository.Repository;
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
 import by.tareltos.fcqdelivery.util.ConnectionPool;
@@ -18,9 +19,9 @@ import java.util.List;
 
 public class UserRepository implements Repository<User> {
     final static Logger LOGGER = LogManager.getLogger();
-    final String ADD_USER_QUERY = "INSERT INTO user(email, password, role, firstName, lastName, phone) VALUES (?,?,?,?,?,?) ";
+    final String ADD_USER_QUERY = "INSERT INTO user(email, password, role, firstName, lastName, phone, status) VALUES (?,?,?,?,?,?,?) ";
     final String REMOVE_USER_QUERY = "DELETE FROM user WHERE email=\"%s\" ";
-    final String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=? where email=? ";
+    final String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=?, status=? where email=? ";
 
     @Override
     public boolean add(User u) throws SQLException {
@@ -33,6 +34,7 @@ public class UserRepository implements Repository<User> {
         pstm.setString(4, u.getFirstName());
         pstm.setString(5, u.getLastName());
         pstm.setString(6, u.getPhone());
+        pstm.setString(7, u.getStatus().getStatus());
         int r = pstm.executeUpdate();
         if (r == 1) {
             result = true;
@@ -68,7 +70,8 @@ public class UserRepository implements Repository<User> {
         pstm.setString(3, user.getLastName());
         pstm.setString(4, user.getRole().getRole());
         pstm.setString(5, user.getPhone());
-        pstm.setString(6, user.getEmail());
+        pstm.setString(6, user.getStatus().getStatus());
+        pstm.setString(7, user.getEmail());
         int r = pstm.executeUpdate();
         if (r == 1) {
             result = true;
@@ -102,6 +105,15 @@ public class UserRepository implements Repository<User> {
                     break;
                 case "customer":
                     user.setRole(UserRole.CUSTOMER);
+            }
+            String status = rs.getString("status");
+            switch (status) {
+                case "active":
+                    user.setStatus(UserStatus.ACTIVE);
+                    break;
+                case "blocked":
+                    user.setStatus(UserStatus.BLOCKED);
+                    break;
             }
             userList.add(user);
         }

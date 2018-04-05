@@ -31,7 +31,7 @@ public class ConnectionPool {
 				connectionPool.put(DriverManager.getConnection(url, user, password));
 			}
 		} catch (SQLException | InterruptedException e) {		
-			throw new ExceptionInInitializerError(e);
+			throw new ExceptionInInitializerError(e);//not runtimeExc
 		}
 	}
 
@@ -70,7 +70,7 @@ public class ConnectionPool {
 		}
 	}
 
-	public void shutDown() {
+	public void shutDown() {//pool? not iterator обычный цикл + take;// дерегистрация драйверов.
 		Iterator<Connection> iterator = connectionPool.iterator();
 		while (iterator.hasNext()) {
 			try {

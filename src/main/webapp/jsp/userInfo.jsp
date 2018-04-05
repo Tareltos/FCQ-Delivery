@@ -19,7 +19,7 @@
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
-<div class="container" style="height: 80%;">
+<div class="container" style="min-height: 80%;">
     <div class="row">
         <div class="col-md-12 bg-light">
             <h3><fmt:message key="emailField"/>: ${loginedUser.email}, <fmt:message

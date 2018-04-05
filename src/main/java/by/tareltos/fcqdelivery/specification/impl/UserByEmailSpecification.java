@@ -9,7 +9,7 @@ import by.tareltos.fcqdelivery.specification.SqlSpecification;
  */
 public class UserByEmailSpecification implements SqlSpecification {
 
-    private String query = "SELECT email, password, role, firstName, lastName, phone FROM user WHERE email = \"%s\" ";
+    private String query = "SELECT email, password, role, firstName, lastName, phone, status FROM user WHERE email = \"%s\" ";
     private String email;
 
     public UserByEmailSpecification(String email) {

@@ -19,7 +19,7 @@
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
-<div class="container" style="height: 80%;">
+<div class="container" style="min-height: 80%;">
     <div class="row">
         <h4 style="color: red; margin-left: 30%; margin-top: 5%; margin-right: 30%; osition: center">${errorMessage}${successfulMsg}</h4>
     </div>

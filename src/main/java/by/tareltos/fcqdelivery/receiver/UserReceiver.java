@@ -2,6 +2,7 @@ package by.tareltos.fcqdelivery.receiver;
 
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.entity.UserRole;
+import by.tareltos.fcqdelivery.entity.UserStatus;
 import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.impl.AllUserSpecification;
 import by.tareltos.fcqdelivery.specification.impl.UserByEmailSpecification;
@@ -22,14 +23,36 @@ public class UserReceiver {
     final static Logger LOGGER = LogManager.getLogger(UserReceiver.class);
     final static UserRepository REPOSITORY = new UserRepository();
 
+    public boolean checkUserStatus(String email) {
+        boolean result = false;
+        try {
+            List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
+            if (!listUser.isEmpty()) {
+                LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
+                User u = listUser.get(0);
+                if ("blocked".equals(u.getStatus().getStatus())) {
+                    LOGGER.log(Level.DEBUG, "User :" + u.getEmail() + " is blocked");
+                    return result;
+                }
+                result = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public boolean checkUser(String email, String password) {
         boolean result = false;
         try {
             List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
-            if (listUser.size() != 0) {
+            if (!listUser.isEmpty()) {
                 LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
                 User u = listUser.get(0);
-                LOGGER.log(Level.DEBUG, u.toString());
+                if ("blocked".equals(u.getStatus().getStatus())) {
+                    LOGGER.log(Level.DEBUG, "User :" + u.getEmail() + " is blocked");
+                    return result;
+                }
                 if (email.equals(u.getEmail()) & password.equals(u.getPassword())) {
                     LOGGER.log(Level.DEBUG, "Result:" + true);
                     result = true;
@@ -89,7 +112,7 @@ public class UserReceiver {
                     userRole = UserRole.ADMIN;
                     break;
             }
-            User newUser = new User(email, pass, fName, lName, phone, userRole);
+            User newUser = new User(email, pass, fName, lName, phone, userRole, UserStatus.ACTIVE);
             result = REPOSITORY.add(newUser);
             EmailSender.sendMail(newUser.getEmail(), "FCQ-Delivery-Registration", "Password:" + newUser.getPassword(), props);
         } catch (SQLException e) {
@@ -129,12 +152,21 @@ public class UserReceiver {
         return users;
     }
 
-    public boolean deleteUser(String email) {
+    public boolean changeUserStatus(String email) {
         boolean result = false;
         User u;
         try {
             u = (User) REPOSITORY.query(new UserByEmailSpecification(email)).get(0);
-            result = REPOSITORY.remove(u);
+            UserStatus currentStatus = u.getStatus();
+            switch (currentStatus) {
+                case ACTIVE:
+                    u.setStatus(UserStatus.BLOCKED);
+                    break;
+                case BLOCKED:
+                    u.setStatus(UserStatus.ACTIVE);
+                    break;
+            }
+            result = REPOSITORY.update(u);
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -14,7 +14,7 @@ public enum CommandType {
     SAVEUSER(new SaveUserCommand(new UserReceiver())),
     GETUSERS(new AllUsersCommand(new UserReceiver())),
     CREATEUSER(new CreateUserCommand(new UserReceiver())),
-    DELETEUSER(new DeleteUserCommand(new UserReceiver())),
+    CHANGE_STATUS(new ChangeUserStatusCommand(new UserReceiver())),
     GETCOURIERS(new GetCouriersCommand(new CourierReceiver()));
     private Command command;
 

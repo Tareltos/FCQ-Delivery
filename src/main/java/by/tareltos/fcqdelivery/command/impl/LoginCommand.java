@@ -31,7 +31,7 @@ public class LoginCommand implements Command {
                 session.setAttribute("loginedUser", receiver.getUserForSession(email));
                 page = PATH_USER_INFO_PAGE;
             } else {
-                request.setAttribute("errorLoginMessage", "Неверный пароль");
+                request.setAttribute("errorLoginMessage", "Неверный пароль либо пользователь заблокирован");
                 page = PATH_SINGIN_PAGE;
             }
         } else {

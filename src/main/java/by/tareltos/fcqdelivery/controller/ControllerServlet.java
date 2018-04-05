@@ -27,12 +27,15 @@ public class ControllerServlet extends HttpServlet {
         LOGGER.log(Level.DEBUG, "Command is: " + action);
         Command command = CommandFactory.getInstance().getCommand(action);
         String page = null;
-        try {
-            page = command.execute(request);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        if (null != command) {
+            try {
+                page = command.execute(request);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
         }
 
         if (page == null) {

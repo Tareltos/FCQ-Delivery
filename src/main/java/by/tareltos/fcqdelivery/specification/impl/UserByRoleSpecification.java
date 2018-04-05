@@ -9,7 +9,7 @@ import by.tareltos.fcqdelivery.specification.SqlSpecification;
  */
 public class UserByRoleSpecification implements SqlSpecification {
 
-    private String query = "SELECT email, password, role, firstName, lastName, phone FROM user WHERE role = %s ";
+    private String query = "SELECT email, password, role, firstName, lastName, phone, status FROM user WHERE role = %s ";
     private String role;
 
     public UserByRoleSpecification(String role) {

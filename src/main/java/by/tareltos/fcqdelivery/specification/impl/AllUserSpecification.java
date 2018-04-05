@@ -9,7 +9,7 @@ import by.tareltos.fcqdelivery.specification.SqlSpecification;
  */
 public class AllUserSpecification implements SqlSpecification {
 
-    private final String SELECT_ALL_QUERY= "SELECT email, password, role, firstName, lastName, phone FROM user ";
+    private final String SELECT_ALL_QUERY= "SELECT email, password, role, firstName, lastName, phone, status FROM user ";
 
     public AllUserSpecification() {
     }

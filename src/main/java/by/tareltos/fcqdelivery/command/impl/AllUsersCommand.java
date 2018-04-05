@@ -15,8 +15,10 @@ import java.util.List;
 public class AllUsersCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
-    private static final String LOGINED_USER_PRM= "loginedUser";
+    private static final String LOGINED_USER_PRM = "loginedUser";
     private static final String PATH_USERS_PAGE = "/jsp/users.jsp";
+    private static final String PATH_SINGIN_PAGE = "/jsp/singin.jsp";
+
     private UserReceiver receiver;
 
     public AllUsersCommand(UserReceiver receiver) {
@@ -24,23 +26,28 @@ public class AllUsersCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException, SQLException, ClassNotFoundException {
+    public String execute(HttpServletRequest request) {
         String page;
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
-        if ("admin".equals(user.getRole().getRole())) {
-            List<User> list = receiver.getAllUsers();
-            if (!list.isEmpty()) {
-                request.setAttribute("userList", list);
-                page = PATH_USERS_PAGE;
+        if (receiver.checkUserStatus(user.getEmail())) {
+            if ("admin".equals(user.getRole().getRole())) {
+                List<User> list = receiver.getAllUsers();
+                if (!list.isEmpty()) {
+                    request.setAttribute("userList", list);
+                    page = PATH_USERS_PAGE;
+                } else {
+                    request.setAttribute("errorMessage", "Пользователи не найдены");
+                    page = PATH_USERS_PAGE;
+                }
+
             } else {
-                request.setAttribute("errorMessage", "Пользователи не найдены");
+                request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
                 page = PATH_USERS_PAGE;
             }
-
         } else {
-            request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
-            page = PATH_USERS_PAGE;
+            session.setAttribute(LOGINED_USER_PRM, null);
+            page = PATH_SINGIN_PAGE;
         }
         return page;
     }

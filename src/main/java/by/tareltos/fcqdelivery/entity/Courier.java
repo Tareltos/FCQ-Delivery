@@ -15,22 +15,27 @@ public class Courier {
     private String carModel;
     private String driverPhone;
     private String driverName;
+    private String driverEmail;
     private int maxCargo;
     private double kmTax;
     private byte[] image;
+    private CourierStatus status;
+
 
     public Courier() {
     }
 
-    public Courier(String carNumber, String carProducer, String carModel, String driverPhone, String driverName, int maxCargo, double kmTax, byte[] image) {
+    public Courier(String carNumber, String carProducer, String carModel, String driverPhone, String driverName, String driverEmail, int maxCargo, double kmTax, byte[] image, CourierStatus status) {
         this.carNumber = carNumber;
         this.carProducer = carProducer;
         this.carModel = carModel;
         this.driverPhone = driverPhone;
         this.driverName = driverName;
+        this.driverEmail = driverEmail;
         this.maxCargo = maxCargo;
         this.kmTax = kmTax;
         this.image = image;
+        this.status = status;
     }
 
     public String getCarNumber() {
@@ -73,6 +78,14 @@ public class Courier {
         this.driverName = driverName;
     }
 
+    public String getDriverEmail() {
+        return driverEmail;
+    }
+
+    public void setDriverEmail(String driverEmail) {
+        this.driverEmail = driverEmail;
+    }
+
     public int getMaxCargo() {
         return maxCargo;
     }
@@ -97,6 +110,14 @@ public class Courier {
         this.image = image;
     }
 
+    public CourierStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CourierStatus status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -109,13 +130,15 @@ public class Courier {
                 Objects.equals(carModel, courier.carModel) &&
                 Objects.equals(driverPhone, courier.driverPhone) &&
                 Objects.equals(driverName, courier.driverName) &&
-                Arrays.equals(image, courier.image);
+                Objects.equals(driverEmail, courier.driverEmail) &&
+                Arrays.equals(image, courier.image) &&
+                status == courier.status;
     }
 
     @Override
     public int hashCode() {
 
-        int result = Objects.hash(carNumber, carProducer, carModel, driverPhone, driverName, maxCargo, kmTax);
+        int result = Objects.hash(carNumber, carProducer, carModel, driverPhone, driverName, driverEmail, maxCargo, kmTax, status);
         result = 31 * result + Arrays.hashCode(image);
         return result;
     }
@@ -128,8 +151,10 @@ public class Courier {
                 ", carModel='" + carModel + '\'' +
                 ", driverPhone='" + driverPhone + '\'' +
                 ", driverName='" + driverName + '\'' +
+                ", driverEmail='" + driverEmail + '\'' +
                 ", maxCargo=" + maxCargo +
                 ", kmTax=" + kmTax +
+                ", status=" + status +
                 '}';
     }
 }

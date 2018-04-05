@@ -10,17 +10,20 @@ public class User {
     private String lastName;
     private String phone;
     private UserRole role;
+    private UserStatus status;
+
 
     public User() {
     }
 
-    public User(String email, String password, String firstName, String lastName, String phone, UserRole role) {
+    public User(String email, String password, String firstName, String lastName, String phone, UserRole role, UserStatus status) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.role = role;
+        this.status = status;
     }
 
     public String getEmail() {
@@ -71,6 +74,14 @@ public class User {
         this.role = role;
     }
 
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -81,13 +92,14 @@ public class User {
                 Objects.equals(firstName, user.firstName) &&
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(phone, user.phone) &&
-                role == user.role;
+                role == user.role &&
+                status == user.status;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(email, password, firstName, lastName, phone, role);
+        return Objects.hash(email, password, firstName, lastName, phone, role, status);
     }
 
     @Override
@@ -99,6 +111,7 @@ public class User {
                 ", lastName='" + lastName + '\'' +
                 ", phone='" + phone + '\'' +
                 ", role=" + role +
+                ", status=" + status +
                 '}';
     }
 }

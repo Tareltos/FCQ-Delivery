@@ -19,7 +19,7 @@
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
-<div class="container" style="height: 80%;">
+<div class="container" style="min-height: 80%;">
     <h6 style="color: red">${errorMessage}${successfulMsg}</h6>
     <div class="row">
         <table class="table table-hover">
@@ -30,6 +30,7 @@
                 <th><fmt:message key="lNameField"/></th>
                 <th><fmt:message key="userInfo.label.phone"/></th>
                 <th><fmt:message key="userInfo.label.role"/></th>
+                <th><fmt:message key="userInfo.label.status"/></th>
                 <th>
                     <a data-toggle="modal" data-target="#newUserModal" title="<fmt:message key="addUserImg"/>"><img
                             src="img/createUser.png" width="30"
@@ -45,13 +46,24 @@
                     <td>${user.lastName}</td>
                     <td>${user.phone}</td>
                     <td>${user.role.role}</td>
+                    <td>${user.status.status}</td>
                     <td>
-                        <form method="POST" action="${pageContext.request.contextPath}/users?mail=${user.email}">
-                            <input hidden name="action" value="deleteUser">
-                            <button title="<fmt:message key="deleteImg"/> ">
-                                <img src="img/delete.png" width="30" height="30"/>
-                            </button>
-                        </form>
+                        <c:if test="${user.status.status =='active'}">
+                            <form method="POST" action="${pageContext.request.contextPath}/users?mail=${user.email}">
+                                <input hidden name="action" value="change_status">
+                                <button title="<fmt:message key="blockImg"/> ">
+                                    <i class="fa d-inline fa-lg fa-lock"></i>
+                                </button>
+                            </form>
+                        </c:if>
+                        <c:if test="${user.status.status =='blocked'}">
+                            <form method="POST" action="${pageContext.request.contextPath}/users?mail=${user.email}">
+                                <input hidden name="action" value="change_status">
+                                <button title="<fmt:message key="unBlockImg"/> ">
+                                    <i class="fa d-inline fa-lg fa-unlock"></i>
+                                </button>
+                            </form>
+                        </c:if>
                     </td>
                 </tr>
             </c:forEach>

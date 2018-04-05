@@ -1,7 +1,9 @@
 package by.tareltos.fcqdelivery.repository.impl;
 
 import by.tareltos.fcqdelivery.entity.Courier;
+import by.tareltos.fcqdelivery.entity.CourierStatus;
 import by.tareltos.fcqdelivery.entity.User;
+import by.tareltos.fcqdelivery.entity.UserStatus;
 import by.tareltos.fcqdelivery.repository.Repository;
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
 import by.tareltos.fcqdelivery.util.ConnectionPool;
@@ -56,9 +58,21 @@ public class CourierRepository implements Repository<Courier> {
             byte[] car_photo = rs.getBytes("car_photo");
             String driver_phone = rs.getString("driver_phone");
             String driver_name = rs.getString("driver_name");
+            String driver_email = rs.getString("driver_email");
             int max_cargo = rs.getInt("max_cargo");
             double km_tax = rs.getDouble("km_tax");
-            Courier courier = new Courier(car_numder, car_producer, car_model, driver_phone, driver_name, max_cargo, km_tax, car_photo);
+            String status = rs.getString("status");
+            CourierStatus courierStatus = null;
+            switch (status) {
+                case "active":
+                    courierStatus = CourierStatus.ACTIVE;
+                    break;
+                case "blocked":
+                    courierStatus = CourierStatus.BLOCKED;
+                    break;
+
+            }
+            Courier courier = new Courier(car_numder, car_producer, car_model, driver_phone, driver_name, driver_email, max_cargo, km_tax, car_photo, courierStatus);
             courierList.add(courier);
         }
         if (courierList.isEmpty()) {

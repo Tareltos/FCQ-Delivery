@@ -23,8 +23,8 @@
     <div class="row">
 
         <c:forEach items="${courierList}" var="courier">
-            <div class="col-md-4 p-4" style="border: 4px double black; background: #b69c80;">
-                <img class="img-fluid d-block rounded-circle mx-auto" src="${courier.image}">
+            <div class="col-md-4 p-4" style="border: 4px double black; background: #dbe1f5;">
+                <img class="img-fluid d-block rounded-circle mx-auto" src="${pageContext.request.contextPath}/couriers?code=${courier.carNumber}">
                 <p><i>Автомобиль: ${courier.carProducer} ${courier.carModel}</i></p>
                 <p><i>Грузоподъемность: ${courier.maxCargo}</i></p>
                 <p><i>Тарив за км: ${courier.kmTax}</i></p>

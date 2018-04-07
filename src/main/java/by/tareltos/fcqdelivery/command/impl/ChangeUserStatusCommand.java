@@ -3,6 +3,7 @@ package by.tareltos.fcqdelivery.command.impl;
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
+import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,7 @@ public class ChangeUserStatusCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public String execute(HttpServletRequest request) throws ReceiverException {
 
         HttpSession session = request.getSession(true);
         User admin = (User) session.getAttribute("loginedUser");

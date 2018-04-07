@@ -2,6 +2,7 @@ package by.tareltos.fcqdelivery.command.impl;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
+import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import by.tareltos.fcqdelivery.validator.DataValidator;
 
@@ -19,7 +20,7 @@ public class LoginCommand implements Command {
         receiver = userReceiver;
     }
 
-    public String execute(HttpServletRequest request) throws SQLException{
+    public String execute(HttpServletRequest request) throws ReceiverException {
 
         String email = request.getParameter(EMAIL_PRM);
         String password = request.getParameter(PASSWORD_PRM);

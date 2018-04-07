@@ -3,6 +3,7 @@ package by.tareltos.fcqdelivery.receiver;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.entity.UserRole;
 import by.tareltos.fcqdelivery.entity.UserStatus;
+import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.impl.AllUserSpecification;
 import by.tareltos.fcqdelivery.specification.impl.UserByEmailSpecification;
@@ -21,83 +22,80 @@ import java.util.Properties;
 public class UserReceiver {
 
     final static Logger LOGGER = LogManager.getLogger(UserReceiver.class);
-    final static UserRepository REPOSITORY = new UserRepository();
+    private UserRepository repository = new UserRepository();
 
-    public boolean checkUserStatus(String email) {
-        boolean result = false;
+    public boolean checkUserStatus(String email) throws ReceiverException {
         try {
-            List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
+            List<User> listUser = repository.query(new UserByEmailSpecification(email));
             if (!listUser.isEmpty()) {
                 LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
                 User u = listUser.get(0);
                 if ("blocked".equals(u.getStatus().getStatus())) {
                     LOGGER.log(Level.DEBUG, "User :" + u.getEmail() + " is blocked");
-                    return result;
+                    return false;
                 }
-                result = true;
+                return true;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in checkUserStatus", e);
         }
-        return result;
+        return false;
     }
 
-    public boolean checkUser(String email, String password) {
-        boolean result = false;
+    public boolean checkUser(String email, String password) throws ReceiverException {
         try {
-            List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
+            List<User> listUser = repository.query(new UserByEmailSpecification(email));
             if (!listUser.isEmpty()) {
                 LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
                 User u = listUser.get(0);
                 if ("blocked".equals(u.getStatus().getStatus())) {
                     LOGGER.log(Level.DEBUG, "User :" + u.getEmail() + " is blocked");
-                    return result;
+                    return false;
                 }
                 if (email.equals(u.getEmail()) & password.equals(u.getPassword())) {
                     LOGGER.log(Level.DEBUG, "Result:" + true);
-                    result = true;
+                    return true;
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in checkUser", e);
         }
-        return result;
+        return false;
     }
 
-    public boolean checkEmail(String email) {
-        boolean result = false;
+    public boolean checkEmail(String email) throws ReceiverException {
         try {
-            List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
+            List<User> listUser = repository.query(new UserByEmailSpecification(email));
             LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 0");
             if (listUser.size() == 0) {
-                result = true;
+                return true;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in checkEmail", e);
         }
-        return result;
+        return false;
     }
 
-    public boolean resetUserPassword(String email, Properties props) {
+    public boolean resetUserPassword(String email, Properties props) throws ReceiverException {
         boolean result = false;
-        String password = PasswordGenerator.generatePassword(email);
         try {
-            List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
+            String password = PasswordGenerator.generatePassword(email);
+            List<User> listUser = repository.query(new UserByEmailSpecification(email));
             LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
             if (listUser.size() > 0) {
                 User u = listUser.get(0);
                 u.setPassword(password);
-                result = REPOSITORY.update(u);
+                result = repository.update(u);
                 EmailSender.sendMail(email, "FCQ-Delivery-Info", "New Password:" + password, props);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in resetPassword method", e);
         }
         return result;
     }
 
-    public boolean createUser(String email, String fName, String lName, String phone, String role, Properties props) {
-        boolean result = false;
+    public boolean createUser(String email, String fName, String lName, String phone, String role, Properties props) throws ReceiverException {
+        boolean result;
         try {
             String pass = PasswordGenerator.generatePassword(email);
             UserRole userRole = null;
@@ -113,50 +111,54 @@ public class UserReceiver {
                     break;
             }
             User newUser = new User(email, pass, fName, lName, phone, userRole, UserStatus.ACTIVE);
-            result = REPOSITORY.add(newUser);
+            result = repository.add(newUser);
             EmailSender.sendMail(newUser.getEmail(), "FCQ-Delivery-Registration", "Password:" + newUser.getPassword(), props);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in createUser method", e);
         }
         return result;
     }
 
-    public User getUserForSession(String email) throws SQLException {
-        User u = null;
-        List<User> listUser = REPOSITORY.query(new UserByEmailSpecification(email));
-        LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
-        if (listUser.size() > 0) {
-            u = listUser.get(0);
+    public User getUserForSession(String email) throws ReceiverException {
+        User user = null;
+        try {
+            List<User> listUser = repository.query(new UserByEmailSpecification(email));
+            LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
+            if (listUser.size() > 0) {
+                user = listUser.get(0);
+            }
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in getUserForSession method", e);
         }
-        return u;
+        return user;
     }
 
-    public boolean updateUser(User loginedUser) {
-        boolean result = false;
+    public boolean updateUser(User loginedUser) throws ReceiverException {
+        boolean result;
         try {
-            result = REPOSITORY.update(loginedUser);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            result = repository.update(loginedUser);
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in updateUser method", e);
         }
         return result;
     }
 
-    public List<User> getAllUsers() {
-        List<User> users = null;
+    public List<User> getAllUsers() throws ReceiverException {
+        List<User> users;
         try {
-            users = REPOSITORY.query(new AllUserSpecification());
+            users = repository.query(new AllUserSpecification());
             LOGGER.log(Level.DEBUG, "Found : " + users.size());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in getAllUser method", e);
         }
         return users;
     }
 
-    public boolean changeUserStatus(String email) {
-        boolean result = false;
+    public boolean changeUserStatus(String email) throws ReceiverException {
+        boolean result;
         User u;
         try {
-            u = (User) REPOSITORY.query(new UserByEmailSpecification(email)).get(0);
+            u = (User) repository.query(new UserByEmailSpecification(email)).get(0);
             UserStatus currentStatus = u.getStatus();
             switch (currentStatus) {
                 case ACTIVE:
@@ -166,9 +168,9 @@ public class UserReceiver {
                     u.setStatus(UserStatus.ACTIVE);
                     break;
             }
-            result = REPOSITORY.update(u);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            result = repository.update(u);
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in changeUser method", e);
         }
         return result;
     }

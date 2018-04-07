@@ -3,6 +3,7 @@ package by.tareltos.fcqdelivery.command.impl;
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
+import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,7 +27,7 @@ public class AllUsersCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) {
+    public String execute(HttpServletRequest request) throws ReceiverException {
 
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
@@ -40,6 +41,7 @@ public class AllUsersCommand implements Command {
                     request.setAttribute("errorMessage", "Пользователи не найдены");
                     return PagePath.PATH_USERS_PAGE.getPath();
                 }
+
             } else {
                 request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
                 return PagePath.PATH_SINGIN_PAGE.getPath();

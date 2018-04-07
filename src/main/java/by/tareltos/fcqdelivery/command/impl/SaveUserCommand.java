@@ -3,6 +3,7 @@ package by.tareltos.fcqdelivery.command.impl;
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
+import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +26,7 @@ public class SaveUserCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws  SQLException{
+    public String execute(HttpServletRequest request) throws ReceiverException {
         String fname = request.getParameter(FIRST_NAME_PRM);
         String lname = request.getParameter(LAST_NAME_PRM);
         String phone = request.getParameter(PHONE_PRM);

@@ -83,8 +83,7 @@ public class ConnectionPool {
         }
     }
 
-    public void shutDown() {//pool? not iterator обычный цикл + take;// дерегистрация драйверов.
-
+    public void shutDown() {
         for (int i = 0; i < connectionPool.size(); i++) {
             try {
                 connectionPool.take().close();

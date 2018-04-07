@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.impl;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import by.tareltos.fcqdelivery.validator.DataValidator;
@@ -22,8 +23,6 @@ public class CreateUserCommand implements Command {
     private static final String LAST_NAME_PRM = "lName";
     private static final String PHONE_PRM = "phone";
     private static final String ROLE_PRM = "role";
-    private static final String PATH_INF_PAGE = "/jsp/inf.jsp";
-    private static final String PATH_SINGIN_PAGE = "/jsp/singin.jsp";
     private UserReceiver receiver;
 
     public CreateUserCommand(UserReceiver userReceiver) {
@@ -31,7 +30,7 @@ public class CreateUserCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException, SQLException, ClassNotFoundException {
+    public String execute(HttpServletRequest request) throws IOException {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
         String filename = context.getInitParameter("mail");
@@ -48,14 +47,14 @@ public class CreateUserCommand implements Command {
                 String role = request.getParameter(ROLE_PRM);
                 receiver.createUser(email, fName, lName, phone, role, properties);
                 request.setAttribute("successfulMsg", "Пользователь успешно создань, пароль отправлен на почту!");
-                return PATH_INF_PAGE;
+                return PagePath.PATH_INF_PAGE.getPath();
             } else {
                 request.setAttribute("errorMessage", "Пользователь с таким Email существует");
-                return PATH_INF_PAGE;
+                return PagePath.PATH_INF_PAGE.getPath();
             }
 
         } else {
-            return PATH_SINGIN_PAGE;
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
 
     }

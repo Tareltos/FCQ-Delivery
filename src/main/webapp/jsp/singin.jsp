@@ -31,7 +31,7 @@
         <!-- login container -->
         <div id="containerLogin" class="tabContainer active">
             <form method="POST" action="${pageContext.request.contextPath}/doLogin">
-                <input hidden name="action" value="login">
+                <input hidden name="action" value="log_in">
                 <h2 class="loginTitle"><fmt:message key="loginForm.loginTitle"/></h2>
                 <h6 style="color: red">${errorLoginMessage}${successfulMsg}</h6>
                 <br>
@@ -87,7 +87,7 @@
         <!-- forgot container -->
         <div id="containerForgot" class="tabContainer">
             <form method="POST" action="${pageContext.request.contextPath}/reset">
-                <input hidden name="action" value="resetpass">
+                <input hidden name="action" value="reset_pass">
                 <h2 class="loginTitle"><fmt:message key="loginForm.forgotTitle"/></h2>
                 <div class="loginContent">
                     <div class="inputWrapper">

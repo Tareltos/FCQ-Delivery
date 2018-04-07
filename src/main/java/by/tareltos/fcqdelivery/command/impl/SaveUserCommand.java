@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.impl;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import org.apache.logging.log4j.LogManager;
@@ -13,14 +14,10 @@ import java.sql.SQLException;
 
 public class SaveUserCommand implements Command {
 
-
     final static Logger LOGGER = LogManager.getLogger();
     private static final String FIRST_NAME_PRM = "fName";
     private static final String LAST_NAME_PRM = "lName";
     private static final String PHONE_PRM = "phone";
-    private static final String PATH_USER_INFO_PAGE = "/jsp/userInfo.jsp";
-    private static final String PATH_SINGIN_PAGE = "/jsp/singin.jsp";
-
     private UserReceiver receiver;
 
     public SaveUserCommand(UserReceiver userReceiver) {
@@ -28,8 +25,7 @@ public class SaveUserCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException, SQLException, ClassNotFoundException {
-        String page;
+    public String execute(HttpServletRequest request) throws  SQLException{
         String fname = request.getParameter(FIRST_NAME_PRM);
         String lname = request.getParameter(LAST_NAME_PRM);
         String phone = request.getParameter(PHONE_PRM);
@@ -42,14 +38,13 @@ public class SaveUserCommand implements Command {
             if (receiver.updateUser(loginedUser)) {
                 loginedUser = receiver.getUserForSession(loginedUser.getEmail());
                 session.setAttribute("loginedUser", loginedUser);
-                page = PATH_USER_INFO_PAGE;
+                return PagePath.PATH_USER_INFO_PAGE.getPath();
             } else {
                 request.setAttribute("errorLoginMessage", "ERROR");
-                page = PATH_USER_INFO_PAGE;
+                return PagePath.PATH_USER_INFO_PAGE.getPath();
             }
         } else {
-            page = PATH_SINGIN_PAGE;
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        return page;
     }
 }

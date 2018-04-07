@@ -35,13 +35,11 @@ public class ControllerServlet extends HttpServlet {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
         }
 
         if (page == null) {
             page = "index.jsp";
         }
-
         request.getRequestDispatcher(page).forward(request, response);
     }
 }

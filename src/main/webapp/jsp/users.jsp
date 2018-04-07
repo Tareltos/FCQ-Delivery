@@ -49,7 +49,8 @@
                     <td>${user.status.status}</td>
                     <td>
                         <c:if test="${user.status.status =='active'}">
-                            <form method="POST" action="${pageContext.request.contextPath}/users?mail=${user.email}">
+                            <form method="POST" action="${pageContext.request.contextPath}/users">
+                                <input hidden name="mail" value="${user.email}">
                                 <input hidden name="action" value="change_status">
                                 <button title="<fmt:message key="blockImg"/> ">
                                     <i class="fa d-inline fa-lg fa-lock"></i>
@@ -57,7 +58,8 @@
                             </form>
                         </c:if>
                         <c:if test="${user.status.status =='blocked'}">
-                            <form method="POST" action="${pageContext.request.contextPath}/users?mail=${user.email}">
+                            <form method="POST" action="${pageContext.request.contextPath}/users">
+                                <input hidden name="mail" value="${user.email}">
                                 <input hidden name="action" value="change_status">
                                 <button title="<fmt:message key="unBlockImg"/> ">
                                     <i class="fa d-inline fa-lg fa-unlock"></i>
@@ -77,7 +79,7 @@
         <div class="modal-content">
             <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b">Заполните форму</h5>
             <form method="POST" action="${pageContext.request.contextPath}/users">
-                <input hidden name="action" value="createUser">
+                <input hidden name="action" value="create_user">
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="emailField"/></label>
                     <input required type="text" class="form-control" name="mail">

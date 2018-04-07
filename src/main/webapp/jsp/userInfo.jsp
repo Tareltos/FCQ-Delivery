@@ -26,7 +26,7 @@
                     key="userInfo.label.role"/>${loginedUser.role.role}</h3>
             <h6 style="color: red">${errorLoginMessage}${successfulMsg}</h6>
             <form method="POST" action="${pageContext.request.contextPath}/doLogin">
-                <input hidden name="action" value="saveUser">
+                <input hidden name="action" value="save_user">
                 <div class="form-group"><label><fmt:message key="fNameField"/></label>
                     <input required type="text" class="form-control" name="fName" value="${loginedUser.firstName}"></div>
                 <div class="form-group"><label><fmt:message key="lNameField"/></label>

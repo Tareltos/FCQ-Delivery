@@ -15,7 +15,7 @@
         <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
             <ul class="navbar-nav">
 
-                <form method="POST" action="${pageContext.request.contextPath}/main">
+                <form method="POST" action="${pageContext.request.contextPath}/">
                     <li class="nav-item">
                         <input type="hidden" name="action" value="main"/>
                         <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
@@ -28,7 +28,7 @@
                     <c:if test="${loginedUser.role.role !='admin'}">
                         <form method="POST" action="${pageContext.request.contextPath}/couriers">
                             <li class="nav-item">
-                                <input type="hidden" name="action" value="getCouriers"/>
+                                <input type="hidden" name="action" value="get_couriers"/>
                                 <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
                                         class="fa d-inline fa-lg fa-taxi"></i><fmt:message
                                         key="menu.button.couriers"/>
@@ -42,7 +42,7 @@
                         <c:if test="${loginedUser.role.role !='manager'}">
                             <form method="POST" action="${pageContext.request.contextPath}/doApplication">
                                 <li class="nav-item">
-                                    <input type="hidden" name="action" value="getCouriers"/>
+                                    <input type="hidden" name="action" value="send_order"/>
                                     <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
                                             class="fa d-inline fa-lg fa-hand-o-right"></i>&nbsp;<fmt:message
                                             key="menu.button.doapplication"/>
@@ -56,7 +56,7 @@
                     <c:if test="${loginedUser.role.role !='admin'}">
                         <form method="POST" action="${pageContext.request.contextPath}/applications">
                             <li class="nav-item">
-                                <input type="hidden" name="action" value="getApplications"/>
+                                <input type="hidden" name="action" value="get_orders"/>
                                 <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
                                         class="fa d-inline fa-lg fa-align-justify"></i>&nbsp;<fmt:message
                                         key="menu.button.applications"/>
@@ -67,7 +67,7 @@
                 </c:if>
                 <c:if test="${loginedUser.role.role =='admin'}">
                     <form method="POST" action="${pageContext.request.contextPath}/users">
-                        <input type="hidden" name="action" value="getUsers"/>
+                        <input type="hidden" name="action" value="get_users"/>
                         <button class="btn navbar-btn ml-2 text-white btn-secondary" style="background-color: green"><i
                                 class="fa d-inline fa-lg fa-users"></i>&nbsp;<fmt:message key="menu.button.users"/>
                         </button>
@@ -75,7 +75,7 @@
                 </c:if>
 
                 <form method="POST" action="${pageContext.request.contextPath}/singIn">
-                    <input type="hidden" name="action" value="singin"/>
+                    <input type="hidden" name="action" value="sing_in"/>
                     <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
                             class="fa d-inline fa-lg fa-user-circle-o"></i>&nbsp;<fmt:message
                             key="menu.button.cabinet"/>
@@ -84,7 +84,7 @@
 
                 <c:if test="${loginedUser !=null}">
                     <form method="POST" action="${pageContext.request.contextPath}/logout">
-                        <input type="hidden" name="action" value="logout"/>
+                        <input type="hidden" name="action" value="log_out"/>
                         <button class="btn navbar-btn ml-2 text-white btn-secondary" style="background-color: red"><i
                                 class="fa d-inline fa-lg fa-sign-out"></i>&nbsp;<fmt:message key="logout.menu.button"/>
                         </button>

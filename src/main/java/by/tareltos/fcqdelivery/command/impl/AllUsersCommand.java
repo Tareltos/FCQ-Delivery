@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.impl;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import org.apache.logging.log4j.LogManager;
@@ -16,8 +17,7 @@ public class AllUsersCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
-    private static final String PATH_USERS_PAGE = "/jsp/users.jsp";
-    private static final String PATH_SINGIN_PAGE = "/jsp/singin.jsp";
+
 
     private UserReceiver receiver;
 
@@ -27,7 +27,7 @@ public class AllUsersCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
-        String page;
+
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
         if (receiver.checkUserStatus(user.getEmail())) {
@@ -35,20 +35,18 @@ public class AllUsersCommand implements Command {
                 List<User> list = receiver.getAllUsers();
                 if (!list.isEmpty()) {
                     request.setAttribute("userList", list);
-                    page = PATH_USERS_PAGE;
+                    return PagePath.PATH_USERS_PAGE.getPath();
                 } else {
                     request.setAttribute("errorMessage", "Пользователи не найдены");
-                    page = PATH_USERS_PAGE;
+                    return PagePath.PATH_USERS_PAGE.getPath();
                 }
-
             } else {
                 request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
-                page = PATH_USERS_PAGE;
+                return PagePath.PATH_SINGIN_PAGE.getPath();
             }
         } else {
             session.setAttribute(LOGINED_USER_PRM, null);
-            page = PATH_SINGIN_PAGE;
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        return page;
     }
 }

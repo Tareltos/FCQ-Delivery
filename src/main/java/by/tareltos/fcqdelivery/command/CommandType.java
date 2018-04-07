@@ -6,16 +6,16 @@ import by.tareltos.fcqdelivery.receiver.UserReceiver;
 
 public enum CommandType {
     MAIN(new MainCommand()),
-    SINGIN(new SinginCommand()),
-    LOGIN(new LoginCommand(new UserReceiver())),
+    SING_IN(new SinginCommand()),
+    LOG_IN(new LoginCommand(new UserReceiver())),
     REGISTRATION(new RegistrationCommand(new UserReceiver())),
-    RESETPASS(new ResetPasswordCommand(new UserReceiver())),
-    LOGOUT(new LogoutCommand()),
-    SAVEUSER(new SaveUserCommand(new UserReceiver())),
-    GETUSERS(new AllUsersCommand(new UserReceiver())),
-    CREATEUSER(new CreateUserCommand(new UserReceiver())),
+    RESET_PASS(new ResetPasswordCommand(new UserReceiver())),
+    LOG_OUT(new LogoutCommand()),
+    SAVE_USER(new SaveUserCommand(new UserReceiver())),
+    GET_USERS(new AllUsersCommand(new UserReceiver())),
+    CREATE_USER(new CreateUserCommand(new UserReceiver())),
     CHANGE_STATUS(new ChangeUserStatusCommand(new UserReceiver())),
-    GETCOURIERS(new GetCouriersCommand(new CourierReceiver()));
+    GET_COURIERS(new GetCouriersCommand(new CourierReceiver()));
     private Command command;
 
     CommandType(Command command) {

@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.impl;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.entity.UserRole;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
@@ -20,7 +21,6 @@ public class RegistrationCommand implements Command {
     private static final String FIRST_NAME_PRM = "fName";
     private static final String LAST_NAME_PRM = "lName";
     private static final String PHONE_PRM = "phone";
-    private static final String PATH_SINGIN_PAGE = "/jsp/singin.jsp";
     private static final String CUSTOMER_ROLE = "customer";
     private UserReceiver receiver;
 
@@ -40,21 +40,21 @@ public class RegistrationCommand implements Command {
         String phone = request.getParameter(PHONE_PRM);
         if (DataValidator.validateEmail(email) && !receiver.checkEmail(email)) {
             request.setAttribute("errorLoginMessage", "Пользователя уже существует. Воспользуйтесь восстановлением пароля!");
-            return PATH_SINGIN_PAGE;
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (DataValidator.validateEmail(email) && DataValidator.validateName(fname)
                 && DataValidator.validateName(lname) && DataValidator.validatePassword(phone)) {
             boolean result = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties);
             if (result) {
                 request.setAttribute("successfulMsg", "Ругистрация завершена, пароль выслан на почту.");
-                return PATH_SINGIN_PAGE;
+                return PagePath.PATH_SINGIN_PAGE.getPath();
             } else {
                 request.setAttribute("errorLoginMessage", "Пользователь не сохранен, попробуйте еще раз!");
-                return PATH_SINGIN_PAGE;
+                return PagePath.PATH_SINGIN_PAGE.getPath();
             }
         } else {
             request.setAttribute("errorLoginMessage", "Введены некорректные данные!");
-            return PATH_SINGIN_PAGE;
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
 
     }

@@ -2,11 +2,9 @@ package by.tareltos.fcqdelivery.repository.impl;
 
 import by.tareltos.fcqdelivery.entity.Courier;
 import by.tareltos.fcqdelivery.entity.CourierStatus;
-import by.tareltos.fcqdelivery.entity.User;
-import by.tareltos.fcqdelivery.entity.UserStatus;
 import by.tareltos.fcqdelivery.repository.Repository;
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
-import by.tareltos.fcqdelivery.util.ConnectionPool;
+import by.tareltos.fcqdelivery.connection.ConnectionPool;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

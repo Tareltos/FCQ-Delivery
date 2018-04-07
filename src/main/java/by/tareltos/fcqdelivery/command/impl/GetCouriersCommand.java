@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.impl;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.Courier;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
@@ -18,9 +19,6 @@ public class GetCouriersCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
-    private static final String PATH_COURIERS_PAGE = "/jsp/couriers.jsp";
-    private static final String PATH_SINGIN_PAGE = "/jsp/singin.jsp";
-    private static final String PATH_INF_PAGE = "/jsp/inf.jsp";
     private CourierReceiver receiver;
 
 
@@ -29,24 +27,24 @@ public class GetCouriersCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException, SQLException, ClassNotFoundException {
+    public String execute(HttpServletRequest request){
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
             LOGGER.log(Level.DEBUG, "Пользователь =null");
-            return PATH_SINGIN_PAGE;
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if ("admin".equals(loginedUser.getRole().getRole())) {
             LOGGER.log(Level.DEBUG, "Нарушение прав доступа Пользователь: " + loginedUser.getRole().getRole());
             request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
-            return PATH_INF_PAGE;
+            return PagePath.PATH_INF_PAGE.getPath();
         }
         List<Courier> courierList = receiver.getCouriers();
         if (null == courierList) {
             request.setAttribute("errorMessage", "Курьеров не найдено");
-            return PATH_INF_PAGE;
+            return PagePath.PATH_INF_PAGE.getPath();
         }
         request.setAttribute("courierList", courierList);
-        return PATH_COURIERS_PAGE;
+        return PagePath.PATH_COURIERS_PAGE.getPath();
     }
 }

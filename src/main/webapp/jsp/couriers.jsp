@@ -29,7 +29,7 @@
                 <p><i>Грузоподъемность: ${courier.maxCargo}</i></p>
                 <p><i>Тарив за км: ${courier.kmTax}</i></p>
                 <c:if test="${loginedUser.role.role =='manager'}">
-                    <a href="${pageContext.request.contextPath}/vacancyDetails?id=${vacancy.id}"><img
+                    <a href="${pageContext.request.contextPath}/courierForm?action=edit_courier&carNumber=${courier.carNumber}"><img
                             src="img/edit.png" width="20" height="20" title="Редактировать">
                     </a>
                 </c:if>

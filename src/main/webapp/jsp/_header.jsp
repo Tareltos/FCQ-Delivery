@@ -40,7 +40,7 @@
                 <c:if test="${loginedUser !=null}">
                     <c:if test="${loginedUser.role.role !='admin'}">
                         <c:if test="${loginedUser.role.role !='customer'}">
-                        <form method="POST" action="${pageContext.request.contextPath}/createNewCourier">
+                        <form method="POST" action="${pageContext.request.contextPath}/courierForm">
                             <li class="nav-item">
                                 <input type="hidden" name="action" value="courier_form"/>
                                 <button class="btn navbar-btn ml-2 text-white btn-secondary"><i

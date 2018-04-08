@@ -1,8 +1,8 @@
 package by.tareltos.fcqdelivery.validator;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DataValidator {
 
@@ -10,34 +10,49 @@ public class DataValidator {
 
 
     public static boolean validateEmail(String email) {
-        if (email == null | email.isEmpty()) {
-            LOGGER.log(Level.DEBUG, "Email is null");
-            return false;
-        }
-        return true;
+        return (email == null | email.isEmpty()) ? false : true;
     }
 
     public static boolean validatePassword(String pass) {
-        if (pass == null | pass.length() < 5) {
-            return false;
-        }
-        return true;
-    }
-    public static boolean validateName(String name){
-        if (name == null | name.isEmpty()) {
-            LOGGER.log(Level.DEBUG, "Name is null");
-            return false;
-        }
-        return true;
-    }
-    public static boolean validatePhone(String phone){
-        if (phone == null | phone.isEmpty()| phone.length()!=13) {
-            LOGGER.log(Level.DEBUG, "Phone is not valid");
-            return false;
-        }
-        return true;
+        return (pass == null | pass.length() < 5) ? false : true;
     }
 
+    public static boolean validateName(String name) {
+        return (name == null | name.isEmpty()) ? false : true;
+    }
 
+    public static boolean validatePhone(String phone) {
+        return (null == phone | phone.isEmpty() | phone.length() != 13) ? false : true;
+    }
 
+    public static boolean validateCarNumber(String carNumber) {
+        return (null == carNumber | carNumber.length() != 8) ? false : true;
+    }
+
+    public static boolean validateCarProducer(String carProducer) {
+        return (null == carProducer) ? false : true;
+    }
+
+    public static boolean validateCarModel(String carModel) {
+        return (null == carModel | carModel.isEmpty()) ? false : true;
+    }
+
+    public static boolean validateTax(double tax) {
+        return tax >= 0;
+    }
+
+    public static boolean validateCargo(int maxCargo) {
+        return maxCargo >= 0;
+    }
+
+    public static boolean validateStatus(String status) {
+        if ("active".equals(status)) {
+            return true;
+        }
+        if ("blocked".equals(status)) {
+            return true;
+        }
+        return false;
+
+    }
 }

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/createNewCourier"})
+@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/courierForm"})
 public class ControllerServlet extends HttpServlet {
     final static Logger LOGGER = LogManager.getLogger();
 

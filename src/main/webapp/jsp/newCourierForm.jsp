@@ -22,11 +22,13 @@
 <div class="container" style="min-height: 80%;">
     <h5 style="margin-left: 40%; color: green; text-emphasis: #1c7430"><fmt:message key="fillForm.label"/></h5>
     <div class="row">
+        <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
         <div class="col-md-12 bg-light">
             <form method="POST" action="${pageContext.request.contextPath}/createNewCourier">
                 <div class="form-group"><label><fmt:message
                         key="carNumber.label"/></label>
-                    <input required minlength="8" maxlength="8" type="text" class="form-control" name="carNumber" placeholder="2222AA-7">
+                    <input required minlength="8" maxlength="8" type="text" class="form-control" name="carNumber"
+                           placeholder="2222AA-7">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carProducer.label"/></label>
@@ -38,19 +40,21 @@
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carPhoto.label"/></label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="img">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="fNameField"/></label>
-                    <input required type="text" class="form-control" name="name" placeholder="<fmt:message key="fNameField"/>">
+                    <input required type="text" class="form-control" name="name"
+                           placeholder="<fmt:message key="fNameField"/>">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="userInfo.label.phone"/></label>
-                    <input required minlength="13" maxlength="13" name="phone" type="text" class="form-control" placeholder="<fmt:message key="phoneField"/>">
+                    <input required minlength="13" maxlength="13" name="phone" type="text" class="form-control"
+                           placeholder="<fmt:message key="phoneField"/>">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="emailField"/></label>
-                    <input required  name="email" type="text" class="form-control" placeholder="driver@email.com">
+                    <input required name="email" type="text" class="form-control" placeholder="driver@email.com">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carMaxCargo.label"/></label>
@@ -59,6 +63,15 @@
                 <div class="form-group"><label><fmt:message
                         key="carTax.label"/></label>
                     <input required name="tax" type="text" class="form-control" placeholder="0.34">
+                </div>
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
+                        key="userInfo.label.status"/></label>
+                    <select required name="status" type="text" class="form-control">
+                        <option value="active"><fmt:message
+                                key="statusActive.label"/></option>
+                        <option value="blocked"><fmt:message
+                                key="statusBlocked.label"/></option>
+                    </select>
                 </div>
 
                 <input hidden name="action" value="create_courier">

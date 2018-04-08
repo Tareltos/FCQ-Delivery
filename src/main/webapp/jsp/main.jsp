@@ -29,15 +29,11 @@
 <div class="py-2 text-center bg-light style">
     <div class="container">
         <div class="row">
-            <div class="col-md-4 p-4">
+            <div class="col-md-4 p-4" style="margin-left: 10%">
                 <img class="img-fluid d-block rounded-circle mx-auto" src="../img/m1.PNG">
                 <p class="my-4"><i><fmt:message key="main.description.lable1"/></i></p>
             </div>
-            <div class="col-md-4 p-4">
-                <img class="img-fluid d-block rounded-circle mx-auto" src="../img/m2.PNG">
-                <p class="my-4"><i><fmt:message key="main.description.lable2"/></i></p>
-            </div>
-            <div class="col-md-4 p-4">
+            <div class="col-md-4 p-4" style="margin-left: 10%">
                 <img class="img-fluid d-block rounded-circle mx-auto" src="../img/m3.PNG">
                 <p class="my-4"><i><fmt:message key="main.description.lable3"/></i></p>
             </div>

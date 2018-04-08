@@ -3,6 +3,7 @@ package by.tareltos.fcqdelivery.repository.impl;
 import by.tareltos.fcqdelivery.entity.Courier;
 import by.tareltos.fcqdelivery.entity.CourierStatus;
 import by.tareltos.fcqdelivery.repository.Repository;
+import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
 import by.tareltos.fcqdelivery.connection.ConnectionPool;
 import org.apache.logging.log4j.Level;
@@ -24,22 +25,43 @@ import java.util.List;
 public class CourierRepository implements Repository<Courier> {
 
     final static Logger LOGGER = LogManager.getLogger();
-    final String ADD_COURIER_QUERY = "INSERT INTO courier(email, password, role, firstName, lastName, phone) VALUES (?,?,?,?,?,?) ";
+    final String ADD_COURIER_QUERY = "INSERT INTO courier(car_number, car_producer, car_model, car_photo, driver_phone, driver_name, driver_email, max_cargo, km_tax, status  ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
     final String REMOVE_COURIER_QUERY = "DELETE FROM user WHERE email=\"%s\" ";
     final String UPDATE_COURIER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=? where email=? ";
 
     @Override
-    public boolean add(Courier courier) throws SQLException {
+    public boolean add(Courier courier) throws RepositoryException {
+        int executeResult;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement pstm;
+        try {
+            pstm = connection.prepareStatement(ADD_COURIER_QUERY);
+            pstm.setString(1, courier.getCarNumber());
+            pstm.setString(2, courier.getCarProducer());
+            pstm.setString(3, courier.getCarModel());
+            pstm.setString(4, courier.getImageFileName());
+            pstm.setString(5, courier.getDriverPhone());
+            pstm.setString(6, courier.getDriverName());
+            pstm.setString(7, courier.getDriverEmail());
+            pstm.setInt(8, courier.getMaxCargo());
+            pstm.setDouble(9, courier.getKmTax());
+            pstm.setString(10, courier.getStatus().getStatus());
+            executeResult = pstm.executeUpdate();
+            return executeResult == 1 ? true : false;
+        } catch (SQLException e) {
+            throw new RepositoryException("Exception in add method", e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
+        }
+
+    }
+    @Override
+    public boolean remove(Courier courier) {
         return false;
     }
 
     @Override
-    public boolean remove(Courier courier) throws SQLException {
-        return false;
-    }
-
-    @Override
-    public boolean update(Courier courier) throws SQLException {
+    public boolean update(Courier courier) {
         return false;
     }
 

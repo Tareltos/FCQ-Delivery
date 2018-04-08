@@ -15,7 +15,11 @@ public enum CommandType {
     GET_USERS(new AllUsersCommand(new UserReceiver())),
     CREATE_USER(new CreateUserCommand(new UserReceiver())),
     CHANGE_STATUS(new ChangeUserStatusCommand(new UserReceiver())),
-    GET_COURIERS(new GetCouriersCommand(new CourierReceiver()));
+    GET_COURIERS(new GetCouriersCommand(new CourierReceiver())),
+    CREATE_COURIER(new CreateCourierCommand(new CourierReceiver())),
+    COURIER_FORM(new CreateCourierFormCommand());
+
+
     private Command command;
 
     CommandType(Command command) {

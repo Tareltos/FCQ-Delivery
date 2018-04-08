@@ -53,7 +53,7 @@ public class CourierRepository implements Repository<Courier> {
             String car_numder = rs.getString("car_number");
             String car_producer = rs.getString("car_producer");
             String car_model = rs.getString("car_model");
-            byte[] car_photo = rs.getBytes("car_photo");
+            String car_photo = rs.getString("car_photo");
             String driver_phone = rs.getString("driver_phone");
             String driver_name = rs.getString("driver_name");
             String driver_email = rs.getString("driver_email");

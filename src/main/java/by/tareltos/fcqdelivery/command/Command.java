@@ -8,6 +8,6 @@ import java.sql.SQLException;
 
 public interface Command {
 
-     String execute(HttpServletRequest request) throws IOException, SQLException, ClassNotFoundException, ReceiverException;
+     String execute(HttpServletRequest request) throws ReceiverException, CommandException;
 
 }

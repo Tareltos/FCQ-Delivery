@@ -18,14 +18,14 @@ public class Courier {
     private String driverEmail;
     private int maxCargo;
     private double kmTax;
-    private byte[] image;
+    private String imageFileName;
     private CourierStatus status;
 
 
     public Courier() {
     }
 
-    public Courier(String carNumber, String carProducer, String carModel, String driverPhone, String driverName, String driverEmail, int maxCargo, double kmTax, byte[] image, CourierStatus status) {
+    public Courier(String carNumber, String carProducer, String carModel, String driverPhone, String driverName, String driverEmail, int maxCargo, double kmTax, String image, CourierStatus status) {
         this.carNumber = carNumber;
         this.carProducer = carProducer;
         this.carModel = carModel;
@@ -34,7 +34,7 @@ public class Courier {
         this.driverEmail = driverEmail;
         this.maxCargo = maxCargo;
         this.kmTax = kmTax;
-        this.image = image;
+        this.imageFileName = image;
         this.status = status;
     }
 
@@ -102,12 +102,12 @@ public class Courier {
         this.kmTax = kmTax;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImageFileName() {
+        return imageFileName;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
     }
 
     public CourierStatus getStatus() {
@@ -120,6 +120,7 @@ public class Courier {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Courier courier = (Courier) o;
@@ -131,16 +132,14 @@ public class Courier {
                 Objects.equals(driverPhone, courier.driverPhone) &&
                 Objects.equals(driverName, courier.driverName) &&
                 Objects.equals(driverEmail, courier.driverEmail) &&
-                Arrays.equals(image, courier.image) &&
+                Objects.equals(imageFileName, courier.imageFileName) &&
                 status == courier.status;
     }
 
     @Override
     public int hashCode() {
 
-        int result = Objects.hash(carNumber, carProducer, carModel, driverPhone, driverName, driverEmail, maxCargo, kmTax, status);
-        result = 31 * result + Arrays.hashCode(image);
-        return result;
+        return Objects.hash(carNumber, carProducer, carModel, driverPhone, driverName, driverEmail, maxCargo, kmTax, imageFileName, status);
     }
 
     @Override
@@ -154,6 +153,7 @@ public class Courier {
                 ", driverEmail='" + driverEmail + '\'' +
                 ", maxCargo=" + maxCargo +
                 ", kmTax=" + kmTax +
+                ", imageFileName='" + imageFileName + '\'' +
                 ", status=" + status +
                 '}';
     }

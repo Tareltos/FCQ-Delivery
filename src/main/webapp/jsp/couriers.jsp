@@ -24,10 +24,15 @@
 
         <c:forEach items="${courierList}" var="courier">
             <div class="col-md-4 p-4" style="border: 4px double black; background: #dbe1f5;">
-                <img class="img-fluid d-block rounded-circle mx-auto" src="${pageContext.request.contextPath}/couriers?code=${courier.carNumber}">
+                <img class="img-fluid d-block rounded-0 mx-auto" src="../img/${courier.imageFileName}">
                 <p><i>Автомобиль: ${courier.carProducer} ${courier.carModel}</i></p>
                 <p><i>Грузоподъемность: ${courier.maxCargo}</i></p>
                 <p><i>Тарив за км: ${courier.kmTax}</i></p>
+                <c:if test="${loginedUser.role.role =='manager'}">
+                    <a href="${pageContext.request.contextPath}/vacancyDetails?id=${vacancy.id}"><img
+                            src="img/edit.png" width="20" height="20" title="Редактировать">
+                    </a>
+                </c:if>
             </div>
         </c:forEach>
     </div>

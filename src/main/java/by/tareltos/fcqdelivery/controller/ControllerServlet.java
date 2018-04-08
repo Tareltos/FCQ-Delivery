@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers"})
+@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/createNewCourier"})
 public class ControllerServlet extends HttpServlet {
     final static Logger LOGGER = LogManager.getLogger();
 
@@ -33,15 +33,12 @@ public class ControllerServlet extends HttpServlet {
         if (null != command) {
             try {
                 page = command.execute(request);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
             } catch (ReceiverException e) {
                 e.printStackTrace();
+            } catch (CommandException e) {
+                e.printStackTrace();
             }
+
         }
         if (page == null) {
             page = "index.jsp";

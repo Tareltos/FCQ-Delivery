@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.impl;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
@@ -31,11 +32,15 @@ public class CreateUserCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException, ReceiverException {
+    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
         String filename = context.getInitParameter("mail");
-        properties.load(context.getResourceAsStream(filename));
+        try {
+            properties.load(context.getResourceAsStream(filename));
+        } catch (IOException e) {
+            throw new CommandException("Exception in reading mail property", e);
+        }
         HttpSession session = request.getSession(true);
         User admin = (User) session.getAttribute("loginedUser");
         if (null != admin) {

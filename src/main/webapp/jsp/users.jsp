@@ -77,7 +77,7 @@
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b">Заполните форму</h5>
+            <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b"><fmt:message key="fillForm.label"/></h5>
             <form method="POST" action="${pageContext.request.contextPath}/users">
                 <input hidden name="action" value="create_user">
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message

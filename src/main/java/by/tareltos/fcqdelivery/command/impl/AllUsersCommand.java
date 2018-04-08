@@ -18,8 +18,6 @@ public class AllUsersCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
-
-
     private UserReceiver receiver;
 
     public AllUsersCommand(UserReceiver receiver) {
@@ -44,7 +42,7 @@ public class AllUsersCommand implements Command {
 
             } else {
                 request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
-                return PagePath.PATH_SINGIN_PAGE.getPath();
+                return PagePath.PATH_INF_PAGE.getPath();
             }
         } else {
             session.setAttribute(LOGINED_USER_PRM, null);

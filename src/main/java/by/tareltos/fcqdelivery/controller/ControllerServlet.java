@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/courierForm"})
+@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/info", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/courierForm", "/saveCourier"})
 public class ControllerServlet extends HttpServlet {
     final static Logger LOGGER = LogManager.getLogger();
 
@@ -38,11 +38,14 @@ public class ControllerServlet extends HttpServlet {
             } catch (CommandException e) {
                 e.printStackTrace();
             }
-
         }
         if (page == null) {
             page = "index.jsp";
         }
-        request.getRequestDispatcher(page).forward(request, response);
+        if ("redirect".equals(request.getAttribute("action"))) {
+            response.sendRedirect("/users?action=get_users");
+        } else {
+            request.getRequestDispatcher(page).forward(request, response);
+        }
     }
 }

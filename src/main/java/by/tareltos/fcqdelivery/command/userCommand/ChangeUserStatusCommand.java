@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.command.impl;
+package by.tareltos.fcqdelivery.command.userCommand;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
@@ -35,9 +35,11 @@ public class ChangeUserStatusCommand implements Command {
             LOGGER.log(Level.DEBUG, email);
             if (!receiver.checkEmail(email) && receiver.changeUserStatus(email)) {
                 request.setAttribute(EMAIL_PRM, null);
+                request.setAttribute("action", "redirect");
                 request.setAttribute("successfulMsg", "Статус успешно изменен!");
                 return PagePath.PATH_INF_PAGE.getPath();
             } else {
+                request.setAttribute("action", "redirect");
                 request.setAttribute("errorMessage", "Статус Пользователя не изменен");
                 return PagePath.PATH_INF_PAGE.getPath();
             }

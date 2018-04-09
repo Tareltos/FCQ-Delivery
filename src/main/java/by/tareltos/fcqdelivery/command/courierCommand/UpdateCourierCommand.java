@@ -1,8 +1,8 @@
-package by.tareltos.fcqdelivery.command.impl;
+package by.tareltos.fcqdelivery.command.courierCommand;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
-import by.tareltos.fcqdelivery.entity.Courier;
 import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
@@ -13,10 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
-
-public class CreateCourierCommand implements Command {
+public class UpdateCourierCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
     private static final String CAR_NUMBER_PRM = "carNumber";
@@ -32,12 +30,12 @@ public class CreateCourierCommand implements Command {
     private CourierReceiver receiver;
 
 
-    public CreateCourierCommand(CourierReceiver rceiver) {
-        this.receiver = rceiver;
+    public UpdateCourierCommand(CourierReceiver receiver) {
+        this.receiver = receiver;
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -50,6 +48,7 @@ public class CreateCourierCommand implements Command {
             return PagePath.PATH_INF_PAGE.getPath();
         }
         String carNumber = request.getParameter(CAR_NUMBER_PRM);
+        LOGGER.log(Level.DEBUG, carNumber);
         String carProducer = request.getParameter(CAR_PRODUCER_PRM);
         String carModel = request.getParameter(CAR_MODEL_PRM);
         String carPhotoFullPath = request.getParameter(CAR_IMG_PRM);
@@ -66,15 +65,15 @@ public class CreateCourierCommand implements Command {
                 & DataValidator.validateName(driverName) & DataValidator.validateEmail(driverEmail)
                 & DataValidator.validateCargo(maxCargo) & DataValidator.validateTax(tax)
                 & DataValidator.validateStatus(status)) {
-            boolean result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            boolean result = receiver.updateCourier(carNumber, carProducer, carModel, carPhotoPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
             if (result) {
+                request.setAttribute("successfulMsg", "Данные успешно обновлены");
                 return PagePath.PATH_COURIERS_PAGE.getPath();
             }
             request.setAttribute("errorMessage", "Сохранения данных");
             return PagePath.PATH_NEW_COURIER_FORM.getPath();
         }
-        request.setAttribute("errorMessage", "Данные невалидные, невозможно создать такого курьера");
+        request.setAttribute("errorMessage", "Данные невалидные, невозможно сохранить изменения");
         return PagePath.PATH_NEW_COURIER_FORM.getPath();
     }
-
 }

@@ -26,8 +26,8 @@ public class CourierRepository implements Repository<Courier> {
 
     final static Logger LOGGER = LogManager.getLogger();
     final String ADD_COURIER_QUERY = "INSERT INTO courier(car_number, car_producer, car_model, car_photo, driver_phone, driver_name, driver_email, max_cargo, km_tax, status  ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
-    final String REMOVE_COURIER_QUERY = "DELETE FROM user WHERE email=\"%s\" ";
-    final String UPDATE_COURIER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=? where email=? ";
+    final String REMOVE_COURIER_QUERY = "DELETE FROM courier WHERE car_number=? ";
+    final String UPDATE_COURIER_QUERY = "UPDATE courier SET car_producer=?, car_model=?, car_photo=?, driver_phone=?, driver_name=?, driver_email=?, max_cargo=?, km_tax=?, status=? where car_number=? ";
 
     @Override
     public boolean add(Courier courier) throws RepositoryException {
@@ -55,14 +55,48 @@ public class CourierRepository implements Repository<Courier> {
         }
 
     }
+
     @Override
-    public boolean remove(Courier courier) {
-        return false;
+    public boolean remove(Courier courier) throws RepositoryException {
+        int executeResult;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement pstm;
+        try {
+            pstm = connection.prepareStatement(REMOVE_COURIER_QUERY);
+            pstm.setString(1, courier.getCarNumber());
+            executeResult = pstm.executeUpdate();
+            return executeResult == 1 ? true : false;
+        } catch (SQLException e) {
+            throw new RepositoryException("Exception in add method", e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
+        }
     }
 
     @Override
-    public boolean update(Courier courier) {
-        return false;
+    public boolean update(Courier courier) throws RepositoryException {
+        int executeResult;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement pstm;
+        try {
+            pstm = connection.prepareStatement(UPDATE_COURIER_QUERY);
+            pstm.setString(1, courier.getCarProducer());
+            pstm.setString(2, courier.getCarModel());
+            pstm.setString(3, courier.getImageFileName());
+            pstm.setString(4, courier.getDriverPhone());
+            pstm.setString(5, courier.getDriverName());
+            pstm.setString(6, courier.getDriverEmail());
+            pstm.setInt(7, courier.getMaxCargo());
+            pstm.setDouble(8, courier.getKmTax());
+            pstm.setString(9, courier.getStatus().getStatus());
+            pstm.setString(10, courier.getCarNumber());
+            executeResult = pstm.executeUpdate();
+            return executeResult == 1 ? true : false;
+        } catch (SQLException e) {
+            throw new RepositoryException("Exception in add method", e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
+        }
     }
 
     @Override

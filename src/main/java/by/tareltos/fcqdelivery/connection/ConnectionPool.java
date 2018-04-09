@@ -13,11 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.mysql.jdbc.Driver;
 
 public class ConnectionPool {
-    private String user;
-    private String password;
-    private String url;
     private LinkedBlockingQueue<Connection> connectionPool;
-    private static int poolSize;
     private static ConnectionPool instance;
     private static AtomicBoolean isNull = new AtomicBoolean(true);
     private static ReentrantLock lock = new ReentrantLock();

@@ -54,4 +54,20 @@ public class CourierReceiver {
             throw new ReceiverException("Exception in getCourier ByNumber");
         }
     }
+
+    public boolean updateCourier(String carNumber, String carProducer, String carModel, String carPhotoPath, String driverName, String driverPhone, String driverEmail, int maxCargo, double tax, String status) throws ReceiverException {
+        CourierStatus courierStatus;
+        if ("active".equals(status)) {
+            courierStatus = CourierStatus.ACTIVE;
+        } else {
+            courierStatus = CourierStatus.BLOCKED;
+        }
+        Courier newCourier = new Courier(carNumber, carProducer, carModel, driverPhone, driverName, driverEmail, maxCargo, tax, carPhotoPath, courierStatus);
+        try {
+            return repository.update(newCourier);
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in createCourier method", e);
+        }
+
+    }
 }

@@ -24,10 +24,11 @@
     <div class="row">
         <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
         <div class="col-md-12 bg-light">
-            <form method="POST" action="${pageContext.request.contextPath}/createNewCourier">
+            <form method="POST" action="${pageContext.request.contextPath}/saveCourier?carNumber=${courier.carNumber}">
                 <div class="form-group"><label><fmt:message
                         key="carNumber.label"/></label>
-                    <input required minlength="8" maxlength="8" type="text" class="form-control" name="carNumber"
+                    <input disabled required minlength="8" maxlength="8" type="text" class="form-control"
+                           name="carNumber"
                            placeholder="2222AA-7" value="${courier.carNumber}">
                 </div>
                 <div class="form-group"><label><fmt:message
@@ -42,8 +43,7 @@
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carPhoto.label"/></label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="img"
-                           value="${courier.imageFileName}">
+                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="img">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="fNameField"/></label>
@@ -63,12 +63,12 @@
                 <div class="form-group"><label><fmt:message
                         key="carMaxCargo.label"/></label>
                     <input required name="cargo" type="text" class="form-control" placeholder="1500"
-                           value="${courier.maxCargo}">
+                           value="${courier.maxCargo}" pattern="[0-9]\d*">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carTax.label"/></label>
                     <input required name="tax" type="text" class="form-control" placeholder="0.34"
-                           value="${courier.kmTax}">
+                           value="${courier.kmTax}" pattern="[+]?([0-9]*[.])?[0-9]+">
                 </div>
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="userInfo.label.status"/></label>
@@ -79,14 +79,16 @@
                             <option value="blocked"><fmt:message
                                     key="statusBlocked.label"/></option>
                         </c:if>
+                        <c:if test="${courier.status.status =='blocked'}">
                         <option value="blocked"><fmt:message
                                 key="statusBlocked.label"/></option>
                         <option value="active"><fmt:message
                                 key="statusActive.label"/></option>
+                        </c:if>
                     </select>
                 </div>
 
-                <input hidden name="action" value="create_courier">
+                <input hidden name="action" value="update_courier">
                 <button type="submit" class="btn btn-secondary" style="background-color: green; margin-left: 45%">
                     <fmt:message key="button.saveButtob"/></button>
             </form>

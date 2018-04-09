@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.command.impl;
+package by.tareltos.fcqdelivery.command.courierCommand;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.CommandException;
@@ -13,14 +13,14 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-public class EditCourierCommand implements Command {
+public class EditCourierFormCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
     private static final String CAR_NUMBER_PRM = "carNumber";
     private CourierReceiver receiver;
 
-    public EditCourierCommand(CourierReceiver receiver) {
+    public EditCourierFormCommand(CourierReceiver receiver) {
         this.receiver = receiver;
     }
 
@@ -41,6 +41,5 @@ public class EditCourierCommand implements Command {
             request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-
     }
 }

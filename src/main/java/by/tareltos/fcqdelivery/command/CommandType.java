@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command;
 
-import by.tareltos.fcqdelivery.command.impl.*;
+import by.tareltos.fcqdelivery.command.courierCommand.*;
+import by.tareltos.fcqdelivery.command.userCommand.*;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 
@@ -18,9 +19,8 @@ public enum CommandType {
     GET_COURIERS(new GetCouriersCommand(new CourierReceiver())),
     CREATE_COURIER(new CreateCourierCommand(new CourierReceiver())),
     COURIER_FORM(new CreateCourierFormCommand()),
-    EDIT_COURIER(new EditCourierCommand(new CourierReceiver()));
-
-
+    EDIT_COURIER(new EditCourierFormCommand(new CourierReceiver())),
+    UPDATE_COURIER(new UpdateCourierCommand(new CourierReceiver()));
 
     private Command command;
 

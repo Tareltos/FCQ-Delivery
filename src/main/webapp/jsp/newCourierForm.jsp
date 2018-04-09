@@ -24,7 +24,7 @@
     <div class="row">
         <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
         <div class="col-md-12 bg-light">
-            <form method="POST" action="${pageContext.request.contextPath}/createNewCourier">
+            <form method="POST" action="${pageContext.request.contextPath}/saveCourier">
                 <div class="form-group"><label><fmt:message
                         key="carNumber.label"/></label>
                     <input required minlength="8" maxlength="8" type="text" class="form-control" name="carNumber"
@@ -58,11 +58,11 @@
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carMaxCargo.label"/></label>
-                    <input required name="cargo" type="text" class="form-control" placeholder="1500">
+                    <input required name="cargo" type="text" class="form-control" placeholder="1500"  pattern="[0-9]\d*">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carTax.label"/></label>
-                    <input required name="tax" type="text" class="form-control" placeholder="0.34">
+                    <input required name="tax" type="text" class="form-control" placeholder="0.34"  pattern="[+]?([0-9]*[.])?[0-9]+">
                 </div>
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="userInfo.label.status"/></label>

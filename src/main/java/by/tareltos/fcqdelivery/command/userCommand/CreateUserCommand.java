@@ -49,13 +49,16 @@ public class CreateUserCommand implements Command {
             String lName = request.getParameter(LAST_NAME_PRM);
             String phone = request.getParameter(PHONE_PRM);
             if (receiver.checkEmail(email) && DataValidator.validateEmail(email) && DataValidator.validateName(fName) && DataValidator.validateName(lName) && DataValidator.validatePhone(phone)) {
-
                 String role = request.getParameter(ROLE_PRM);
                 receiver.createUser(email, fName, lName, phone, role, properties);
                 request.setAttribute("successfulMsg", "Пользователь успешно создань, пароль отправлен на почту!");
+                request.setAttribute("method", "redirect");
+                request.setAttribute("redirectUrl", "/users?action=get_users");
                 return PagePath.PATH_INF_PAGE.getPath();
             } else {
                 request.setAttribute("errorMessage", "Пользователь с таким Email существует");
+                request.setAttribute("method", "redirect");
+                request.setAttribute("redirectUrl", "/users?action=get_users");
                 return PagePath.PATH_INF_PAGE.getPath();
             }
 

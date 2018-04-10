@@ -34,12 +34,13 @@ public class ChangeUserStatusCommand implements Command {
             String email = request.getParameter(EMAIL_PRM);
             LOGGER.log(Level.DEBUG, email);
             if (!receiver.checkEmail(email) && receiver.changeUserStatus(email)) {
-                request.setAttribute(EMAIL_PRM, null);
-                request.setAttribute("action", "redirect");
+                request.setAttribute("method", "redirect");
+                request.setAttribute("redirectUrl", "/users?action=get_users");
                 request.setAttribute("successfulMsg", "Статус успешно изменен!");
                 return PagePath.PATH_INF_PAGE.getPath();
             } else {
-                request.setAttribute("action", "redirect");
+                request.setAttribute("method", "redirect");
+                request.setAttribute("redirectUrl", "/users?action=get_users");
                 request.setAttribute("errorMessage", "Статус Пользователя не изменен");
                 return PagePath.PATH_INF_PAGE.getPath();
             }

@@ -42,8 +42,8 @@ public class ControllerServlet extends HttpServlet {
         if (page == null) {
             page = "index.jsp";
         }
-        if ("redirect".equals(request.getAttribute("action"))) {
-            response.sendRedirect("/users?action=get_users");
+        if ("redirect".equals(request.getAttribute("method"))) {
+            response.sendRedirect(String.valueOf(request.getAttribute("redirectUrl")));
         } else {
             request.getRequestDispatcher(page).forward(request, response);
         }

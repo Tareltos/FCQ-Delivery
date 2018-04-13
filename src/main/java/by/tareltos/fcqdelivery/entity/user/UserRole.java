@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.entity;
+package by.tareltos.fcqdelivery.entity.user;
 
 public enum UserRole {
     ADMIN("admin"),

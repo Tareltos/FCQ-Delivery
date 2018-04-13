@@ -1,6 +1,5 @@
-package by.tareltos.fcqdelivery.entity;
+package by.tareltos.fcqdelivery.entity.courier;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**

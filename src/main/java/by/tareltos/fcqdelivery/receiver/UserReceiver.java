@@ -1,8 +1,8 @@
 package by.tareltos.fcqdelivery.receiver;
 
-import by.tareltos.fcqdelivery.entity.User;
-import by.tareltos.fcqdelivery.entity.UserRole;
-import by.tareltos.fcqdelivery.entity.UserStatus;
+import by.tareltos.fcqdelivery.entity.user.User;
+import by.tareltos.fcqdelivery.entity.user.UserRole;
+import by.tareltos.fcqdelivery.entity.user.UserStatus;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.impl.AllUserSpecification;
@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 

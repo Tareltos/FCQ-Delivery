@@ -2,7 +2,7 @@ package by.tareltos.fcqdelivery.command.courier;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
-import by.tareltos.fcqdelivery.entity.User;
+import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.validator.DataValidator;

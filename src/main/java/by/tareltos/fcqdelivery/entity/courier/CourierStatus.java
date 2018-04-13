@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.entity;
+package by.tareltos.fcqdelivery.entity.courier;
 
 public enum CourierStatus {
 

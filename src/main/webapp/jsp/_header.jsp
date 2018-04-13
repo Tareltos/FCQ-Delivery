@@ -71,7 +71,7 @@
                     <c:if test="${loginedUser.role.role !='admin'}">
                         <form method="POST" action="${pageContext.request.contextPath}/applications">
                             <li class="nav-item">
-                                <input type="hidden" name="action" value="get_orders"/>
+                                <input type="hidden" name="action" value="get_applications"/>
                                 <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
                                         class="fa d-inline fa-lg fa-align-justify"></i>&nbsp;<fmt:message
                                         key="menu.button.applications"/>

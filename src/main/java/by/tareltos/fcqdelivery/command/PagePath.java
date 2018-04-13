@@ -9,7 +9,8 @@ public enum PagePath {
     PATH_USER_INFO_PAGE ("/jsp/userInfo.jsp"),
     PATH_MAIN_PAGE("/index.jsp"),
     PATH_NEW_COURIER_FORM("/jsp/newCourierForm.jsp"),
-    PATH_EDIT_COURIER_FORM("/jsp/editCourierForm.jsp");
+    PATH_EDIT_COURIER_FORM("/jsp/editCourierForm.jsp"),
+    PATH_APPLICATIONS_PAGE("/jsp/applications.jsp");
     private String path;
 
     PagePath(String path) {

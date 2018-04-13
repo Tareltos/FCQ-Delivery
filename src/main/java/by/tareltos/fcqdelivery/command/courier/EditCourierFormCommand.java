@@ -3,8 +3,8 @@ package by.tareltos.fcqdelivery.command.courier;
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
-import by.tareltos.fcqdelivery.entity.Courier;
-import by.tareltos.fcqdelivery.entity.User;
+import by.tareltos.fcqdelivery.entity.courier.Courier;
+import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.sql.SQLException;
 
 public class EditCourierFormCommand implements Command {
 
@@ -25,7 +26,7 @@ public class EditCourierFormCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request) throws ReceiverException, CommandException, SQLException {
 
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);

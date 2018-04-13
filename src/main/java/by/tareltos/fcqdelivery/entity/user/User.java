@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.entity;
+package by.tareltos.fcqdelivery.entity.user;
 
 import java.util.Objects;
 

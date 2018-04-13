@@ -1,7 +1,7 @@
 package by.tareltos.fcqdelivery.repository.impl;
 
-import by.tareltos.fcqdelivery.entity.Courier;
-import by.tareltos.fcqdelivery.entity.CourierStatus;
+import by.tareltos.fcqdelivery.entity.courier.Courier;
+import by.tareltos.fcqdelivery.entity.courier.CourierStatus;
 import by.tareltos.fcqdelivery.repository.Repository;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
@@ -100,7 +100,7 @@ public class CourierRepository implements Repository<Courier> {
     }
 
     @Override
-    public List query(SqlSpecification specification) throws SQLException {
+    public List query(SqlSpecification specification) throws RepositoryException, SQLException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
         ResultSet rs = pstm.executeQuery();
@@ -135,4 +135,5 @@ public class CourierRepository implements Repository<Courier> {
         ConnectionPool.getInstance().freeConnection(connection);
         return courierList;
     }
+
 }

@@ -1,7 +1,7 @@
 package by.tareltos.fcqdelivery.receiver;
 
-import by.tareltos.fcqdelivery.entity.Courier;
-import by.tareltos.fcqdelivery.entity.CourierStatus;
+import by.tareltos.fcqdelivery.entity.courier.Courier;
+import by.tareltos.fcqdelivery.entity.courier.CourierStatus;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
 import by.tareltos.fcqdelivery.specification.impl.AllCourierSpecification;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class CourierReceiver {
 
-    final static Logger LOGGER = LogManager.getLogger(UserReceiver.class);
+    final static Logger LOGGER = LogManager.getLogger();
     private CourierRepository repository = new CourierRepository();
 
     public List<Courier> getCouriers() {
@@ -23,8 +23,10 @@ public class CourierReceiver {
         try {
             courierList = repository.query(new AllCourierSpecification());
             LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
-        } catch (SQLException e) {
+        } catch (RepositoryException e) {
             new ReceiverException("Exception in getCourier method", e);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return courierList;
     }
@@ -44,13 +46,13 @@ public class CourierReceiver {
         }
     }
 
-    public Courier getCourier(String carNumber) throws ReceiverException {
+    public Courier getCourier(String carNumber) throws ReceiverException, SQLException {
         Courier courier;
         try {
             List<Courier> list = repository.query(new CourierByRegNumberSpecification(carNumber));
             courier = list.get(0);
             return courier;
-        } catch (SQLException e) {
+        } catch (RepositoryException e) {
             throw new ReceiverException("Exception in getCourier ByNumber");
         }
     }

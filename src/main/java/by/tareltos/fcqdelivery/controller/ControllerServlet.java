@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.controller;
 
 import by.tareltos.fcqdelivery.command.*;
-import by.tareltos.fcqdelivery.entity.Courier;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -14,9 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 
-@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/info", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/courierForm", "/saveCourier"})
+@WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/applications", "/info", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/courierForm", "/saveCourier"})
 public class ControllerServlet extends HttpServlet {
     final static Logger LOGGER = LogManager.getLogger();
 
@@ -36,6 +34,8 @@ public class ControllerServlet extends HttpServlet {
             } catch (ReceiverException e) {
                 e.printStackTrace();
             } catch (CommandException e) {
+                e.printStackTrace();
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }

@@ -1,12 +1,10 @@
-package by.tareltos.fcqdelivery.command.userCommand;
+package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
-import by.tareltos.fcqdelivery.entity.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
-import by.tareltos.fcqdelivery.util.EmailSender;
 import by.tareltos.fcqdelivery.validator.DataValidator;
 
 import javax.servlet.ServletContext;

@@ -22,7 +22,7 @@ public class UserRepository implements Repository<User> {
     final static Logger LOGGER = LogManager.getLogger();
     final String ADD_USER_QUERY = "INSERT INTO user(email, password, role, firstName, lastName, phone, status) VALUES (?,?,?,?,?,?,?) ";
     final String REMOVE_USER_QUERY = "DELETE FROM user WHERE email=\"%s\" ";
-    final String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=?, status=? where email=? ";
+    final private static String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=?, status=? where email=? ";
 
     @Override
     public boolean add(User u) throws RepositoryException {
@@ -43,6 +43,7 @@ public class UserRepository implements Repository<User> {
         } catch (SQLException e) {
             throw new RepositoryException("Exception in add method", e);
         } finally {
+            //staten close method
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }

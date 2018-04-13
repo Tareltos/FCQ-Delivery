@@ -2,7 +2,6 @@ package by.tareltos.fcqdelivery.command;
 
 public enum PagePath {
 
-
     PATH_USERS_PAGE("/jsp/users.jsp"),
     PATH_SINGIN_PAGE("/jsp/singin.jsp"),
     PATH_INF_PAGE("/jsp/inf.jsp"),

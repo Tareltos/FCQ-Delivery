@@ -1,13 +1,10 @@
-package by.tareltos.fcqdelivery.command.userCommand;
+package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
-import by.tareltos.fcqdelivery.entity.User;
-import by.tareltos.fcqdelivery.entity.UserRole;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
-import by.tareltos.fcqdelivery.util.PasswordGenerator;
 import by.tareltos.fcqdelivery.validator.DataValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

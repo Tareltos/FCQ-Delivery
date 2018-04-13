@@ -1,7 +1,7 @@
 package by.tareltos.fcqdelivery.command;
 
-import by.tareltos.fcqdelivery.command.courierCommand.*;
-import by.tareltos.fcqdelivery.command.userCommand.*;
+import by.tareltos.fcqdelivery.command.courier.*;
+import by.tareltos.fcqdelivery.command.user.*;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 

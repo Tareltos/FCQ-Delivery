@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.command.userCommand;
+package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
@@ -11,8 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.sql.SQLException;
 
 public class ChangeUserStatusCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();

@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.command.courierCommand;
+package by.tareltos.fcqdelivery.command.courier;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.CommandException;

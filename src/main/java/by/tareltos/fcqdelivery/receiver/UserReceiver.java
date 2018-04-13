@@ -30,7 +30,7 @@ public class UserReceiver {
             if (!listUser.isEmpty()) {
                 LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
                 User u = listUser.get(0);
-                if ("blocked".equals(u.getStatus().getStatus())) {
+                if ("blocked".equals(u.getStatus().getStatus())) {  //отрицание наоборот
                     LOGGER.log(Level.DEBUG, "User :" + u.getEmail() + " is blocked");
                     return false;
                 }

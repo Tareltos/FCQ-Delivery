@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.command.userCommand;
+package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
@@ -10,8 +10,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 public class AllUsersCommand implements Command {
@@ -30,18 +28,18 @@ public class AllUsersCommand implements Command {
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
         if (receiver.checkUserStatus(user.getEmail())) {
-            if ("admin".equals(user.getRole().getRole())) {
+            if ("admin".equals(user.getRole().getRole())) {  //в константы!!!!!
                 List<User> list = receiver.getAllUsers();
                 if (!list.isEmpty()) {
                     request.setAttribute("userList", list);
                     return PagePath.PATH_USERS_PAGE.getPath();
                 } else {
-                    request.setAttribute("errorMessage", "Пользователи не найдены");
+                    request.setAttribute("errorMessage", "Пользователи не найдены"); //в константы!!!!
                     return PagePath.PATH_USERS_PAGE.getPath();
                 }
 
             } else {
-                request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
+                request.setAttribute("errorMessage", "У вас нет доступа к этой странице");// engl/
                 return PagePath.PATH_INF_PAGE.getPath();
             }
         } else {

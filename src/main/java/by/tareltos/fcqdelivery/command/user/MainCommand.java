@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.command.userCommand;
+package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;

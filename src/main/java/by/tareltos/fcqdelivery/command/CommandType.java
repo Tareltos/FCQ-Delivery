@@ -1,6 +1,8 @@
 package by.tareltos.fcqdelivery.command;
 
+import by.tareltos.fcqdelivery.command.application.CreateApplicationCommand;
 import by.tareltos.fcqdelivery.command.application.GetApplicationsCommand;
+import by.tareltos.fcqdelivery.command.application.GetNewApplicatinFormCommand;
 import by.tareltos.fcqdelivery.command.courier.*;
 import by.tareltos.fcqdelivery.command.user.*;
 import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
@@ -23,9 +25,13 @@ public enum CommandType {
     COURIER_FORM(new CreateCourierFormCommand()),
     EDIT_COURIER(new EditCourierFormCommand(new CourierReceiver())),
     UPDATE_COURIER(new UpdateCourierCommand(new CourierReceiver())),
-    GET_APPLICATIONS(new GetApplicationsCommand(new ApplicationReceiver()));
+    GET_APPLICATIONS(new GetApplicationsCommand(new ApplicationReceiver())),
+    GET_NEWAPP_FORM(new GetNewApplicatinFormCommand()),
+    CREATE_APPLICATION(new CreateApplicationCommand(new ApplicationReceiver()));
+
 
     private Command command;
+
 
     CommandType(Command command) {
         this.command = command;

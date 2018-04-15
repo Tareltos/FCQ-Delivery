@@ -7,6 +7,7 @@ import by.tareltos.fcqdelivery.entity.user.UserRole;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.ApplicationRepository;
 import by.tareltos.fcqdelivery.specification.impl.AllApplicationSpecification;
+import by.tareltos.fcqdelivery.specification.impl.ApplicationByIdSpecification;
 import by.tareltos.fcqdelivery.specification.impl.ApplicationByOwnerSpecification;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -53,5 +54,15 @@ public class ApplicationReceiver {
         } catch (RepositoryException e) {
             throw new RepositoryException("Exception", e);
         }
+    }
+
+    public Application getApplication(String id) throws ReceiverException {
+        try {
+            Application application = repository.query(new ApplicationByIdSpecification(id)).get(0);
+            return application;
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception", e);
+        }
+
     }
 }

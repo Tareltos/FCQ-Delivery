@@ -31,6 +31,7 @@
                 <th><fmt:message key="dateOfStart.label"/></th>
                 <th><fmt:message key="comment.label"/></th>
                 <th><fmt:message key="userInfo.label.status"/></th>
+                <th/>
             </tr>
             </thead>
             <tbody>
@@ -42,6 +43,15 @@
                     <td>${app.deliveryDate}</td>
                     <td>${app.comment}</td>
                     <td>${app.status.status}</td>
+                    <td>
+                        <form method="GET" action="${pageContext.request.contextPath}/applications">
+                            <input hidden name="action" value="get_app_details">
+                            <input hidden name="id" value="${app.id}">
+                            <button title="<fmt:message key="info.title"/> ">
+                                <i class="fa d-inline fa-lg fa-info-circle"></i>
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>

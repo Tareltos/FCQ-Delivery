@@ -1,6 +1,8 @@
 package by.tareltos.fcqdelivery.receiver;
 
 import by.tareltos.fcqdelivery.entity.application.Application;
+import by.tareltos.fcqdelivery.entity.application.ApplicationStatus;
+import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.entity.user.UserRole;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.ApplicationRepository;
@@ -24,8 +26,7 @@ public class ApplicationReceiver {
                 LOGGER.log(Level.DEBUG, "Application HERE");
                 resultList = repository.query(new AllApplicationSpecification());
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
-            }
-            else {
+            } else {
                 LOGGER.log(Level.DEBUG, "Application HERE111");
                 resultList = repository.query(new ApplicationByOwnerSpecification(email));
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
@@ -37,4 +38,20 @@ public class ApplicationReceiver {
         return resultList;
     }
 
+    public boolean createNewApplication(User owner, String startPoint, String finishPoint, String date, String comment, String weight) throws RepositoryException {
+
+        Application application = new Application();
+        application.setOwner(owner);
+        application.setStartPoint(startPoint);
+        application.setFinishPoint(finishPoint);
+        application.setDeliveryDate(date);
+        application.setComment(comment);
+        application.setCargo(Integer.parseInt(weight));
+        application.setStatus(ApplicationStatus.NEW);
+        try {
+            return repository.add(application);
+        } catch (RepositoryException e) {
+            throw new RepositoryException("Exception", e);
+        }
+    }
 }

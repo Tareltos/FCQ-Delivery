@@ -25,11 +25,12 @@
         <table class="table table-hover">
             <thead class="thead-inverse">
             <tr>
-                <th>Автор</th>
-                <th>Адрес погрузки</th>
-                <th>Адрес разгрузки </th>
-                <th>Комментарий</th>
-                <th>Статус</th>
+                <th><fmt:message key="emailField"/></th>
+                <th><fmt:message key="appStartPoint.label"/></th>
+                <th><fmt:message key="appFinishPoint.label"/></th>
+                <th><fmt:message key="dateOfStart.label"/></th>
+                <th><fmt:message key="comment.label"/></th>
+                <th><fmt:message key="userInfo.label.status"/></th>
             </tr>
             </thead>
             <tbody>
@@ -38,6 +39,7 @@
                     <td>${app.owner.email}</td>
                     <td>${app.startPoint}</td>
                     <td>${app.finishPoint}</td>
+                    <td>${app.deliveryDate}</td>
                     <td>${app.comment}</td>
                     <td>${app.status.status}</td>
                 </tr>

@@ -26,19 +26,29 @@
         <div class="col-md-12 bg-light">
             <form method="POST" action="${pageContext.request.contextPath}/applications">
                 <div class="form-group"><label><fmt:message
-                        key="carNumber.label"/></label>
-                    <input required minlength="8" maxlength="8" type="text" class="form-control" name="carNumber"
-                           placeholder="2222AA-7">
-                </div>
-                <div class="form-group"><label><fmt:message
-                        key="carProducer.label"/></label>
-                    <input required minlength="2" type="text" class="form-control" name="carProducer" placeholder="VW">
+                        key="appStartPoint.label"/></label>
+                    <input required type="text" class="form-control" name="start" placeholder="Minsk, Skryganova 4A">
                 </div>
 
                 <div class="form-group"><label><fmt:message
-                        key="carPhoto.label"/></label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="img">
+                        key="appFinishPoint.label"/></label>
+                    <input required type="text" class="form-control" name="finish"
+                           placeholder="Gomel, A.Koroleve 8, 13">
                 </div>
+                <div class="form-group"><label><fmt:message
+                        key="weight.label"/></label>
+                    <input required name="weight" type="text" class="form-control" placeholder="1500"
+                           pattern="[0-9]\d*">
+                </div>
+                <div class="form-group"><label><fmt:message
+                        key="dateOfStart.label"/></label>
+                    <input required name="date" type="date" class="form-control">
+                </div>
+                <div class="form-group"><label><fmt:message
+                        key="comment.label"/></label>
+                    <input required name="comment" type="text" class="form-control">
+                </div>
+
                 <input hidden name="action" value="create_application">
                 <button type="submit" class="btn btn-secondary" style="background-color: green; margin-left: 45%">
                     <fmt:message key="button.saveButtob"/></button>

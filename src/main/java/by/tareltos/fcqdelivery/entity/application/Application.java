@@ -11,6 +11,7 @@ public class Application {
     private User owner;
     private String startPoint;
     private String finishPoint;
+    private String deliveryDate;
     private int cargo;
     private String comment;
     private Courier courier;
@@ -20,11 +21,12 @@ public class Application {
     public Application() {
     }
 
-    public Application(int id, User owner, String startPoint, String finishPoint, int cargo, String comment, Courier courier, double price, ApplicationStatus status) {
+    public Application(int id, User owner, String startPoint, String finishPoint, String deliveryDate, int cargo, String comment, Courier courier, double price, ApplicationStatus status) {
         this.id = id;
         this.owner = owner;
         this.startPoint = startPoint;
         this.finishPoint = finishPoint;
+        this.deliveryDate = deliveryDate;
         this.cargo = cargo;
         this.comment = comment;
         this.courier = courier;
@@ -104,17 +106,26 @@ public class Application {
         this.status = status;
     }
 
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Application that = (Application) o;
         return id == that.id &&
-                Double.compare(that.cargo, cargo) == 0 &&
+                cargo == that.cargo &&
                 Double.compare(that.price, price) == 0 &&
                 Objects.equals(owner, that.owner) &&
                 Objects.equals(startPoint, that.startPoint) &&
                 Objects.equals(finishPoint, that.finishPoint) &&
+                Objects.equals(deliveryDate, that.deliveryDate) &&
                 Objects.equals(comment, that.comment) &&
                 Objects.equals(courier, that.courier) &&
                 status == that.status;
@@ -123,7 +134,7 @@ public class Application {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, owner, startPoint, finishPoint, cargo, comment, courier, price, status);
+        return Objects.hash(id, owner, startPoint, finishPoint, deliveryDate, cargo, comment, courier, price, status);
     }
 
     @Override
@@ -133,6 +144,7 @@ public class Application {
                 ", owner=" + owner +
                 ", startPoint='" + startPoint + '\'' +
                 ", finishPoint='" + finishPoint + '\'' +
+                ", deliveryDate='" + deliveryDate + '\'' +
                 ", cargo=" + cargo +
                 ", comment='" + comment + '\'' +
                 ", courier=" + courier +

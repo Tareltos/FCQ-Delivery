@@ -27,7 +27,7 @@ public enum CommandType {
     GET_NEWAPP_FORM(new GetNewApplicatinFormCommand()),
     CREATE_APPLICATION(new CreateApplicationCommand(new ApplicationReceiver())),
     GET_APP_DETAILS(new GetAppDetailsCommand(new ApplicationReceiver())),
-    SELECT_COURIER(new SelectCourierCommand(new CourierReceiver())),
+    SELECT_COURIER(new SelectCourierCommand(new ApplicationReceiver())),
     CALCULATE_PRICE_AND_SAVE(new CalculatePriceAndSaveCommand(new ApplicationReceiver()));
 
 

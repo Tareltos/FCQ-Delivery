@@ -25,8 +25,8 @@ public class ApplicationRepository implements Repository<Application> {
 
     final static Logger LOGGER = LogManager.getLogger();
     final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status  ) VALUES (?,?,?,?,?,?,?,?,?) ";
-    final String REMOVE_COURIER_QUERY = "DELETE FROM courier WHERE car_number=? ";
-    final String UPDATE_COURIER_QUERY = "UPDATE courier SET car_producer=?, car_model=?, car_photo=?, driver_phone=?, driver_name=?, driver_email=?, max_cargo=?, km_tax=?, status=? where car_number=? ";
+ //   final String REMOVE_COURIER_QUERY = "DELETE FROM courier WHERE car_number=? ";
+    final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=? where id=? ";
     private UserRepository userRepository = new UserRepository();
     private CourierRepository courierRepository = new CourierRepository();
 
@@ -62,7 +62,28 @@ public class ApplicationRepository implements Repository<Application> {
 
     @Override
     public boolean update(Application application) throws RepositoryException {
-        return false;
+        int executeResult;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement pstm;
+        try {
+            pstm = connection.prepareStatement(UPDATE_APPLICATION_QUERY);
+            pstm.setString(1, application.getOwner().getEmail());
+            pstm.setString(2, application.getStartPoint());
+            pstm.setString(3, application.getFinishPoint());
+            pstm.setString(4, application.getDeliveryDate());
+            pstm.setInt(5, application.getCargo());
+            pstm.setString(6, application.getComment());
+            pstm.setString(7, application.getCourier().getCarNumber());
+            pstm.setDouble(8, application.getPrice());
+            pstm.setString(9, application.getStatus().getStatus());
+            pstm.setInt(10, application.getId());
+            executeResult = pstm.executeUpdate();
+            return executeResult == 1 ? true : false;
+        } catch (SQLException e) {
+            throw new RepositoryException("Exception in add method", e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
+        }
     }
 
     @Override

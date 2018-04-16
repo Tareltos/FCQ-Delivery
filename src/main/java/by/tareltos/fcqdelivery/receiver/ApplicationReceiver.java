@@ -2,23 +2,25 @@ package by.tareltos.fcqdelivery.receiver;
 
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.application.ApplicationStatus;
+import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.entity.user.UserRole;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.ApplicationRepository;
-import by.tareltos.fcqdelivery.specification.impl.AllApplicationSpecification;
-import by.tareltos.fcqdelivery.specification.impl.ApplicationByIdSpecification;
-import by.tareltos.fcqdelivery.specification.impl.ApplicationByOwnerSpecification;
+import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
+import by.tareltos.fcqdelivery.specification.impl.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ApplicationReceiver {
 
     final static Logger LOGGER = LogManager.getLogger();
     private ApplicationRepository repository = new ApplicationRepository();
+    private CourierRepository courierRepository = new CourierRepository();
 
     public List<Application> getAllApplications(String email, UserRole role) {
         List<Application> resultList = null;
@@ -64,5 +66,32 @@ public class ApplicationReceiver {
             throw new ReceiverException("Exception", e);
         }
 
+    }
+
+    public List<Courier> getCourierForAppointment() {
+        try {
+            return courierRepository.query(new AllCourierSpecification());
+        } catch (RepositoryException e) {
+            new ReceiverException("Exception", e);
+        } catch (SQLException e) {
+            //!!!!!!!!!!!!!!!!!!
+        }
+        return null;
+    }
+
+    public boolean updateApplication(String appId, String courierId, String distance) throws ReceiverException {
+        try {
+            Application application = repository.query(new ApplicationByIdSpecification(appId)).get(0);
+            Courier courier = (Courier) courierRepository.query(new CourierByRegNumberSpecification(courierId)).get(0);
+            application.setCourier(courier);
+            application.setPrice(courier.getKmTax() * Integer.parseInt(distance));
+            application.setStatus(ApplicationStatus.WAITING);
+            return repository.update(application);
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception", e);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

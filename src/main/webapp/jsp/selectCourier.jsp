@@ -20,9 +20,7 @@
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
 <div class="container" style="min-height: 80%;">
-    <h5 style="margin-left: 40%; color: green; text-emphasis: #1c7430"><fmt:message key="fillForm.label"/></h5>
     <div class="row">
-        <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
         <div class="col-md-12 bg-light">
             <form method="POST" action="${pageContext.request.contextPath}/applications">
                 <div class="form-group"><label><fmt:message
@@ -49,27 +47,23 @@
                     <input required name="comment" type="text" class="form-control" value="${application.comment}">
                 </div>
                 <hr size="1px" style=" background-color: #1c7430">
-                <h3 style="color: #1c7430;"><fmt:message key="selectedCourierNumber.label"/></h3>
-                <c:if test="${null!=application.courier}">
-                    <h4>${application.courier.carNumber} ${application.courier.carProducer} ${application.courier.carModel}</h4>
-                    <h4><fmt:message key="fNameField"/>: ${application.courier.driverName} <fmt:message
-                            key="footer.text.phone"/>: ${application.courier.driverPhone}
-                        <fmt:message key="footer.text.email"/>: ${application.courier.driverEmail}</h4>
-                </c:if>
-                <c:if test="${null==application.courier}">
-                    <fmt:message key="courierNotSelected.label"/>
-                    <c:if test="${'manager'== loginedUser.role.role}">
-                        <a href="${pageContext.request.contextPath}/applications?action=select_courier&id=${application.id}"
-                           type="submit" class="btn btn-danger">
-                            <fmt:message key="selectCourier.button"/></a>
-                    </c:if>
-                </c:if>
+                <select required name="courier" type="text" class="form-control">
+                    <c:forEach  items="${couriers}" var="courier">
+                        <option value="${courier.carNumber}">${courier.carProducer} ${courier.carModel} ${courier.kmTax}</option>
+                    </c:forEach>
+                </select>
+                <div class="form-group"><label><fmt:message
+                        key="distance.label"/></label>
+                    <input required name="distance" type="text" class="form-control" pattern="[0-9]\d*" >
+                </div>
                 <hr size="1px" style=" background-color: #1c7430">
-                <input hidden name="action" value="save_application">
+                <input hidden name="id" value="${application.id}">
+                <input hidden name="action" value="calculate_price_and_save">
                 <button type="submit" class="btn btn-secondary" style="background-color: green; margin-left: 45%">
                     <fmt:message key="button.saveButtob"/></button>
             </form>
         </div>
+
     </div>
 </div>
 

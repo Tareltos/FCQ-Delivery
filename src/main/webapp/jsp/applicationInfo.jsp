@@ -46,9 +46,25 @@
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="comment.label"/></label>
-                    <input required name="comment" type="text" class="form-control" value="${applicationcomment}">
+                    <input required name="comment" type="text" class="form-control" value="${application.comment}">
                 </div>
-
+                <hr size="1px" style=" background-color: #1c7430">
+                <h3 style="color: #1c7430;"><fmt:message key="selectedCourierNumber.label"/></h3>
+                <c:if test="${null!=application.courier}">
+                    <h4>${application.courier.carNumber} ${application.courier.carProducer} ${application.courier.carModel}</h4>
+                    <h4><fmt:message key="fNameField"/>: ${application.courier.driverName} <fmt:message
+                            key="footer.text.phone"/>: ${application.courier.driverPhone}
+                        <fmt:message key="footer.text.email"/>: ${application.courier.driverEmail}</h4>
+                </c:if>
+                <c:if test="${null==application.courier}">
+                    <fmt:message key="courierNotSelected.label"/>
+                    <c:if test="${'manager'== loginedUser.role.role}">
+                        <a href="${pageContext.request.contextPath}/applications?action=select_courier&id=${application}"
+                           type="submit" class="btn btn-danger">
+                            <fmt:message key="selectCourier.button"/></a>
+                    </c:if>
+                </c:if>
+                <hr size="1px" style=" background-color: #1c7430">
                 <input hidden name="action" value="save_application">
                 <button type="submit" class="btn btn-secondary" style="background-color: green; margin-left: 45%">
                     <fmt:message key="button.saveButtob"/></button>

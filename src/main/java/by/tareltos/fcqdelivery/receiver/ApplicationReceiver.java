@@ -94,4 +94,15 @@ public class ApplicationReceiver {
         }
         return false;
     }
+
+    public boolean confirmApplication(String appId) throws ReceiverException {
+        try {
+            Application application = repository.query(new ApplicationByIdSpecification(appId)).get(0);
+            application.setStatus(ApplicationStatus.CONFIRMED);
+            return repository.update(application);
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception", e);
+        }
+
+    }
 }

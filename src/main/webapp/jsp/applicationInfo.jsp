@@ -24,7 +24,6 @@
     <div class="row">
         <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
         <div class="col-md-12 bg-light">
-            <form method="POST" action="${pageContext.request.contextPath}/applications">
                 <div class="form-group"><label><fmt:message
                         key="appStartPoint.label"/></label>
                     <input required type="text" class="form-control" name="start" value="${application.startPoint}">
@@ -53,8 +52,10 @@
                 <c:if test="${null!=application.courier}">
                     <h4>${application.courier.carNumber} ${application.courier.carProducer} ${application.courier.carModel}</h4>
                     <h4><fmt:message key="fNameField"/>: ${application.courier.driverName} <fmt:message
-                            key="footer.text.phone"/>: ${application.courier.driverPhone}
-                        <fmt:message key="footer.text.email"/>: ${application.courier.driverEmail}</h4>
+                            key="footer.text.phone"/> ${application.courier.driverPhone}
+                        <fmt:message key="footer.text.email"/> ${application.courier.driverEmail}</h4>
+                    <hr size="1px" style=" background-color: #1c7430">
+                    <h4><fmt:message key="appTotalPrice.label"/> ${application.price}</h4>
                 </c:if>
                 <c:if test="${null==application.courier}">
                     <fmt:message key="courierNotSelected.label"/>
@@ -64,11 +65,16 @@
                             <fmt:message key="selectCourier.button"/></a>
                     </c:if>
                 </c:if>
+                <c:if test="${null!=application.courier}">
+                    <c:if test="${'customer'== loginedUser.role.role}">
+                        <c:if test="${'waiting'== application.status.status}">
+                            <a href="${pageContext.request.contextPath}/applications?action=confirm_application&id=${application.id}"
+                               type="submit" class="btn btn-dark">
+                                <fmt:message key="submitApplication.button"/></a>
+                        </c:if>
+                    </c:if>
+                </c:if>
                 <hr size="1px" style=" background-color: #1c7430">
-                <input hidden name="action" value="save_application">
-                <button type="submit" class="btn btn-secondary" style="background-color: green; margin-left: 45%">
-                    <fmt:message key="button.saveButtob"/></button>
-            </form>
         </div>
     </div>
 </div>

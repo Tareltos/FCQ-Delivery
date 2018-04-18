@@ -24,61 +24,129 @@
     <div class="row">
         <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
         <div class="col-md-12 bg-light">
-                <div class="form-group"><label><fmt:message
-                        key="appStartPoint.label"/></label>
-                    <input required type="text" class="form-control" name="start" value="${application.startPoint}">
-                </div>
+            <div class="form-group"><label><fmt:message
+                    key="appStartPoint.label"/></label>
+                <input required type="text" class="form-control" name="start" value="${application.startPoint}">
+            </div>
 
-                <div class="form-group"><label><fmt:message
-                        key="appFinishPoint.label"/></label>
-                    <input required type="text" class="form-control" name="finish"
-                           value="${application.finishPoint}">
-                </div>
-                <div class="form-group"><label><fmt:message
-                        key="weight.label"/></label>
-                    <input required name="weight" type="text" class="form-control" value="${application.cargo}"
-                           pattern="[0-9]\d*">
-                </div>
-                <div class="form-group"><label><fmt:message
-                        key="dateOfStart.label"/></label>
-                    <input required name="date" type="date" class="form-control" value="${application.deliveryDate}">
-                </div>
-                <div class="form-group"><label><fmt:message
-                        key="comment.label"/></label>
-                    <input required name="comment" type="text" class="form-control" value="${application.comment}">
-                </div>
+            <div class="form-group"><label><fmt:message
+                    key="appFinishPoint.label"/></label>
+                <input required type="text" class="form-control" name="finish"
+                       value="${application.finishPoint}">
+            </div>
+            <div class="form-group"><label><fmt:message
+                    key="weight.label"/></label>
+                <input required name="weight" type="text" class="form-control" value="${application.cargo}"
+                       pattern="[0-9]\d*">
+            </div>
+            <div class="form-group"><label><fmt:message
+                    key="dateOfStart.label"/></label>
+                <input required name="date" type="date" class="form-control" value="${application.deliveryDate}">
+            </div>
+            <div class="form-group"><label><fmt:message
+                    key="comment.label"/></label>
+                <input required name="comment" type="text" class="form-control" value="${application.comment}">
+            </div>
+            <hr size="1px" style=" background-color: #1c7430">
+            <h3 style="color: #1c7430;"><fmt:message key="selectedCourierNumber.label"/></h3>
+            <c:if test="${null!=application.courier}">
+                <h4>${application.courier.carNumber} ${application.courier.carProducer} ${application.courier.carModel}</h4>
+                <h4><fmt:message key="fNameField"/>: ${application.courier.driverName} <fmt:message
+                        key="footer.text.phone"/> ${application.courier.driverPhone}
+                    <fmt:message key="footer.text.email"/> ${application.courier.driverEmail}</h4>
                 <hr size="1px" style=" background-color: #1c7430">
-                <h3 style="color: #1c7430;"><fmt:message key="selectedCourierNumber.label"/></h3>
-                <c:if test="${null!=application.courier}">
-                    <h4>${application.courier.carNumber} ${application.courier.carProducer} ${application.courier.carModel}</h4>
-                    <h4><fmt:message key="fNameField"/>: ${application.courier.driverName} <fmt:message
-                            key="footer.text.phone"/> ${application.courier.driverPhone}
-                        <fmt:message key="footer.text.email"/> ${application.courier.driverEmail}</h4>
-                    <hr size="1px" style=" background-color: #1c7430">
-                    <h4><fmt:message key="appTotalPrice.label"/> ${application.price}</h4>
+                <h4><fmt:message key="appTotalPrice.label"/> ${application.price}</h4>
+            </c:if>
+            <c:if test="${null==application.courier}">
+                <fmt:message key="courierNotSelected.label"/>
+                <c:if test="${'manager'== loginedUser.role.role}">
+                    <a href="${pageContext.request.contextPath}/applications?action=select_courier&id=${application.id}"
+                       type="submit" class="btn btn-danger">
+                        <fmt:message key="selectCourier.button"/></a>
                 </c:if>
-                <c:if test="${null==application.courier}">
-                    <fmt:message key="courierNotSelected.label"/>
-                    <c:if test="${'manager'== loginedUser.role.role}">
-                        <a href="${pageContext.request.contextPath}/applications?action=select_courier&id=${application.id}"
-                           type="submit" class="btn btn-danger">
-                            <fmt:message key="selectCourier.button"/></a>
+            </c:if>
+            <c:if test="${null!=application.courier}">
+                <c:if test="${'customer'== loginedUser.role.role}">
+                    <c:if test="${'waiting'== application.status.status}">
+                        <a data-toggle="modal" data-target="#newUserModal" class="btn btn-warning"><fmt:message
+                                key="submitApplication.button"/></a>
                     </c:if>
                 </c:if>
-                <c:if test="${null!=application.courier}">
-                    <c:if test="${'customer'== loginedUser.role.role}">
-                        <c:if test="${'waiting'== application.status.status}">
-                            <a href="${pageContext.request.contextPath}/applications?action=confirm_application&id=${application.id}"
-                               type="submit" class="btn btn-dark">
-                                <fmt:message key="submitApplication.button"/></a>
-                        </c:if>
+            </c:if>
+            <hr size="1px" style=" background-color: #1c7430">
+            <c:if test="${null!=application.courier}">
+                <c:if test="${'customer'== loginedUser.role.role}">
+                    <c:if test="${'confirmed'== application.status.status}">
+                        <a href="${pageContext.request.contextPath}/applications?action=complete_application&id=${application.id}"
+                           type="submit" class="btn btn-warning">
+                            <fmt:message key="completeApplication.button"/></a>
                     </c:if>
                 </c:if>
-                <hr size="1px" style=" background-color: #1c7430">
+            </c:if>
+            <hr size="1px" style=" background-color: #1c7430">
         </div>
     </div>
 </div>
+<div id="newUserModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b"><fmt:message
+                    key="fillForm.label"/></h5>
+            <form method="POST" action="${pageContext.request.contextPath}/applications">
+                <input hidden name="action" value="confirm_application">
+                <input hidden name="id" value="${application.id}">
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
+                        key="paymentForm.cardNumber.label"/></label>
+                    <input required type="text" class="form-control" name="cardNumber">
+                </div>
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
+                        key="paymentForm.expiration.label"/></label>
+                    <label><fmt:message key="paymentForm.expirationM.label"/></label>
+                    <select required name="expirationMounth" type="text" >
+                        <option value="-">-</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                    <label><fmt:message key="paymentForm.expirationY.label"/></label>
+                    <input required type="text"  name="expirationYear">
+                </div>
 
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
+                        key="paymentForm.owner.label"/></label>
+                    <input required type="text" class="form-control" name="owner">
+                </div>
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
+                        key="paymentForm.csv.label"/></label>
+                    <input required type="text" class="form-control" name="csv">
+                </div>
+
+            </form>
+            <span>
+                <button style="margin-left: 35%; margin-bottom: 2%;" type="button" class="btn btn-warning"
+                        data-dismiss="modal">Отмена
+                </button>
+                <button id="formSubmit" style="margin-bottom: 2%;" type="button" class="btn btn-success"
+                        onclick="formSubmit"><fmt:message key="submitApplication.button"/> </button>
+            <script language="javascript">
+                 $('#formSubmit').on('click', function () {
+                     $('form').submit();
+                 })
+	        </script>
+            </span>
+        </div><!-- /.модальное окно-Содержание -->
+    </div><!-- /.модальное-->
+</div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="../js/index.js"></script>
 </body>

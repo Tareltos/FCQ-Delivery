@@ -106,9 +106,6 @@ public class ApplicationReceiver {
             String ownerData[] = owner.split(" ");// в константы
             String fName = ownerData[0];
             String lName = ownerData[1];
-            LOGGER.log(Level.WARN, owner);
-            LOGGER.log(Level.WARN, fName);
-            LOGGER.log(Level.WARN, lName);
             Account account = accountRepository.query(new AccountByCadDetailsSpecification(cardNumber, expMonth, expYear, fName, lName, csv)).get(0);
             if (account != null) {
                 doPayment(account, application.getPrice());
@@ -122,6 +119,41 @@ public class ApplicationReceiver {
         }
     }
 
+    public boolean completeApplication(String applicationId) throws ReceiverException {
+        try {
+            Application application = repository.query(new ApplicationByIdSpecification(applicationId)).get(0);
+            application.setStatus(ApplicationStatus.DELIVERED);
+            return repository.update(application);
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception", e);
+        }
+
+
+    }
+
+    public boolean deleteApplication(String applicationId) throws ReceiverException {
+        try {
+            Application application = repository.query(new ApplicationByIdSpecification(applicationId)).get(0);
+            if (ApplicationStatus.NEW.equals(application.getStatus())) {
+                return repository.remove(application);
+            }
+            throw new ReceiverException("Можно удалять только заявки со статусом NEW");
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception", e);
+        }
+    }
+
+    public boolean cancelApplication(String applicationId, String reason) throws ReceiverException {
+        try {
+            Application application = repository.query(new ApplicationByIdSpecification(applicationId)).get(0);
+            application.setCancelationReason(reason);
+            application.setStatus(ApplicationStatus.CANCELED);
+            return repository.update(application);
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception", e);
+        }
+    }
+
     private Account doPayment(Account account, double price) throws ReceiverException {
         if (account.getBalance() >= price) {
             account.setBalance(account.getBalance() - price);
@@ -130,4 +162,6 @@ public class ApplicationReceiver {
             throw new ReceiverException("Недостаточно стредств");
         }
     }
+
+
 }

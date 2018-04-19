@@ -29,7 +29,10 @@ public enum CommandType {
     GET_APP_DETAILS(new GetAppDetailsCommand(new ApplicationReceiver())),
     SELECT_COURIER(new SelectCourierCommand(new ApplicationReceiver())),
     CALCULATE_PRICE_AND_SAVE(new CalculatePriceAndSaveCommand(new ApplicationReceiver())),
-    DO_PAYMENT(new DoPaymentApplicationCommand(new ApplicationReceiver()));
+    DO_PAYMENT(new DoPaymentApplicationCommand(new ApplicationReceiver())),
+    COMPLETE_APPLICATION(new CompleteApplicationCommand(new ApplicationReceiver())),
+    DELETE_APPLICATION(new DeleteApplicationCommand(new ApplicationReceiver())),
+    CANCEL_APPLICATION(new CancelApplicationCommand(new ApplicationReceiver()));
 
 
     private Command command;

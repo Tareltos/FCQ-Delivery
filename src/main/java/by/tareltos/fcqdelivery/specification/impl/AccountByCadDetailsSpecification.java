@@ -24,8 +24,6 @@ public class AccountByCadDetailsSpecification implements SqlSpecification {
 
     @Override
     public String toSqlClauses() {
-
-        System.out.println(String.format(query, cardNumber, expMonth, expYear, fName, lName, csv));
         return String.format(query, cardNumber, expMonth, expYear, fName, lName, csv);
     }
 }

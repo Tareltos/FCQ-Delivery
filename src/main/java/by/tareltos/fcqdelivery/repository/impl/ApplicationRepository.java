@@ -24,9 +24,9 @@ import java.util.List;
 public class ApplicationRepository implements Repository<Application> {
 
     final static Logger LOGGER = LogManager.getLogger();
-    final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status  ) VALUES (?,?,?,?,?,?,?,?,?) ";
- //   final String REMOVE_COURIER_QUERY = "DELETE FROM courier WHERE car_number=? ";
-    final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=? where id=? ";
+    final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status, cancelation_reason ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
+    final String REMOVE_APPLICATION_QUERY = "DELETE FROM application WHERE id=? ";
+    final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=?, cancelation_reason=? where id=? ";
     private UserRepository userRepository = new UserRepository();
     private CourierRepository courierRepository = new CourierRepository();
 
@@ -57,7 +57,19 @@ public class ApplicationRepository implements Repository<Application> {
 
     @Override
     public boolean remove(Application application) throws RepositoryException {
-        return false;
+        int executeResult;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement pstm;
+        try {
+            pstm = connection.prepareStatement(REMOVE_APPLICATION_QUERY);
+            pstm.setInt(1, application.getId());
+            executeResult = pstm.executeUpdate();
+            return executeResult == 1 ? true : false;
+        } catch (SQLException e) {
+            throw new RepositoryException("Exception in remove method", e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
+        }
     }
 
     @Override
@@ -76,7 +88,8 @@ public class ApplicationRepository implements Repository<Application> {
             pstm.setString(7, application.getCourier().getCarNumber());
             pstm.setDouble(8, application.getPrice());
             pstm.setString(9, application.getStatus().getStatus());
-            pstm.setInt(10, application.getId());
+            pstm.setString(10, application.getCancelationReason());
+            pstm.setInt(11, application.getId());
             executeResult = pstm.executeUpdate();
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
@@ -130,6 +143,7 @@ public class ApplicationRepository implements Repository<Application> {
                         break;
                     case "canceled":
                         application.setStatus(ApplicationStatus.CANCELED);
+                        application.setCancelationReason(rs.getString("cancelation_reason"));
                         break;
                 }
                 appList.add(application);

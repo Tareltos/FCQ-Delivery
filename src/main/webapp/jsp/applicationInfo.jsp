@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
           type="text/css">
     <link rel="stylesheet" href="../css/theme.css" type="text/css">
-    <title><fmt:message key="loginForm.singin"/></title>
+    <title><fmt:message key="page.title.label"/></title>
     <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css'>
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
@@ -68,8 +68,10 @@
             <c:if test="${null!=application.courier}">
                 <c:if test="${'customer'== loginedUser.role.role}">
                     <c:if test="${'waiting'== application.status.status}">
-                        <a data-toggle="modal" data-target="#newUserModal" class="btn btn-warning"><fmt:message
+                        <a data-toggle="modal" data-target="#paymentModal" class="btn btn-warning"><fmt:message
                                 key="submitApplication.button"/></a>
+                        <a data-toggle="modal" data-target="#cancelModal" class="btn btn-primary"><fmt:message
+                                key="cancelApplication.button"/></a>
                     </c:if>
                 </c:if>
             </c:if>
@@ -87,7 +89,28 @@
         </div>
     </div>
 </div>
-<div id="newUserModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
+<div id="cancelModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b"><fmt:message
+                    key="cancelModal.reason.label"/></h5>
+            <form method="POST" action="${pageContext.request.contextPath}/applications">
+                <input hidden name="action" value="cancel_application">
+                <input hidden name="id" value="${application.id}">
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;">
+                    <input required type="text" class="form-control" name="reason">
+                </div>
+                <span>
+                <button type="submit" style="margin-left: 35%; margin-bottom: 2%;" class="btn btn-success">
+                    <fmt:message key="cancelApplication.button"/>
+                </button>
+                </span>
+            </form>
+        </div><!-- /.модальное окно-Содержание -->
+    </div><!-- /.модальное-->
+</div>
+<div id="paymentModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
      aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -129,7 +152,8 @@
                 </div>
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;">
                     <label><fmt:message key="paymentForm.csv.label"/></label>
-                    <input required type="text" class="form-control" name="csv" maxlength="3" minlength="3" placeholder="123">
+                    <input required type="text" class="form-control" name="csv" maxlength="3" minlength="3"
+                           placeholder="123">
                 </div>
 
             </form>

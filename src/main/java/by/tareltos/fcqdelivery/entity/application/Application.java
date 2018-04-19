@@ -17,11 +17,12 @@ public class Application {
     private Courier courier;
     private double price;
     private ApplicationStatus status;
+    private String cancelationReason;
 
     public Application() {
     }
 
-    public Application(int id, User owner, String startPoint, String finishPoint, String deliveryDate, int cargo, String comment, Courier courier, double price, ApplicationStatus status) {
+    public Application(int id, User owner, String startPoint, String finishPoint, String deliveryDate, int cargo, String comment, Courier courier, double price, ApplicationStatus status, String cancelationReason) {
         this.id = id;
         this.owner = owner;
         this.startPoint = startPoint;
@@ -32,6 +33,7 @@ public class Application {
         this.courier = courier;
         this.price = price;
         this.status = status;
+        this.cancelationReason = cancelationReason;
     }
 
     public int getId() {
@@ -114,6 +116,14 @@ public class Application {
         this.deliveryDate = deliveryDate;
     }
 
+    public String getCancelationReason() {
+        return cancelationReason;
+    }
+
+    public void setCancelationReason(String cancelationReason) {
+        this.cancelationReason = cancelationReason;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -128,13 +138,14 @@ public class Application {
                 Objects.equals(deliveryDate, that.deliveryDate) &&
                 Objects.equals(comment, that.comment) &&
                 Objects.equals(courier, that.courier) &&
-                status == that.status;
+                status == that.status &&
+                Objects.equals(cancelationReason, that.cancelationReason);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, owner, startPoint, finishPoint, deliveryDate, cargo, comment, courier, price, status);
+        return Objects.hash(id, owner, startPoint, finishPoint, deliveryDate, cargo, comment, courier, price, status, cancelationReason);
     }
 
     @Override
@@ -150,6 +161,7 @@ public class Application {
                 ", courier=" + courier +
                 ", price=" + price +
                 ", status=" + status +
+                ", cancelationReason='" + cancelationReason + '\'' +
                 '}';
     }
 }

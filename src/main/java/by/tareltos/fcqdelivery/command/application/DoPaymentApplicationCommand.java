@@ -14,14 +14,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.SQLException;
 
-public class ConfirmApplicationCommand implements Command {
+public class DoPaymentApplicationCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
     private static final String APPLICATION_ID_PRM = "id";
+    private static final String CARD_NUMBER_PRM = "cardNumber";
+    private static final String EXPIRATION_MOUNTH_PRM = "expirationMonth";
+    private static final String EXPIRATION_YEAR_PRM = "expirationYear";
+    private static final String OWNER_PRM = "owner";
+    private static final String CSV_PRM = "csv";
     private ApplicationReceiver receiver;
 
-    public ConfirmApplicationCommand(ApplicationReceiver receiver) {
+    public DoPaymentApplicationCommand(ApplicationReceiver receiver) {
         this.receiver = receiver;
     }
 
@@ -33,15 +38,21 @@ public class ConfirmApplicationCommand implements Command {
         }
         if ("customer".equals(user.getRole().getRole())) {
             String appId = request.getParameter(APPLICATION_ID_PRM);
+            String cardNumber = request.getParameter(CARD_NUMBER_PRM);
+            String expMonth = request.getParameter(EXPIRATION_MOUNTH_PRM);
+            String expYear = request.getParameter(EXPIRATION_YEAR_PRM);
+            String owner = request.getParameter(OWNER_PRM);
+            String csv = request.getParameter(CSV_PRM);
+
             // нужна валидация полей!!!!
             boolean result;
-            result = receiver.confirmApplication(appId);
+            result = receiver.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv);
             if (result) {
                 request.setAttribute("method", "redirect");
                 request.setAttribute("redirectUrl", "/applications?action=get_applications");
                 return PagePath.PATH_APPLICATIONS_PAGE.getPath();
             }
-            request.setAttribute("errorMessage", "Заявка не подтверждена");
+            request.setAttribute("errorMessage", "Оплата не выполнена");
             return PagePath.PATH_INF_PAGE.getPath();
         } else {
             request.setAttribute("errorMessage", "У вас нет доступа к этой странице");

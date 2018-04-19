@@ -94,16 +94,17 @@
             <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b"><fmt:message
                     key="fillForm.label"/></h5>
             <form method="POST" action="${pageContext.request.contextPath}/applications">
-                <input hidden name="action" value="confirm_application">
+                <input hidden name="action" value="do_payment">
                 <input hidden name="id" value="${application.id}">
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="paymentForm.cardNumber.label"/></label>
-                    <input required type="text" class="form-control" name="cardNumber">
+                    <input required type="text" class="form-control" name="cardNumber" placeholder="**** **** **** ****"
+                           minlength="16" maxlength="16">
                 </div>
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="paymentForm.expiration.label"/></label>
                     <label><fmt:message key="paymentForm.expirationM.label"/></label>
-                    <select required name="expirationMounth" type="text" >
+                    <select required name="expirationMonth" type="text">
                         <option value="-">-</option>
                         <option value="1">1</option>
                         <option value="2">2</option>
@@ -119,23 +120,22 @@
                         <option value="12">12</option>
                     </select>
                     <label><fmt:message key="paymentForm.expirationY.label"/></label>
-                    <input required type="text"  name="expirationYear">
+                    <input required type="text" name="expirationYear" placeholder="19" minlength="2" maxlength="2">
                 </div>
 
-                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
-                        key="paymentForm.owner.label"/></label>
-                    <input required type="text" class="form-control" name="owner">
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;">
+                    <label><fmt:message key="paymentForm.owner.label"/></label>
+                    <input required type="text" class="form-control" name="owner" placeholder="IVAN IVANOV">
                 </div>
-                <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
-                        key="paymentForm.csv.label"/></label>
-                    <input required type="text" class="form-control" name="csv">
+                <div class="form-group" style="margin-left: 5%; margin-right: 5%;">
+                    <label><fmt:message key="paymentForm.csv.label"/></label>
+                    <input required type="text" class="form-control" name="csv" maxlength="3" minlength="3" placeholder="123">
                 </div>
 
             </form>
             <span>
                 <button style="margin-left: 35%; margin-bottom: 2%;" type="button" class="btn btn-warning"
-                        data-dismiss="modal">Отмена
-                </button>
+                        data-dismiss="modal">Отмена</button>
                 <button id="formSubmit" style="margin-bottom: 2%;" type="button" class="btn btn-success"
                         onclick="formSubmit"><fmt:message key="submitApplication.button"/> </button>
             <script language="javascript">

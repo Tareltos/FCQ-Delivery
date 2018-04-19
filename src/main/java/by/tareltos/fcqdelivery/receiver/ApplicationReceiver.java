@@ -1,11 +1,13 @@
 package by.tareltos.fcqdelivery.receiver;
 
+import by.tareltos.fcqdelivery.entity.account.Account;
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.application.ApplicationStatus;
 import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.entity.user.UserRole;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
+import by.tareltos.fcqdelivery.repository.impl.AccountRepository;
 import by.tareltos.fcqdelivery.repository.impl.ApplicationRepository;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
 import by.tareltos.fcqdelivery.specification.impl.*;
@@ -21,6 +23,7 @@ public class ApplicationReceiver {
     final static Logger LOGGER = LogManager.getLogger();
     private ApplicationRepository repository = new ApplicationRepository();
     private CourierRepository courierRepository = new CourierRepository();
+    private AccountRepository accountRepository = new AccountRepository();
 
     public List<Application> getAllApplications(String email, UserRole role) {
         List<Application> resultList = null;
@@ -95,14 +98,36 @@ public class ApplicationReceiver {
         return false;
     }
 
-    public boolean confirmApplication(String appId) throws ReceiverException {
+
+    public boolean payForApplication(String appId, String cardNumber, String expMonth, String expYear, String owner, String csv) throws ReceiverException {
         try {
             Application application = repository.query(new ApplicationByIdSpecification(appId)).get(0);
-            application.setStatus(ApplicationStatus.CONFIRMED);
-            return repository.update(application);
+
+            String ownerData[] = owner.split(" ");// в константы
+            String fName = ownerData[0];
+            String lName = ownerData[1];
+            LOGGER.log(Level.WARN, owner);
+            LOGGER.log(Level.WARN, fName);
+            LOGGER.log(Level.WARN, lName);
+            Account account = accountRepository.query(new AccountByCadDetailsSpecification(cardNumber, expMonth, expYear, fName, lName, csv)).get(0);
+            if (account != null) {
+                doPayment(account, application.getPrice());
+                application.setStatus(ApplicationStatus.CONFIRMED);
+                return (repository.update(application) & accountRepository.update(account));
+            } else {
+                return false;
+            }
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception", e);
         }
+    }
 
+    private Account doPayment(Account account, double price) throws ReceiverException {
+        if (account.getBalance() >= price) {
+            account.setBalance(account.getBalance() - price);
+            return account;
+        } else {
+            throw new ReceiverException("Недостаточно стредств");
+        }
     }
 }

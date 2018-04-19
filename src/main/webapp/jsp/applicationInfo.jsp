@@ -20,15 +20,33 @@
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
 <div class="container" style="min-height: 80%;">
-    <h5 style="margin-left: 40%; color: green; text-emphasis: #1c7430"><fmt:message key="fillForm.label"/></h5>
     <div class="row">
-        <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
+
+            <c:if test="${application.status.status=='new'}">
+               <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-info"
+                        style="margin-bottom: 2%;">${application.status.status}</button>
+            </c:if>
+            <c:if test="${application.status.status=='waiting'}">
+                <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-warning"
+                        style="margin-bottom: 2%;">${application.status.status}</button>
+            </c:if>
+            <c:if test="${application.status.status=='confirmed'}">
+                <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-danger"
+                        style="margin-bottom: 2%;">${application.status.status}</button>
+            </c:if>
+            <c:if test="${application.status.status=='delivered'}">
+                <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-success"
+                        style="margin-bottom: 2%;">${application.status.status}</button>
+            </c:if>
+            <c:if test="${application.status.status=='canceled'}">
+                <h3><fmt:message key="userInfo.label.status"/></h3><button type="button" class="btn btn-primary"
+                        style="margin-bottom: 2%;">${application.status.status}</button>
+            </c:if>
         <div class="col-md-12 bg-light">
             <div class="form-group"><label><fmt:message
                     key="appStartPoint.label"/></label>
                 <input required type="text" class="form-control" name="start" value="${application.startPoint}">
             </div>
-
             <div class="form-group"><label><fmt:message
                     key="appFinishPoint.label"/></label>
                 <input required type="text" class="form-control" name="finish"

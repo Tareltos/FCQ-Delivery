@@ -42,7 +42,20 @@
                     <td>${app.finishPoint}</td>
                     <td>${app.deliveryDate}</td>
                     <td>${app.comment}</td>
-                    <td>${app.status.status}</td>
+                    <td>
+                        <c:if test="${app.status.status=='waiting'}">
+                            <button type="button" class="btn btn-warning" disabled>${app.status.status}</button>
+                        </c:if>
+                        <c:if test="${app.status.status=='confirmed'}">
+                            <button type="button" class="btn btn-danger" disabled>${app.status.status}</button>
+                        </c:if>
+                        <c:if test="${app.status.status=='delivered'}">
+                            <button type="button" class="btn btn-success"disabled>${app.status.status}</button>
+                        </c:if>
+                        <c:if test="${app.status.status=='canceled'}">
+                            <button type="button" class="btn btn-primary"disabled>${app.status.status}</button>
+                        </c:if>
+                    </td>
                     <td>
                         <form method="GET" action="${pageContext.request.contextPath}/applications">
                             <input hidden name="action" value="get_app_details">

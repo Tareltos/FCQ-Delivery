@@ -20,7 +20,7 @@ public class UpdateCourierCommand implements Command {
     private static final String CAR_NUMBER_PRM = "carNumber";
     private static final String CAR_PRODUCER_PRM = "carProducer";
     private static final String CAR_MODEL_PRM = "carModel";
-    private static final String CAR_IMG_PRM = "img";
+    private static final String CAR_IMG_PRM = "files/img";
     private static final String DRIVER_EMAIL_PRM = "email";
     private static final String DRIVER_NAME_PRM = "name";
     private static final String DRIVER_PHONE_PRM = "phone";

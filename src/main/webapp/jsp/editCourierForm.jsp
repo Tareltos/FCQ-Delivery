@@ -26,6 +26,18 @@
         <div class="col-md-12 bg-light">
             <form method="POST" action="${pageContext.request.contextPath}/saveCourier?carNumber=${courier.carNumber}">
                 <div class="form-group"><label><fmt:message
+                        key="loadingfile.button"/></label>
+                    <c:if test="${uploadInfo!=null}">
+                        <input type="text" class="form-control-file" name="files/img" value="${uploadInfo}" required>
+                    </c:if>
+                    <c:if test="${uploadInfo==null}">
+                        <input type="text" class="form-control-file" name="files/img" value="${courier.imageFileName}" required>
+                    </c:if>
+                    <a data-toggle="modal" data-target="#loadModal" class="btn btn-primary"
+                       style="margin-left: 35%; margin-top: 2%;"><fmt:message
+                            key="loadingfile.fild"/></a>
+                </div>
+                <div class="form-group"><label><fmt:message
                         key="carNumber.label"/></label>
                     <input disabled required minlength="8" maxlength="8" type="text" class="form-control"
                            name="carNumber"
@@ -40,10 +52,6 @@
                         key="carModel.label"/></label>
                     <input required minlength="2" type="text" class="form-control" name="carModel" placeholder="Polo"
                            value="${courier.carModel}">
-                </div>
-                <div class="form-group"><label><fmt:message
-                        key="carPhoto.label"/></label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="img">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="fNameField"/></label>
@@ -80,10 +88,10 @@
                                     key="statusBlocked.label"/></option>
                         </c:if>
                         <c:if test="${courier.status.status =='blocked'}">
-                        <option value="blocked"><fmt:message
-                                key="statusBlocked.label"/></option>
-                        <option value="active"><fmt:message
-                                key="statusActive.label"/></option>
+                            <option value="blocked"><fmt:message
+                                    key="statusBlocked.label"/></option>
+                            <option value="active"><fmt:message
+                                    key="statusActive.label"/></option>
                         </c:if>
                     </select>
                 </div>
@@ -95,7 +103,26 @@
         </div>
     </div>
 </div>
-
+<div id="loadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b"><fmt:message
+                    key="loadingfile.fild"/></h5>
+            <form method="POST" enctype="multipart/form-data"
+                  action="${pageContext.request.contextPath}/courierForm?action=load_file">
+                <fmt:message key="loadingfile.fild"/>
+                <input hidden name="id" value="${courier.carNumber}">
+                <input name="data" type="file">
+                <span>
+                <button type="submit" style="margin-left: 35%; margin-bottom: 2%;" class="btn btn-secondary">
+                    <fmt:message key="loadingfile.button"/>
+                </button>
+                </span>
+            </form>
+        </div><!-- /.модальное окно-Содержание -->
+    </div><!-- /.модальное-->
+</div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="../js/index.js"></script>
 </body>

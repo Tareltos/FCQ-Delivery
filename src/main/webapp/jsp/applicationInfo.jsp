@@ -23,7 +23,7 @@
     <div class="row">
 
             <c:if test="${application.status.status=='new'}">
-               <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-info"
+               <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-primary"
                         style="margin-bottom: 2%;">${application.status.status}</button>
             </c:if>
             <c:if test="${application.status.status=='waiting'}">
@@ -39,7 +39,7 @@
                         style="margin-bottom: 2%;">${application.status.status}</button>
             </c:if>
             <c:if test="${application.status.status=='canceled'}">
-                <h3><fmt:message key="userInfo.label.status"/></h3><button type="button" class="btn btn-primary"
+                <h3><fmt:message key="userInfo.label.status"/></h3><button type="button" class="btn btn-info"
                         style="margin-bottom: 2%;">${application.status.status}</button>
             </c:if>
         <div class="col-md-12 bg-light">

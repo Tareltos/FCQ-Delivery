@@ -32,7 +32,8 @@ public enum CommandType {
     DO_PAYMENT(new DoPaymentApplicationCommand(new ApplicationReceiver())),
     COMPLETE_APPLICATION(new CompleteApplicationCommand(new ApplicationReceiver())),
     DELETE_APPLICATION(new DeleteApplicationCommand(new ApplicationReceiver())),
-    CANCEL_APPLICATION(new CancelApplicationCommand(new ApplicationReceiver()));
+    CANCEL_APPLICATION(new CancelApplicationCommand(new ApplicationReceiver())),
+    LOAD_FILE(new LoadFileCommand(new CourierReceiver()));
 
 
     private Command command;

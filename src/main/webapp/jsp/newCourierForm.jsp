@@ -26,6 +26,12 @@
         <div class="col-md-12 bg-light">
             <form method="POST" action="${pageContext.request.contextPath}/saveCourier">
                 <div class="form-group"><label><fmt:message
+                        key="loadingfile.button"/></label>
+                    <input type="text" class="form-control-file" name="files/img" value="${uploadInfo}" placeholder="img.png" required>
+                    <a data-toggle="modal" data-target="#loadModal" class="btn btn-primary" style="margin-left: 35%; margin-top: 2%;"><fmt:message
+                            key="loadingfile.fild"/></a>
+                </div>
+                <div class="form-group"><label><fmt:message
                         key="carNumber.label"/></label>
                     <input required minlength="8" maxlength="8" type="text" class="form-control" name="carNumber"
                            placeholder="2222AA-7">
@@ -37,10 +43,6 @@
                 <div class="form-group"><label><fmt:message
                         key="carModel.label"/></label>
                     <input required minlength="2" type="text" class="form-control" name="carModel" placeholder="Polo">
-                </div>
-                <div class="form-group"><label><fmt:message
-                        key="carPhoto.label"/></label>
-                    <input type="file" class="form-control-file" id="exampleFormControlFile1" name="img">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="fNameField"/></label>
@@ -58,11 +60,12 @@
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carMaxCargo.label"/></label>
-                    <input required name="cargo" type="text" class="form-control" placeholder="1500"  pattern="[0-9]\d*">
+                    <input required name="cargo" type="text" class="form-control" placeholder="1500" pattern="[0-9]\d*">
                 </div>
                 <div class="form-group"><label><fmt:message
                         key="carTax.label"/></label>
-                    <input required name="tax" type="text" class="form-control" placeholder="0.34"  pattern="[+]?([0-9]*[.])?[0-9]+">
+                    <input required name="tax" type="text" class="form-control" placeholder="0.34"
+                           pattern="[+]?([0-9]*[.])?[0-9]+">
                 </div>
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="userInfo.label.status"/></label>
@@ -81,7 +84,25 @@
         </div>
     </div>
 </div>
-
+<div id="loadModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <h5 style="margin-left: 2%; margin-top: 3%; color: green; text-emphasis: #0b0b0b"><fmt:message
+                    key="loadingfile.fild"/></h5>
+            <form method="POST" enctype="multipart/form-data"
+                  action="${pageContext.request.contextPath}/courierForm?action=load_file">
+                <fmt:message key="loadingfile.fild"/>
+                <input name="data" type="file">
+                <span>
+                <button type="submit" style="margin-left: 35%; margin-bottom: 2%;" class="btn btn-secondary">
+                    <fmt:message key="loadingfile.button"/>
+                </button>
+                </span>
+            </form>
+        </div><!-- /.модальное окно-Содержание -->
+    </div><!-- /.модальное-->
+</div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="../js/index.js"></script>
 </body>

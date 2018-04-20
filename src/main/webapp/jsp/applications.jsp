@@ -43,6 +43,9 @@
                     <td>${app.deliveryDate}</td>
                     <td>${app.comment}</td>
                     <td>
+                        <c:if test="${app.status.status=='new'}">
+                            <button type="button" class="btn btn-primary" disabled>${app.status.status}</button>
+                        </c:if>
                         <c:if test="${app.status.status=='waiting'}">
                             <button type="button" class="btn btn-warning" disabled>${app.status.status}</button>
                         </c:if>
@@ -53,7 +56,7 @@
                             <button type="button" class="btn btn-success"disabled>${app.status.status}</button>
                         </c:if>
                         <c:if test="${app.status.status=='canceled'}">
-                            <button type="button" class="btn btn-primary"disabled>${app.status.status}</button>
+                            <button type="button" class="btn btn-info"disabled>${app.status.status}</button>
                         </c:if>
                     </td>
                     <td>

@@ -46,6 +46,7 @@ public class ApplicationRepository implements Repository<Application> {
             pstm.setString(7, null);
             pstm.setDouble(8, application.getPrice());
             pstm.setString(9, application.getStatus().getStatus());
+            pstm.setString(10, null);
             executeResult = pstm.executeUpdate();
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {

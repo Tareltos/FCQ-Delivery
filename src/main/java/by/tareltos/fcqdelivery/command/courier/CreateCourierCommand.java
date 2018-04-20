@@ -20,7 +20,7 @@ public class CreateCourierCommand implements Command {
     private static final String CAR_NUMBER_PRM = "carNumber";
     private static final String CAR_PRODUCER_PRM = "carProducer";
     private static final String CAR_MODEL_PRM = "carModel";
-    private static final String CAR_IMG_PRM = "img";
+    private static final String CAR_IMG_PRM = "files/img";
     private static final String DRIVER_EMAIL_PRM = "email";
     private static final String DRIVER_NAME_PRM = "name";
     private static final String DRIVER_PHONE_PRM = "phone";
@@ -51,8 +51,6 @@ public class CreateCourierCommand implements Command {
         String carProducer = request.getParameter(CAR_PRODUCER_PRM);
         String carModel = request.getParameter(CAR_MODEL_PRM);
         String carPhotoFullPath = request.getParameter(CAR_IMG_PRM);
-        String[] array = carPhotoFullPath.split("/");
-        String carPhotoPath = array[array.length - 1];
         String driverName = request.getParameter(DRIVER_NAME_PRM);
         String driverEmail = request.getParameter(DRIVER_EMAIL_PRM);
         String driverPhone = request.getParameter(DRIVER_PHONE_PRM);
@@ -64,7 +62,7 @@ public class CreateCourierCommand implements Command {
                 & DataValidator.validateName(driverName) & DataValidator.validateEmail(driverEmail)
                 & DataValidator.validateCargo(maxCargo) & DataValidator.validateTax(tax)
                 & DataValidator.validateStatus(status)) {
-            boolean result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            boolean result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
             if (result) {
                 request.setAttribute("successfulMsg", "Данные успешно добавлены");
                 return PagePath.PATH_COURIERS_PAGE.getPath();

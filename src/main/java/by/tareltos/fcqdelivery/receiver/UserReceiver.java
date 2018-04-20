@@ -5,8 +5,8 @@ import by.tareltos.fcqdelivery.entity.user.UserRole;
 import by.tareltos.fcqdelivery.entity.user.UserStatus;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.UserRepository;
-import by.tareltos.fcqdelivery.specification.impl.AllUserSpecification;
-import by.tareltos.fcqdelivery.specification.impl.UserByEmailSpecification;
+import by.tareltos.fcqdelivery.specification.user.AllUserSpecification;
+import by.tareltos.fcqdelivery.specification.user.UserByEmailSpecification;
 import by.tareltos.fcqdelivery.util.EmailSender;
 import by.tareltos.fcqdelivery.util.PasswordGenerator;
 

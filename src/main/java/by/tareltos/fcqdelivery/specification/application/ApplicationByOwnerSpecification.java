@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.specification.impl;
+package by.tareltos.fcqdelivery.specification.application;
 
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
 

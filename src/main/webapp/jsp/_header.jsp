@@ -28,7 +28,9 @@
                     <c:if test="${loginedUser.role.role !='admin'}">
                         <form method="POST" action="${pageContext.request.contextPath}/couriers">
                             <li class="nav-item">
-                                <input type="hidden" name="action" value="get_couriers"/>
+                                <input type="hidden" name="action" value="get_couriers_pg"/>
+                                <input type="hidden" name="firstRow" value="0"/>
+                                <input type="hidden" name="rowCount" value="3"/>
                                 <button class="btn navbar-btn ml-2 text-white btn-secondary"><i
                                         class="fa d-inline fa-lg fa-taxi"></i><fmt:message
                                         key="menu.button.couriers"/>

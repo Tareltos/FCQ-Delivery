@@ -51,6 +51,9 @@ public class CreateCourierCommand implements Command {
         String carProducer = request.getParameter(CAR_PRODUCER_PRM);
         String carModel = request.getParameter(CAR_MODEL_PRM);
         String carPhotoFullPath = request.getParameter(CAR_IMG_PRM);
+        if (carPhotoFullPath == "") {
+            carPhotoFullPath = "noImg.png";
+        }
         String driverName = request.getParameter(DRIVER_NAME_PRM);
         String driverEmail = request.getParameter(DRIVER_EMAIL_PRM);
         String driverPhone = request.getParameter(DRIVER_PHONE_PRM);
@@ -65,6 +68,8 @@ public class CreateCourierCommand implements Command {
             boolean result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
             if (result) {
                 request.setAttribute("successfulMsg", "Данные успешно добавлены");
+                request.setAttribute("method", "redirect");
+                request.setAttribute("redirectUrl", "/couriers?action=get_couriers");
                 return PagePath.PATH_COURIERS_PAGE.getPath();
             }
             request.setAttribute("errorMessage", "Сохранения данных");

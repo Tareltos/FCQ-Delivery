@@ -6,6 +6,7 @@ import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
 import by.tareltos.fcqdelivery.specification.courier.AllCourierSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
+import by.tareltos.fcqdelivery.specification.courier.PaginationCourierSpecification;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -71,5 +72,20 @@ public class CourierReceiver {
             throw new ReceiverException("Exception in createCourier method", e);
         }
 
+    }
+
+    public List<Courier> getCouriers(String firstRow, String rowCount) {
+        List<Courier> courierList = null;
+        try {
+            int fRow = Integer.parseInt(firstRow);
+            int rCount = Integer.parseInt(rowCount);
+            courierList = repository.query(new PaginationCourierSpecification(fRow, rCount));
+            LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
+        } catch (RepositoryException e) {
+            new ReceiverException("Exception in getCourier method", e);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courierList;
     }
 }

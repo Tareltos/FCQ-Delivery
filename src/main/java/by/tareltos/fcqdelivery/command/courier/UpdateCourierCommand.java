@@ -52,8 +52,9 @@ public class UpdateCourierCommand implements Command {
         String carProducer = request.getParameter(CAR_PRODUCER_PRM);
         String carModel = request.getParameter(CAR_MODEL_PRM);
         String carPhotoFullPath = request.getParameter(CAR_IMG_PRM);
-        String[] array = carPhotoFullPath.split("/");
-        String carPhotoPath = array[array.length - 1];
+        if (carPhotoFullPath == null) {
+            carPhotoFullPath = "noImg.png";
+        }
         String driverName = request.getParameter(DRIVER_NAME_PRM);
         String driverEmail = request.getParameter(DRIVER_EMAIL_PRM);
         String driverPhone = request.getParameter(DRIVER_PHONE_PRM);
@@ -65,9 +66,11 @@ public class UpdateCourierCommand implements Command {
                 & DataValidator.validateName(driverName) & DataValidator.validateEmail(driverEmail)
                 & DataValidator.validateCargo(maxCargo) & DataValidator.validateTax(tax)
                 & DataValidator.validateStatus(status)) {
-            boolean result = receiver.updateCourier(carNumber, carProducer, carModel, carPhotoPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            boolean result = receiver.updateCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
             if (result) {
                 request.setAttribute("successfulMsg", "Данные успешно обновлены");
+                request.setAttribute("method", "redirect");
+                request.setAttribute("redirectUrl", "/couriers?action=get_couriers");
                 return PagePath.PATH_COURIERS_PAGE.getPath();
             }
             request.setAttribute("errorMessage", "Сохранения данных");

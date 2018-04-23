@@ -27,6 +27,7 @@
                 <p><i>Автомобиль: ${courier.carProducer} ${courier.carModel}</i></p>
                 <p><i>Грузоподъемность: ${courier.maxCargo}</i></p>
                 <p><i>Тарив за км: ${courier.kmTax}</i></p>
+                <p><i>Статус: ${courier.status.status}</i></p>
                 <c:if test="${loginedUser.role.role =='manager'}">
                     <a href="${pageContext.request.contextPath}/courierForm?action=edit_courier&carNumber=${courier.carNumber}"><img
                             src="img/edit.png" width="20" height="20" title="Редактировать">
@@ -35,6 +36,28 @@
             </div>
         </c:forEach>
     </div>
+    <ul class="pagination" style="margin-bottom: 3%; margin-left: 45%; margin-top: 15%;">
+        <c:if test="${firstRow !='0'}">
+            <li class="page-item">
+                <a class="page-link"
+                   href="${pageContext.request.contextPath}/courierForm?action=get_couriers_pg&firstRow=${firstRow-rowCount}&rowCount=${rowCount}"
+                   aria-label="Previous" style="background-color: #bf1d1c">
+                    <span aria-hidden="true">«</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+        </c:if>
+        <c:if test="${firstRow+rowCount <= allCount}">
+        <li class="page-item">
+            <a class="page-link"
+               href="${pageContext.request.contextPath}/courierForm?action=get_couriers_pg&firstRow=${firstRow+rowCount}&rowCount=${rowCount}"
+               aria-label="Next" style="background-color: #bf1d1c">
+                <span aria-hidden="true">»</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+        </c:if>
+    </ul>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 <script src="../js/index.js"></script>

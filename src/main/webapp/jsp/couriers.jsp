@@ -47,7 +47,7 @@
                 </a>
             </li>
         </c:if>
-        <c:if test="${firstRow+rowCount <= allCount}">
+        <c:if test="${firstRow+rowCount < allCount}">
         <li class="page-item">
             <a class="page-link"
                href="${pageContext.request.contextPath}/courierForm?action=get_couriers_pg&firstRow=${firstRow+rowCount}&rowCount=${rowCount}"

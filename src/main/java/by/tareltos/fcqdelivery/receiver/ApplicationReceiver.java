@@ -50,7 +50,6 @@ public class ApplicationReceiver {
     }
 
     public boolean createNewApplication(User owner, String startPoint, String finishPoint, String date, String comment, String weight) throws RepositoryException {
-
         Application application = new Application();
         application.setOwner(owner);
         application.setStartPoint(startPoint);
@@ -97,7 +96,6 @@ public class ApplicationReceiver {
             throw new ReceiverException("Exception", e);
         }
     }
-
 
     public boolean payForApplication(String appId, String cardNumber, String expMonth, String expYear, String owner, String csv) throws ReceiverException {
         try {

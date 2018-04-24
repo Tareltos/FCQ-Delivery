@@ -28,7 +28,7 @@ public class DeleteApplicationCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException, SQLException {
+    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {

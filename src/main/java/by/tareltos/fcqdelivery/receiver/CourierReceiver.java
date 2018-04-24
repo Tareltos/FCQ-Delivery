@@ -17,22 +17,21 @@ import java.util.List;
 public class CourierReceiver {
 
     final static Logger LOGGER = LogManager.getLogger();
+    final private String ACTIVE_COURIER_STATUS = "active";
     private CourierRepository repository = new CourierRepository();
 
-    public List<Courier> getCouriers() {
-        List<Courier> courierList = null;
+    public List<Courier> getCouriers() throws ReceiverException {
         try {
-            courierList = repository.query(new AllCourierSpecification());
-            LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
+            return repository.query(new AllCourierSpecification());
         } catch (RepositoryException e) {
             new ReceiverException("Exception in getCourier method", e);
         }
-        return courierList;
+        throw new ReceiverException("Couriers are not found");
     }
 
     public boolean createCourier(String carNumber, String carProducer, String carModel, String carPhotoPath, String driverName, String driverPhone, String driverEmail, int maxCargo, double tax, String status) throws ReceiverException {
         CourierStatus courierStatus;
-        if ("active".equals(status)) {
+        if (ACTIVE_COURIER_STATUS.equals(status)) {
             courierStatus = CourierStatus.ACTIVE;
         } else {
             courierStatus = CourierStatus.BLOCKED;
@@ -45,12 +44,18 @@ public class CourierReceiver {
         }
     }
 
-    public Courier getCourier(String carNumber) throws ReceiverException, SQLException {
-        Courier courier;
+    public Courier getCourier(String carNumber) throws ReceiverException {
         try {
-            List<Courier> list = repository.query(new CourierByRegNumberSpecification(carNumber));
-            courier = list.get(0);
-            return courier;
+            List<Courier> courierList = repository.query(new CourierByRegNumberSpecification(carNumber));
+            if (courierList.isEmpty()) {
+                LOGGER.log(Level.INFO, "Couriers are not found");
+                throw new ReceiverException("Couriers are not found");
+            }
+            if (courierList.size() > 1) {
+                LOGGER.log(Level.INFO, "Found : " + courierList.size() + " couriers, must be 1");
+                throw new ReceiverException("Found : " + courierList.size() + " couriers, must be 1");
+            }
+            return courierList.get(0);
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception in getCourier ByNumber");
         }
@@ -58,7 +63,7 @@ public class CourierReceiver {
 
     public boolean updateCourier(String carNumber, String carProducer, String carModel, String carPhotoPath, String driverName, String driverPhone, String driverEmail, int maxCargo, double tax, String status) throws ReceiverException {
         CourierStatus courierStatus;
-        if ("active".equals(status)) {
+        if (ACTIVE_COURIER_STATUS.equals(status)) {
             courierStatus = CourierStatus.ACTIVE;
         } else {
             courierStatus = CourierStatus.BLOCKED;
@@ -69,10 +74,9 @@ public class CourierReceiver {
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception in createCourier method", e);
         }
-
     }
 
-    public List<Courier> getCouriers(String firstRow, String rowCount) {
+    public List<Courier> getCouriers(String firstRow, String rowCount) throws ReceiverException {
         List<Courier> courierList = null;
         try {
             int fRow = Integer.parseInt(firstRow);
@@ -81,6 +85,9 @@ public class CourierReceiver {
             LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
         } catch (RepositoryException e) {
             new ReceiverException("Exception in getCourier method", e);
+        }
+        if (courierList.isEmpty()) {
+            throw new ReceiverException("Couriers are not found");
         }
         return courierList;
     }

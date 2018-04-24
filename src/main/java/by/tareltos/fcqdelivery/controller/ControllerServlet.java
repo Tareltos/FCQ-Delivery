@@ -37,8 +37,6 @@ public class ControllerServlet extends HttpServlet {
                 e.printStackTrace();
             } catch (CommandException e) {
                 e.printStackTrace();
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
         }
         if (page == null) {

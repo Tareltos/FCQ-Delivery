@@ -30,7 +30,7 @@ public class LoadFileCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException, ServletException, SQLException, ReceiverException {
+    public String execute(HttpServletRequest request) throws IOException, ServletException, ReceiverException {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {

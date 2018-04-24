@@ -26,7 +26,7 @@ public class EditCourierFormCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException, SQLException {
+    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
 
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);

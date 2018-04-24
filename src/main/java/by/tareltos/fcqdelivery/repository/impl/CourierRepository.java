@@ -17,11 +17,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Task 1 Chapter A
- * Created by Vitali Tarelko on 26.03.2018.
- * tareltos@gmail.com; skype: tareltos
- */
 public class CourierRepository implements Repository<Courier> {
 
     final static Logger LOGGER = LogManager.getLogger();

@@ -9,6 +9,6 @@ import java.sql.SQLException;
 
 public interface Command {
 
-     String execute(HttpServletRequest request) throws ReceiverException, CommandException, SQLException, IOException, ServletException;
+     String execute(HttpServletRequest request) throws ReceiverException,CommandException, IOException, ServletException;
 
 }

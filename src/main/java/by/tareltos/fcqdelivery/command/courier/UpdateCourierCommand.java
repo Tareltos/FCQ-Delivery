@@ -74,7 +74,7 @@ public class UpdateCourierCommand implements Command {
             if (result) {
                 request.setAttribute("successfulMsg", "Данные успешно обновлены");
                 request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/couriers?action=get_couriers");
+                request.setAttribute("redirectUrl", "/couriers?action=get_couriers_pg&firstRow=0&rowCount=3");
                 return PagePath.PATH_COURIERS_PAGE.getPath();
             }
             request.setAttribute("errorMessage", "Сохранения данных");

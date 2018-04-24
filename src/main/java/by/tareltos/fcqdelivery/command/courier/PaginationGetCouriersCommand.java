@@ -28,7 +28,7 @@ public class PaginationGetCouriersCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request){
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -44,7 +44,7 @@ public class PaginationGetCouriersCommand implements Command {
         String rowCount = request.getParameter(ROW_COUNT_PRM);// validation
         List<Courier> courierList = null;
         try {
-            courierList = receiver.getCouriers(firstRow, rowCount);
+            courierList = receiver.getCouriers(firstRow, rowCount, loginedUser.getRole().getRole());
         } catch (ReceiverException e) {
             e.printStackTrace();
         }
@@ -54,7 +54,8 @@ public class PaginationGetCouriersCommand implements Command {
         }
         int allCount = 0;
         try {
-            allCount = receiver.getCouriers().size();
+            allCount = receiver.getCouriers("0", String.valueOf(receiver.getCouriers().size()), loginedUser.getRole().getRole()).size();
+
         } catch (ReceiverException e) {
             e.printStackTrace();
         }

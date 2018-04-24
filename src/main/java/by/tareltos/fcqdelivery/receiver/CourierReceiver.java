@@ -6,6 +6,7 @@ import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
 import by.tareltos.fcqdelivery.specification.courier.AllCourierSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
+import by.tareltos.fcqdelivery.specification.courier.PaginationCourierByStatusSpecification;
 import by.tareltos.fcqdelivery.specification.courier.PaginationCourierSpecification;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -76,13 +77,21 @@ public class CourierReceiver {
         }
     }
 
-    public List<Courier> getCouriers(String firstRow, String rowCount) throws ReceiverException {
+    public List<Courier> getCouriers(String firstRow, String rowCount, String userRole) throws ReceiverException {
         List<Courier> courierList = null;
         try {
             int fRow = Integer.parseInt(firstRow);
             int rCount = Integer.parseInt(rowCount);
-            courierList = repository.query(new PaginationCourierSpecification(fRow, rCount));
-            LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
+            switch (userRole) {
+                case "manager":
+                    courierList = repository.query(new PaginationCourierSpecification(fRow, rCount));
+                    LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
+                    break;
+                case "customer":
+                    courierList = repository.query(new PaginationCourierByStatusSpecification(ACTIVE_COURIER_STATUS, fRow, rCount));
+                    LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
+                    break;
+            }
         } catch (RepositoryException e) {
             new ReceiverException("Exception in getCourier method", e);
         }

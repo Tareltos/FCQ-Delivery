@@ -34,11 +34,9 @@ public class ApplicationReceiver {
         List<Application> resultList = null;
         try {
             if (role.equals(UserRole.MANAGER)) {
-                LOGGER.log(Level.DEBUG, "Application HERE");
                 resultList = repository.query(new AllApplicationSpecification());
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
             } else {
-                LOGGER.log(Level.DEBUG, "Application HERE111");
                 resultList = repository.query(new ApplicationByOwnerSpecification(email));
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
             }
@@ -158,6 +156,4 @@ public class ApplicationReceiver {
             throw new ReceiverException("Недостаточно стредств");
         }
     }
-
-
 }

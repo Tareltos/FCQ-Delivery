@@ -81,8 +81,6 @@ public class ApplicationReceiver {
             return courierRepository.query(new AllCourierSpecification());
         } catch (RepositoryException e) {
             new ReceiverException("Exception", e);
-        } catch (SQLException e) {
-            //!!!!!!!!!!!!!!!!!!
         }
         return null;
     }
@@ -97,10 +95,7 @@ public class ApplicationReceiver {
             return repository.update(application);
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception", e);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return false;
     }
 
 

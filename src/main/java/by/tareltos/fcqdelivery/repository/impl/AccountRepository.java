@@ -19,18 +19,51 @@ import java.util.List;
 public class AccountRepository implements Repository<Account> {
 
     final static Logger LOGGER = LogManager.getLogger();
-    //   final String ADD_APPLICATION_QUERY = "INSERT INTO account( ) VALUES (?,?,?,?,?,?,?,?,?) ";//!!!!!
-    //   final String REMOVE_COURIER_QUERY = "DELETE FROM courier WHERE car_number=? ";//!!!!!
+    final String ADD_ACCOUNT_QUERY = "INSERT INTO account(card_number, expiration_month, expiration_year, csv, balance, first_name, last_name) VALUES (?,?,?,?,?,?,?) ";
+    final String REMOVE_ACCOUNT_QUERY = "DELETE FROM account WHERE card_number=? ";
     final String UPDATE_ACCOUNT_QUERY = "UPDATE account SET expiration_month=?, expiration_year=?, csv=?,  balance=?, first_name=?, last_name=? where card_number=? ";
 
     @Override
     public boolean add(Account account) throws RepositoryException {
-        return false;
+        int executeResult;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement pstm;
+        try {
+            pstm = connection.prepareStatement(ADD_ACCOUNT_QUERY);
+            pstm.setString(1, account.getCardNumber());
+            pstm.setInt(2, account.getExpirationMonth());
+            pstm.setInt(3, account.getExpirationYear());
+            pstm.setInt(4, account.getCsv());
+            pstm.setDouble(5, account.getBalance());
+            pstm.setString(6, account.getFirstName());
+            pstm.setString(7, account.getLastName());
+            executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
+            return executeResult == 1 ? true : false;
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in add method in" + getClass() + "\n" + e, e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
+        }
     }
 
     @Override
     public boolean remove(Account account) throws RepositoryException {
-        return false;
+        int executeResult;
+        Connection connection = ConnectionPool.getInstance().getConnection();
+        PreparedStatement pstm;
+        try {
+            pstm = connection.prepareStatement(String.format(REMOVE_ACCOUNT_QUERY, account.getCardNumber()));
+            executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in remove: " + executeResult);
+            return executeResult == 1 ? true : false;
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in remove method \n" + e, e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
+        }
     }
 
     @Override
@@ -48,9 +81,11 @@ public class AccountRepository implements Repository<Account> {
             pstm.setString(6, account.getLastName());
             pstm.setString(7, account.getCardNumber());
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in update method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in add method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in update method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -80,12 +115,11 @@ public class AccountRepository implements Repository<Account> {
             }
             return accountList;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in query method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("Exception in query method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
-
-
     }
 
 }

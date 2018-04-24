@@ -5,17 +5,17 @@ import by.tareltos.fcqdelivery.specification.SqlSpecification;
 public class PaginationCourierSpecification implements SqlSpecification {
 
     private final String SELECT_QUERY = "SELECT * FROM courier contact ORDER BY max_cargo LIMIT %d OFFSET %d";
-    private int firstrow;
-    private int rowcount;
+    private int firstRow;
+    private int rowCount;
 
 
-    public PaginationCourierSpecification(int firstrow, int rowcount) {
-        this.firstrow = firstrow;
-        this.rowcount = rowcount;
+    public PaginationCourierSpecification(int firstRow, int rowCount) {
+        this.firstRow = firstRow;
+        this.rowCount = rowCount;
     }
 
     @Override
     public String toSqlClauses() {
-        return String.format(SELECT_QUERY, rowcount,  firstrow);
+        return String.format(SELECT_QUERY, rowCount,  firstRow);
     }
 }

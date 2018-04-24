@@ -48,9 +48,11 @@ public class ApplicationRepository implements Repository<Application> {
             pstm.setString(9, application.getStatus().getStatus());
             pstm.setString(10, null);
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in add method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in add method\n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -65,9 +67,11 @@ public class ApplicationRepository implements Repository<Application> {
             pstm = connection.prepareStatement(REMOVE_APPLICATION_QUERY);
             pstm.setInt(1, application.getId());
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in remove: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in remove method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in remove method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -92,9 +96,11 @@ public class ApplicationRepository implements Repository<Application> {
             pstm.setString(10, application.getCancelationReason());
             pstm.setInt(11, application.getId());
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in update method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in add method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in update method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -147,14 +153,16 @@ public class ApplicationRepository implements Repository<Application> {
                         application.setCancelationReason(rs.getString("cancelation_reason"));
                         break;
                 }
+                LOGGER.log(Level.DEBUG, application.toString());
                 appList.add(application);
             }
             if (appList.isEmpty()) {
-                LOGGER.log(Level.WARN, "Result list is empty!");
+                LOGGER.log(Level.INFO, "Result list is empty!");
             }
             return appList;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in query method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("Exception in query method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }

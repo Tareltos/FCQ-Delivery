@@ -26,8 +26,6 @@ public class CourierReceiver {
             LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
         } catch (RepositoryException e) {
             new ReceiverException("Exception in getCourier method", e);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return courierList;
     }
@@ -83,8 +81,6 @@ public class CourierReceiver {
             LOGGER.log(Level.DEBUG, "Found different couriers: " + courierList.size());
         } catch (RepositoryException e) {
             new ReceiverException("Exception in getCourier method", e);
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return courierList;
     }

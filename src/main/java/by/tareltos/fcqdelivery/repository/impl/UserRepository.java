@@ -39,27 +39,29 @@ public class UserRepository implements Repository<User> {
             pstm.setString(6, u.getPhone());
             pstm.setString(7, u.getStatus().getStatus());
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in add method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in add method \n"+ e, e);
         } finally {
-            //staten close method
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
 
     @Override
-    public boolean remove(User u) throws RepositoryException {
+    public boolean remove(User user) throws RepositoryException {
         int executeResult;
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement pstm;
         try {
-            pstm = connection.prepareStatement(String.format(REMOVE_USER_QUERY, u.getEmail()));
+            pstm = connection.prepareStatement(String.format(REMOVE_USER_QUERY, user.getEmail()));
             executeResult = pstm.executeUpdate();
-            ConnectionPool.getInstance().freeConnection(connection);
+            LOGGER.log(Level.DEBUG, "Execute result in remove: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in remove method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in remove method \n"+ e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -80,13 +82,14 @@ public class UserRepository implements Repository<User> {
             pstm.setString(6, user.getStatus().getStatus());
             pstm.setString(7, user.getEmail());
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in update method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in remove method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in update method \n"+ e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
-
     }
 
     @Override
@@ -123,14 +126,16 @@ public class UserRepository implements Repository<User> {
                         user.setStatus(UserStatus.BLOCKED);
                         break;
                 }
+                LOGGER.log(Level.DEBUG, user.toString());
                 userList.add(user);
             }
             if (userList.isEmpty()) {
-                LOGGER.log(Level.WARN, "Result list is empty!");
+                LOGGER.log(Level.INFO, "Result list is empty!");
             }
             return userList;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in query method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("Exception in query method \n"+ e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }

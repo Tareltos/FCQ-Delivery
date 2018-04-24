@@ -13,7 +13,7 @@ public interface Repository<T> {
 
     boolean update(T t) throws RepositoryException;
 
-    List<T> query(SqlSpecification specification) throws RepositoryException, SQLException;
+    List<T> query(SqlSpecification specification) throws RepositoryException;
 
 
 }

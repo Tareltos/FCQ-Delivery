@@ -47,13 +47,14 @@ public class CourierRepository implements Repository<Courier> {
             pstm.setDouble(9, courier.getKmTax());
             pstm.setString(10, courier.getStatus().getStatus());
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in add method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in add method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
-
     }
 
     @Override
@@ -67,7 +68,8 @@ public class CourierRepository implements Repository<Courier> {
             executeResult = pstm.executeUpdate();
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in add method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in remove method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -91,49 +93,58 @@ public class CourierRepository implements Repository<Courier> {
             pstm.setString(9, courier.getStatus().getStatus());
             pstm.setString(10, courier.getCarNumber());
             executeResult = pstm.executeUpdate();
+            LOGGER.log(Level.DEBUG, "Execute result in update method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            throw new RepositoryException("Exception in add method", e);
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("SQLException in update method \n" + e, e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
 
     @Override
-    public List query(SqlSpecification specification) throws RepositoryException, SQLException {
+    public List query(SqlSpecification specification) throws RepositoryException {
         Connection connection = ConnectionPool.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
-        ResultSet rs = pstm.executeQuery();
-        List<Courier> courierList = new ArrayList<>();
-        while (rs.next()) {
-            String car_numder = rs.getString("car_number");
-            String car_producer = rs.getString("car_producer");
-            String car_model = rs.getString("car_model");
-            String car_photo = rs.getString("car_photo");
-            String driver_phone = rs.getString("driver_phone");
-            String driver_name = rs.getString("driver_name");
-            String driver_email = rs.getString("driver_email");
-            int max_cargo = rs.getInt("max_cargo");
-            double km_tax = rs.getDouble("km_tax");
-            String status = rs.getString("status");
-            CourierStatus courierStatus = null;
-            switch (status) {
-                case "active":
-                    courierStatus = CourierStatus.ACTIVE;
-                    break;
-                case "blocked":
-                    courierStatus = CourierStatus.BLOCKED;
-                    break;
+        try {
+            PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
+            ResultSet rs = pstm.executeQuery();
+            List<Courier> courierList = new ArrayList<>();
+            while (rs.next()) {
+                String car_number = rs.getString("car_number");
+                String car_producer = rs.getString("car_producer");
+                String car_model = rs.getString("car_model");
+                String car_photo = rs.getString("car_photo");
+                String driver_phone = rs.getString("driver_phone");
+                String driver_name = rs.getString("driver_name");
+                String driver_email = rs.getString("driver_email");
+                int max_cargo = rs.getInt("max_cargo");
+                double km_tax = rs.getDouble("km_tax");
+                String status = rs.getString("status");
+                CourierStatus courierStatus = null;
+                switch (status) {
+                    case "active":
+                        courierStatus = CourierStatus.ACTIVE;
+                        break;
+                    case "blocked":
+                        courierStatus = CourierStatus.BLOCKED;
+                        break;
+                }
+                Courier courier = new Courier(car_number, car_producer, car_model, driver_phone, driver_name, driver_email, max_cargo, km_tax, car_photo, courierStatus);
+                courierList.add(courier);
 
             }
-            Courier courier = new Courier(car_numder, car_producer, car_model, driver_phone, driver_name, driver_email, max_cargo, km_tax, car_photo, courierStatus);
-            courierList.add(courier);
+            if (courierList.isEmpty()) {
+                LOGGER.log(Level.WARN, "Result list is empty!");
+            }
+            return courierList;
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARN, e);
+            throw new RepositoryException("Exception in query method \n" + e, e);
+        } finally {
+            ConnectionPool.getInstance().freeConnection(connection);
         }
-        if (courierList.isEmpty()) {
-            LOGGER.log(Level.WARN, "Result list is empty!");
-        }
-        ConnectionPool.getInstance().freeConnection(connection);
-        return courierList;
+
     }
 
 }

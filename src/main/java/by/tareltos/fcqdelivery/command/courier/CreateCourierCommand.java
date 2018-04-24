@@ -35,7 +35,7 @@ public class CreateCourierCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -65,7 +65,12 @@ public class CreateCourierCommand implements Command {
                 & DataValidator.validateName(driverName) & DataValidator.validateEmail(driverEmail)
                 & DataValidator.validateCargo(maxCargo) & DataValidator.validateTax(tax)
                 & DataValidator.validateStatus(status)) {
-            boolean result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            boolean result = false;
+            try {
+                result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            } catch (ReceiverException e) {
+                e.printStackTrace();
+            }
             if (result) {
                 request.setAttribute("successfulMsg", "Данные успешно добавлены");
                 request.setAttribute("method", "redirect");

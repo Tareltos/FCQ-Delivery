@@ -23,28 +23,33 @@ public class AllUsersCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request){
 
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
-        if (receiver.checkUserStatus(user.getEmail())) {
-            if ("admin".equals(user.getRole().getRole())) {  //в константы!!!!!
-                List<User> list = receiver.getAllUsers();
-                if (!list.isEmpty()) {
-                    request.setAttribute("userList", list);
-                    return PagePath.PATH_USERS_PAGE.getPath();
-                } else {
-                    request.setAttribute("errorMessage", "Пользователи не найдены"); //в константы!!!!
-                    return PagePath.PATH_USERS_PAGE.getPath();
-                }
+        try {
+            if (receiver.checkUserStatus(user.getEmail())) {
+                if ("admin".equals(user.getRole().getRole())) {  //в константы!!!!!
+                    List<User> list = receiver.getAllUsers();
+                    if (!list.isEmpty()) {
+                        request.setAttribute("userList", list);
+                        return PagePath.PATH_USERS_PAGE.getPath();
+                    } else {
+                        request.setAttribute("errorMessage", "Пользователи не найдены"); //в константы!!!!
+                        return PagePath.PATH_USERS_PAGE.getPath();
+                    }
 
+                } else {
+                    request.setAttribute("errorMessage", "У вас нет доступа к этой странице");// engl/
+                    return PagePath.PATH_INF_PAGE.getPath();
+                }
             } else {
-                request.setAttribute("errorMessage", "У вас нет доступа к этой странице");// engl/
-                return PagePath.PATH_INF_PAGE.getPath();
+                session.setAttribute(LOGINED_USER_PRM, null);
+                return PagePath.PATH_SINGIN_PAGE.getPath();
             }
-        } else {
-            session.setAttribute(LOGINED_USER_PRM, null);
-            return PagePath.PATH_SINGIN_PAGE.getPath();
+        } catch (ReceiverException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 }

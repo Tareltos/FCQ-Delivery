@@ -1,9 +1,7 @@
 package by.tareltos.fcqdelivery.command.application;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
-import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
@@ -13,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 public class DeleteApplicationCommand implements Command {
 
@@ -28,7 +25,7 @@ public class DeleteApplicationCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -36,18 +33,22 @@ public class DeleteApplicationCommand implements Command {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if ("admin".equals(loginedUser.getRole().getRole()) | "manager".equals(loginedUser.getRole().getRole())) {   //в константы!!!!
-            LOGGER.log(Level.DEBUG, "Нарушение прав доступа Пользователь: " + loginedUser.getRole().getRole());
-            request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
+            LOGGER.log(Level.DEBUG, "This page only for Customer! \n Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
 
         String applicationId = request.getParameter(APPLICATION_ID_PRM);
-        if (receiver.deleteApplication(applicationId)) {
-            request.setAttribute("method", "redirect");
-            request.setAttribute("redirectUrl", "/applications?action=get_applications");
-            return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+        try {
+            if (receiver.deleteApplication(applicationId)) {
+                request.setAttribute("method", "redirect");
+                request.setAttribute("redirectUrl", "/applications?action=get_applications");
+                return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+            }
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute("message", "Application is not delete: " + e.getMessage());
         }
-        request.setAttribute("errorMessage", "Заявка не закрыта");
         return PagePath.PATH_INF_PAGE.getPath();
 
 

@@ -24,7 +24,7 @@ public class SaveUserCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request){
         String fname = request.getParameter(FIRST_NAME_PRM);
         String lname = request.getParameter(LAST_NAME_PRM);
         String phone = request.getParameter(PHONE_PRM);
@@ -34,16 +34,21 @@ public class SaveUserCommand implements Command {
             loginedUser.setFirstName(fname);
             loginedUser.setLastName(lname);
             loginedUser.setPhone(phone);
-            if (receiver.updateUser(loginedUser)) {
-                loginedUser = receiver.getUserForSession(loginedUser.getEmail());
-                session.setAttribute("loginedUser", loginedUser);
-                return PagePath.PATH_USER_INFO_PAGE.getPath();
-            } else {
-                request.setAttribute("errorLoginMessage", "ERROR");
-                return PagePath.PATH_USER_INFO_PAGE.getPath();
+            try {
+                if (receiver.updateUser(loginedUser)) {
+                    loginedUser = receiver.getUserForSession(loginedUser.getEmail());
+                    session.setAttribute("loginedUser", loginedUser);
+                    return PagePath.PATH_USER_INFO_PAGE.getPath();
+                } else {
+                    request.setAttribute("errorLoginMessage", "ERROR");
+                    return PagePath.PATH_USER_INFO_PAGE.getPath();
+                }
+            } catch (ReceiverException e) {
+                e.printStackTrace();
             }
         } else {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
+        return null;
     }
 }

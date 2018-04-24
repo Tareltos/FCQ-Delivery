@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
@@ -23,21 +22,26 @@ public class ResetPasswordCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
         String filename = context.getInitParameter("mail");
         try {
             properties.load(context.getResourceAsStream(filename));
         } catch (IOException e) {
-            throw new CommandException("Exception in reading mail property", e);
+            e.printStackTrace();
         }
+
         String email = request.getParameter(EMAIL_PRM);
         if (DataValidator.validateEmail(email)) {
-            if (receiver.resetUserPassword(email, properties)) {
-                request.setAttribute("successfulMsg", "Пароль обновлен, проверьте почту");
-            } else {
-                request.setAttribute("errorLoginMessage", "Пользователя не существует");
+            try {
+                if (receiver.resetUserPassword(email, properties)) {
+                    request.setAttribute("successfulMsg", "Пароль обновлен, проверьте почту");
+                } else {
+                    request.setAttribute("errorLoginMessage", "Пользователя не существует");
+                }
+            } catch (ReceiverException e) {
+                e.printStackTrace();
             }
         } else {
             request.setAttribute("errorLoginMessage", "Неправильный Email");

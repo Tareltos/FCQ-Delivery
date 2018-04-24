@@ -19,23 +19,28 @@ public class LoginCommand implements Command {
         receiver = userReceiver;
     }
 
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request){
 
         String email = request.getParameter(EMAIL_PRM);
         String password = request.getParameter(PASSWORD_PRM);
         HttpSession session = request.getSession(true);
 
         if (DataValidator.validateEmail(email) && DataValidator.validatePassword(password)) {
-            if (receiver.checkUser(email, password)) {
-                session.setAttribute("loginedUser", receiver.getUserForSession(email));
-                return PagePath.PATH_USER_INFO_PAGE.getPath();
-            } else {
-                request.setAttribute("errorLoginMessage", "Неверный пароль либо пользователь заблокирован");
-                return PagePath.PATH_SINGIN_PAGE.getPath();
+            try {
+                if (receiver.checkUser(email, password)) {
+                    session.setAttribute("loginedUser", receiver.getUserForSession(email));
+                    return PagePath.PATH_USER_INFO_PAGE.getPath();
+                } else {
+                    request.setAttribute("errorLoginMessage", "Неверный пароль либо пользователь заблокирован");
+                    return PagePath.PATH_SINGIN_PAGE.getPath();
+                }
+            } catch (ReceiverException e) {
+                e.printStackTrace();
             }
         } else {
             request.setAttribute("errorLoginMessage", "Короткий пароль");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
+        return null;
     }
 }

@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.application;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
@@ -13,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 public class CreateApplicationCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();
@@ -30,14 +28,13 @@ public class CreateApplicationCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws CommandException {
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == user) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if ("customer".equals(user.getRole().getRole())) {
-
             String startPoint = request.getParameter(START_POINT_PRM);
             String finishPoint = request.getParameter(FINISH_POINT_PRM);
             String date = request.getParameter(DATE_PRM);
@@ -47,18 +44,19 @@ public class CreateApplicationCommand implements Command {
             boolean result;
             try {
                 result = receiver.createNewApplication(user, startPoint, finishPoint, date, comment, weight);
-            } catch (RepositoryException e) {
-                throw new CommandException("Exception", e);
+                if (result) {
+                    request.setAttribute("method", "redirect");
+                    request.setAttribute("redirectUrl", "/applications?action=get_applications");
+                    return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+                }
+            } catch (ReceiverException e) {
+                LOGGER.log(Level.WARN, e);
             }
-            if (result) {
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/applications?action=get_applications");
-                return PagePath.PATH_APPLICATIONS_PAGE.getPath();
-            }
-            request.setAttribute("errorMessage", "Заявка не сформирована");
+            request.setAttribute("message", "Заявка не сформирована");
             return PagePath.PATH_INF_PAGE.getPath();
         } else {
-            request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
+            LOGGER.log(Level.DEBUG, "This page only for Customer! \n Access denied, you do not have rights: userRole= " + user.getRole().getRole());
+            request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
     }

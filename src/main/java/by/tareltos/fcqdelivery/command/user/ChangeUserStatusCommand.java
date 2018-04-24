@@ -24,26 +24,31 @@ public class ChangeUserStatusCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request){
 
         HttpSession session = request.getSession(true);
         User admin = (User) session.getAttribute("loginedUser");
         if (null != admin) {
             String email = request.getParameter(EMAIL_PRM);
             LOGGER.log(Level.DEBUG, email);
-            if (!receiver.checkEmail(email) && receiver.changeUserStatus(email)) {
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/users?action=get_users");
-                request.setAttribute("successfulMsg", "Статус успешно изменен!");
-                return PagePath.PATH_INF_PAGE.getPath();
-            } else {
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/users?action=get_users");
-                request.setAttribute("errorMessage", "Статус Пользователя не изменен");
-                return PagePath.PATH_INF_PAGE.getPath();
+            try {
+                if (!receiver.checkEmail(email) && receiver.changeUserStatus(email)) {
+                    request.setAttribute("method", "redirect");
+                    request.setAttribute("redirectUrl", "/users?action=get_users");
+                    request.setAttribute("successfulMsg", "Статус успешно изменен!");
+                    return PagePath.PATH_INF_PAGE.getPath();
+                } else {
+                    request.setAttribute("method", "redirect");
+                    request.setAttribute("redirectUrl", "/users?action=get_users");
+                    request.setAttribute("errorMessage", "Статус Пользователя не изменен");
+                    return PagePath.PATH_INF_PAGE.getPath();
+                }
+            } catch (ReceiverException e) {
+                e.printStackTrace();
             }
         } else {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
+        return null;
     }
 }

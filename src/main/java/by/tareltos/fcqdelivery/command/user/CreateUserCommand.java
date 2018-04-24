@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
@@ -31,14 +30,14 @@ public class CreateUserCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
         String filename = context.getInitParameter("mail");
         try {
             properties.load(context.getResourceAsStream(filename));
         } catch (IOException e) {
-            throw new CommandException("Exception in reading mail property", e);
+
         }
         HttpSession session = request.getSession(true);
         User admin = (User) session.getAttribute("loginedUser");
@@ -47,23 +46,27 @@ public class CreateUserCommand implements Command {
             String fName = request.getParameter(FIRST_NAME_PRM);
             String lName = request.getParameter(LAST_NAME_PRM);
             String phone = request.getParameter(PHONE_PRM);
-            if (receiver.checkEmail(email) && DataValidator.validateEmail(email) && DataValidator.validateName(fName) && DataValidator.validateName(lName) && DataValidator.validatePhone(phone)) {
-                String role = request.getParameter(ROLE_PRM);
-                receiver.createUser(email, fName, lName, phone, role, properties);
-                request.setAttribute("successfulMsg", "Пользователь успешно создань, пароль отправлен на почту!");
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/users?action=get_users");
-                return PagePath.PATH_INF_PAGE.getPath();
-            } else {
-                request.setAttribute("errorMessage", "Пользователь с таким Email существует");
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/users?action=get_users");
-                return PagePath.PATH_INF_PAGE.getPath();
+            try {
+                if (receiver.checkEmail(email) && DataValidator.validateEmail(email) && DataValidator.validateName(fName) && DataValidator.validateName(lName) && DataValidator.validatePhone(phone)) {
+                    String role = request.getParameter(ROLE_PRM);
+                    receiver.createUser(email, fName, lName, phone, role, properties);
+                    request.setAttribute("successfulMsg", "Пользователь успешно создань, пароль отправлен на почту!");
+                    request.setAttribute("method", "redirect");
+                    request.setAttribute("redirectUrl", "/users?action=get_users");
+                    return PagePath.PATH_INF_PAGE.getPath();
+                } else {
+                    request.setAttribute("errorMessage", "Пользователь с таким Email существует");
+                    request.setAttribute("method", "redirect");
+                    request.setAttribute("redirectUrl", "/users?action=get_users");
+                    return PagePath.PATH_INF_PAGE.getPath();
+                }
+            } catch (ReceiverException e) {
+                e.printStackTrace();
             }
 
         } else {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-
+        return null;
     }
 }

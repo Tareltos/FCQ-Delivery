@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.application;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.user.User;
@@ -13,8 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.util.List;
 
 public class GetAppDetailsCommand implements Command {
 
@@ -28,7 +25,7 @@ public class GetAppDetailsCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -36,19 +33,19 @@ public class GetAppDetailsCommand implements Command {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if ("admin".equals(loginedUser.getRole().getRole())) {
-            LOGGER.log(Level.DEBUG, "Нарушение прав доступа Пользователь: " + loginedUser.getRole().getRole());
-            request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
+            LOGGER.log(Level.DEBUG, "This page only for Customer and Manager! \n Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
         String id = request.getParameter(APPLICATION_ID_PRM);
         //валидация!!!!!
-        Application application = receiver.getApplication(id);
-        if (null == application) {
-            request.setAttribute("errorMessage", "Заявка не найдена");
+        try {
+            Application application = receiver.getApplication(id);
+            request.setAttribute("application", application);
+            return PagePath.PATH_APPLICATION_INFO_PAGE.getPath();
+        } catch (ReceiverException e) {
+            request.setAttribute("message", "Заявка не найдена");
             return PagePath.PATH_APPLICATIONS_PAGE.getPath();
         }
-        request.setAttribute("application", application);
-        return PagePath.PATH_APPLICATION_INFO_PAGE.getPath();
-
     }
 }

@@ -49,7 +49,7 @@ public class ApplicationReceiver {
         return resultList;
     }
 
-    public boolean createNewApplication(User owner, String startPoint, String finishPoint, String date, String comment, String weight) throws RepositoryException {
+    public boolean createNewApplication(User owner, String startPoint, String finishPoint, String date, String comment, String weight) throws ReceiverException {
         Application application = new Application();
         application.setOwner(owner);
         application.setStartPoint(startPoint);
@@ -61,7 +61,7 @@ public class ApplicationReceiver {
         try {
             return repository.add(application);
         } catch (RepositoryException e) {
-            throw new RepositoryException("Exception", e);
+            throw new ReceiverException("Exception", e);
         }
     }
 
@@ -125,8 +125,6 @@ public class ApplicationReceiver {
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception", e);
         }
-
-
     }
 
     public boolean deleteApplication(String applicationId) throws ReceiverException {

@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.application;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.user.User;
@@ -13,7 +12,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 public class CancelApplicationCommand implements Command {
 
@@ -29,7 +27,7 @@ public class CancelApplicationCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException{
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -38,19 +36,22 @@ public class CancelApplicationCommand implements Command {
         }
         if ("admin".equals(loginedUser.getRole().getRole()) | "manager".equals(loginedUser.getRole().getRole())) {   //в константы!!!!
             LOGGER.log(Level.DEBUG, "Нарушение прав доступа Пользователь: " + loginedUser.getRole().getRole());
-            request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
+            request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-
         String applicationId = request.getParameter(APPLICATION_ID_PRM);
         String reason = request.getParameter(REASON_PRM);
         LOGGER.log(Level.DEBUG, reason);
-        if (receiver.cancelApplication(applicationId, reason)) {
-            Application application = receiver.getApplication(applicationId);
-            request.setAttribute("application", application);
-            return PagePath.PATH_APPLICATION_INFO_PAGE.getPath();
+        try {
+            if (receiver.cancelApplication(applicationId, reason)) {
+                Application application = receiver.getApplication(applicationId);
+                request.setAttribute("application", application);
+                return PagePath.PATH_APPLICATION_INFO_PAGE.getPath();
+            }
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
         }
-        request.setAttribute("errorMessage", "Заявка не отменена");
+        request.setAttribute("message", "Заявка не отменена");
         return PagePath.PATH_INF_PAGE.getPath();
     }
 }

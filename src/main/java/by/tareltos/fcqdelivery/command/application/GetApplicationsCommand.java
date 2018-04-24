@@ -1,13 +1,10 @@
 package by.tareltos.fcqdelivery.command.application;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.application.Application;
-import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
-import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +26,7 @@ public class GetApplicationsCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request){
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {

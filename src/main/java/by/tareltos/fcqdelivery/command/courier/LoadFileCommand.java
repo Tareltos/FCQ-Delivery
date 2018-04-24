@@ -30,7 +30,7 @@ public class LoadFileCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException, ServletException, ReceiverException {
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -50,19 +50,27 @@ public class LoadFileCommand implements Command {
             fileSaveDir.mkdirs();
         }
         LOGGER.log(Level.INFO, "Upload File Directory = " + fileSaveDir.getAbsolutePath());
-        for (Part part : request.getParts()) {
-            if (part.getSubmittedFileName() != null) {
-                part.write(uploadFilePath + File.separator + part.getSubmittedFileName());
-                request.setAttribute("uploadInfo", part.getSubmittedFileName());
-                if (courierId == null) {
-                    return PagePath.PATH_NEW_COURIER_FORM.getPath();
-                } else {
-                    Courier courier = courierReceiver.getCourier(courierId);
-                    request.setAttribute("courier", courier);
-                    return PagePath.PATH_EDIT_COURIER_FORM.getPath();
-                }
+        try {
+            for (Part part : request.getParts()) {
+                if (part.getSubmittedFileName() != null) {
+                    part.write(uploadFilePath + File.separator + part.getSubmittedFileName());
+                    request.setAttribute("uploadInfo", part.getSubmittedFileName());
+                    if (courierId == null) {
+                        return PagePath.PATH_NEW_COURIER_FORM.getPath();
+                    } else {
+                        Courier courier = courierReceiver.getCourier(courierId);
+                        request.setAttribute("courier", courier);
+                        return PagePath.PATH_EDIT_COURIER_FORM.getPath();
+                    }
 
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (ReceiverException e) {
+            e.printStackTrace();
         }
         request.setAttribute("errorMessage", "Невозможно сохранить изображение на сервер");
         return PagePath.PATH_NEW_COURIER_FORM.getPath();

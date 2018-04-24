@@ -28,7 +28,7 @@ public class PaginationGetCouriersCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request){
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -42,12 +42,22 @@ public class PaginationGetCouriersCommand implements Command {
         }
         String firstRow = request.getParameter(FIRST_ROW_PRM);
         String rowCount = request.getParameter(ROW_COUNT_PRM);// validation
-        List<Courier> courierList = receiver.getCouriers(firstRow, rowCount);
+        List<Courier> courierList = null;
+        try {
+            courierList = receiver.getCouriers(firstRow, rowCount);
+        } catch (ReceiverException e) {
+            e.printStackTrace();
+        }
         if (null == courierList) {
             request.setAttribute("errorMessage", "Курьеров не найдено");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        int allCount =receiver.getCouriers().size();
+        int allCount = 0;
+        try {
+            allCount = receiver.getCouriers().size();
+        } catch (ReceiverException e) {
+            e.printStackTrace();
+        }
         request.setAttribute("firstRow", firstRow);
         request.setAttribute("rowCount", rowCount);
         request.setAttribute("allCount", allCount);

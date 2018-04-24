@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.courier;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
@@ -35,7 +34,7 @@ public class UpdateCourierCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request){
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -66,7 +65,12 @@ public class UpdateCourierCommand implements Command {
                 & DataValidator.validateName(driverName) & DataValidator.validateEmail(driverEmail)
                 & DataValidator.validateCargo(maxCargo) & DataValidator.validateTax(tax)
                 & DataValidator.validateStatus(status)) {
-            boolean result = receiver.updateCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            boolean result = false;
+            try {
+                result = receiver.updateCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            } catch (ReceiverException e) {
+                e.printStackTrace();
+            }
             if (result) {
                 request.setAttribute("successfulMsg", "Данные успешно обновлены");
                 request.setAttribute("method", "redirect");

@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
@@ -28,26 +27,37 @@ public class RegistrationCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
         String filename = context.getInitParameter("mail");
+
         try {
             properties.load(context.getResourceAsStream(filename));
         } catch (IOException e) {
-            throw new CommandException("Exception in reading mail property", e);
+            e.printStackTrace();
         }
+
         String email = request.getParameter(EMAIL_PRM);
         String fname = request.getParameter(FIRST_NAME_PRM);
         String lname = request.getParameter(LAST_NAME_PRM);
         String phone = request.getParameter(PHONE_PRM);
-        if (DataValidator.validateEmail(email) && !receiver.checkEmail(email)) {
-            request.setAttribute("errorLoginMessage", "Пользователя уже существует. Воспользуйтесь восстановлением пароля!");
-            return PagePath.PATH_SINGIN_PAGE.getPath();
+        try {
+            if (DataValidator.validateEmail(email) && !receiver.checkEmail(email)) {
+                request.setAttribute("errorLoginMessage", "Пользователя уже существует. Воспользуйтесь восстановлением пароля!");
+                return PagePath.PATH_SINGIN_PAGE.getPath();
+            }
+        } catch (ReceiverException e) {
+            e.printStackTrace();
         }
         if (DataValidator.validateEmail(email) && DataValidator.validateName(fname)
                 && DataValidator.validateName(lname) && DataValidator.validatePassword(phone)) {
-            boolean result = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties);
+            boolean result = false;
+            try {
+                result = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties);
+            } catch (ReceiverException e) {
+                e.printStackTrace();
+            }
             if (result) {
                 request.setAttribute("successfulMsg", "Ругистрация завершена, пароль выслан на почту.");
                 return PagePath.PATH_SINGIN_PAGE.getPath();

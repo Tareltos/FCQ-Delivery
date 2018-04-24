@@ -31,13 +31,7 @@ public class ControllerServlet extends HttpServlet {
         Command command = CommandFactory.getInstance().getCommand(action);
         String page = null;
         if (null != command) {
-            try {
-                page = command.execute(request);
-            } catch (ReceiverException e) {
-                e.printStackTrace();
-            } catch (CommandException e) {
-                e.printStackTrace();
-            }
+            page = command.execute(request);
         }
         if (page == null) {
             page = "index.jsp";

@@ -21,7 +21,7 @@
 <body>
 <div class="container" style="min-height: 80%;">
     <div class="row">
-        <h4 style="color: red; margin-left: 30%; margin-top: 5%; margin-right: 30%; osition: center">${errorMessage}${successfulMsg}</h4>
+        <h4 style="color: red; margin-left: 30%; margin-top: 5%; margin-right: 30%; osition: center"><fmt:message key="${message}"/></h4>
     </div>
 </div>
 

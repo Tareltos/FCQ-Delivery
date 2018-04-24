@@ -26,7 +26,7 @@ public class GetCouriersCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException {
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
@@ -38,7 +38,12 @@ public class GetCouriersCommand implements Command {
             request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        List<Courier> courierList = receiver.getCouriers();
+        List<Courier> courierList = null;
+        try {
+            courierList = receiver.getCouriers();
+        } catch (ReceiverException e) {
+            e.printStackTrace();
+        }
         if (null == courierList) {
             request.setAttribute("errorMessage", "Курьеров не найдено");
             return PagePath.PATH_INF_PAGE.getPath();

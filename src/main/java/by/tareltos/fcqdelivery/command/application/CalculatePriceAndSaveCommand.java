@@ -1,18 +1,16 @@
 package by.tareltos.fcqdelivery.command.application;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.repository.RepositoryException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 public class CalculatePriceAndSaveCommand implements Command {
 
@@ -28,7 +26,7 @@ public class CalculatePriceAndSaveCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException{
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == user) {
@@ -39,17 +37,21 @@ public class CalculatePriceAndSaveCommand implements Command {
             String courierId = request.getParameter(COURIER_ID_PRM);
             String distance = request.getParameter(DISTANCE_PRM);// валидация!!!
             boolean result;
-            result = receiver.updateApplication(appId, courierId, distance);
-            if (result) {
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/applications?action=get_applications");
-                return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+            try {
+                result = receiver.updateApplication(appId, courierId, distance);
+                if (result) {
+                    request.setAttribute("method", "redirect");
+                    request.setAttribute("redirectUrl", "/applications?action=get_applications");
+                    return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+                }
+            } catch (ReceiverException e) {
+                LOGGER.log(Level.WARN, e.getMessage());
+                request.setAttribute("message", "Application is not cancelled: " + e.getMessage());
             }
-            request.setAttribute("errorMessage", "Заявка не изменена!!!");
-            return PagePath.PATH_INF_PAGE.getPath();
         } else {
-            request.setAttribute("errorMessage", "У вас нет доступа к этой странице");
+            request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
+        return PagePath.PATH_INF_PAGE.getPath();
     }
 }

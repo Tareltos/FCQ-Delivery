@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.courier;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandException;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.user.User;
@@ -12,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 public class EditCourierFormCommand implements Command {
 
@@ -26,7 +24,7 @@ public class EditCourierFormCommand implements Command {
     }
 
     @Override
-    public String execute(HttpServletRequest request) throws ReceiverException, CommandException {
+    public String execute(HttpServletRequest request){
 
         HttpSession session = request.getSession(true);
         User user = (User) session.getAttribute(LOGINED_USER_PRM);
@@ -35,7 +33,12 @@ public class EditCourierFormCommand implements Command {
         }
         if ("manager".equals(user.getRole().getRole())) {
             String carNumber = request.getParameter(CAR_NUMBER_PRM);
-            Courier courier = receiver.getCourier(carNumber);
+            Courier courier = null;
+            try {
+                courier = receiver.getCourier(carNumber);
+            } catch (ReceiverException e) {
+                e.printStackTrace();
+            }
             request.setAttribute("courier", courier);
             return PagePath.PATH_EDIT_COURIER_FORM.getPath();
         } else {

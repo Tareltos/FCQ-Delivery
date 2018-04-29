@@ -5,6 +5,7 @@ import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
+import by.tareltos.fcqdelivery.validator.DataValidator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,8 @@ public class DoPaymentApplicationCommand implements Command {
     private static final String EXPIRATION_YEAR_PRM = "expirationYear";
     private static final String OWNER_PRM = "owner";
     private static final String CSV_PRM = "csv";
+    private static final String MANAGER_ROLE = "manager";
+    private static final String ADMIN_ROLE = "admin";
     private ApplicationReceiver receiver;
 
     public DoPaymentApplicationCommand(ApplicationReceiver receiver) {
@@ -34,8 +37,8 @@ public class DoPaymentApplicationCommand implements Command {
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        if ("admin".equals(loginedUser.getRole().getRole()) | "manager".equals(loginedUser.getRole().getRole())) {   //в константы!!!!
-            LOGGER.log(Level.DEBUG, "This page only for Customer! \n Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+        if (ADMIN_ROLE.equals(loginedUser.getRole().getRole()) | MANAGER_ROLE.equals(loginedUser.getRole().getRole())) {
+            LOGGER.log(Level.INFO, "This page only for Customer! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
             request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
@@ -45,19 +48,26 @@ public class DoPaymentApplicationCommand implements Command {
         String expYear = request.getParameter(EXPIRATION_YEAR_PRM);
         String owner = request.getParameter(OWNER_PRM);
         String csv = request.getParameter(CSV_PRM);
-        // нужна валидация полей!!!!
-        try {
-            boolean result;
-            result = receiver.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv);
-            if (result) {
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/applications?action=get_applications");
-                return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+        if (DataValidator.validateApplicationId(appId) & DataValidator.validateCardNumber(cardNumber) &
+        DataValidator.validateExpirationMonth(expMonth) & DataValidator.validateExpirationYear(expYear) &
+        DataValidator.validateOwner(owner) & DataValidator.validateCsv(csv)) {
+            try {
+                boolean result;
+                result = receiver.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv);
+                if (result) {
+                    request.setAttribute("method", "redirect");
+                    request.setAttribute("redirectUrl", "/applications?action=get_applications");
+                    return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+                } else {
+                    request.setAttribute("message", "paymentError.text");
+                    return PagePath.PATH_INF_PAGE.getPath();
+                }
+            } catch (ReceiverException e) {
+                LOGGER.log(Level.WARN, e.getMessage());
+                request.setAttribute("message", "error.text");
             }
-        } catch (ReceiverException e) {
-            LOGGER.log(Level.WARN, e.getMessage());
-            request.setAttribute("message", "Оплата не выполнена");
         }
+        request.setAttribute("message", "invalidData.text");
         return PagePath.PATH_INF_PAGE.getPath();
 
     }

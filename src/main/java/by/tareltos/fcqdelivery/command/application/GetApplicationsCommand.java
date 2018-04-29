@@ -18,31 +18,29 @@ public class GetApplicationsCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
+    private static final String ADMIN_ROLE = "admin";
     private ApplicationReceiver receiver;
-
 
     public GetApplicationsCommand(ApplicationReceiver applicationReceiver) {
         this.receiver = applicationReceiver;
     }
 
     @Override
-    public String execute(HttpServletRequest request){
+    public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
-            LOGGER.log(Level.DEBUG, "Пользователь =null");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        if ("admin".equals(loginedUser.getRole().getRole())) {
-            LOGGER.log(Level.DEBUG, "Нарушение прав доступа Пользователь: " + loginedUser.getRole().getRole());
-            request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
+        if (ADMIN_ROLE.equals(loginedUser.getRole().getRole())) {
+            LOGGER.log(Level.INFO, "This page only for Customer and Manager! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-
         List<Application> appList = receiver.getAllApplications(loginedUser.getEmail(), loginedUser.getRole());
         if (null == appList) {
-            request.setAttribute("errorMessage", "Заявок не найдено");
-            return PagePath.PATH_APPLICATIONS_PAGE.getPath();
+            request.setAttribute("message", "dataNotFound.text");
+            return PagePath.PATH_INF_PAGE.getPath();
         }
         request.setAttribute("appList", appList);
         return PagePath.PATH_APPLICATIONS_PAGE.getPath();

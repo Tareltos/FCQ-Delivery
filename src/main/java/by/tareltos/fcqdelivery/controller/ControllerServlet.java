@@ -2,6 +2,7 @@ package by.tareltos.fcqdelivery.controller;
 
 import by.tareltos.fcqdelivery.command.*;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +20,10 @@ import java.sql.SQLException;
 @MultipartConfig
 public class ControllerServlet extends HttpServlet {
     final static Logger LOGGER = LogManager.getLogger();
+    private final String ACTION_PRM = "action";
+    private final String REDIRECT_PRM = "redirect";
+    private final String METHOD_PRM = "method";
+    private final String REDIRECT_URL_PRM = "redirectUrl";
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
@@ -26,7 +31,7 @@ public class ControllerServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String action = request.getParameter("action");
+        String action = request.getParameter(ACTION_PRM);
         LOGGER.log(Level.DEBUG, "Command is: " + action);
         Command command = CommandFactory.getInstance().getCommand(action);
         String page = null;
@@ -34,10 +39,10 @@ public class ControllerServlet extends HttpServlet {
             page = command.execute(request);
         }
         if (page == null) {
-            page = "index.jsp";
+            page = PagePath.PATH_MAIN_PAGE.getPath();
         }
-        if ("redirect".equals(request.getAttribute("method"))) {
-            response.sendRedirect(String.valueOf(request.getAttribute("redirectUrl")));
+        if (REDIRECT_PRM.equals(request.getAttribute(METHOD_PRM))) {
+            response.sendRedirect(String.valueOf(request.getAttribute(REDIRECT_URL_PRM)));
         } else {
             request.getRequestDispatcher(page).forward(request, response);
         }

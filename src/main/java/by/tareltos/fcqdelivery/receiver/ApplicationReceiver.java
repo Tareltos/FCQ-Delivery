@@ -16,6 +16,7 @@ import by.tareltos.fcqdelivery.specification.application.ApplicationByIdSpecific
 import by.tareltos.fcqdelivery.specification.application.ApplicationByOwnerSpecification;
 import by.tareltos.fcqdelivery.specification.courier.AllCourierSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
+import by.tareltos.fcqdelivery.specification.courier.CourierByStatusSpecification;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,6 +27,7 @@ import java.util.List;
 public class ApplicationReceiver {
 
     final static Logger LOGGER = LogManager.getLogger();
+    private final String ACTIVE_STATUS = "active";
     private ApplicationRepository repository = new ApplicationRepository();
     private CourierRepository courierRepository = new CourierRepository();
     private AccountRepository accountRepository = new AccountRepository();
@@ -75,7 +77,7 @@ public class ApplicationReceiver {
 
     public List<Courier> getCourierForAppointment() {
         try {
-            return courierRepository.query(new AllCourierSpecification());
+            return courierRepository.query(new CourierByStatusSpecification(ACTIVE_STATUS));
         } catch (RepositoryException e) {
             new ReceiverException("Exception", e);
         }
@@ -102,8 +104,9 @@ public class ApplicationReceiver {
             String ownerData[] = owner.split(" ");// в константы
             String fName = ownerData[0];
             String lName = ownerData[1];
-            Account account = accountRepository.query(new AccountByCadDetailsSpecification(cardNumber, expMonth, expYear, fName, lName, csv)).get(0);
-            if (account != null) {
+            List<Account> accounts = accountRepository.query(new AccountByCadDetailsSpecification(cardNumber, expMonth, expYear, fName, lName, csv));
+            if (accounts.size() == 1) {
+                Account account = accountRepository.query(new AccountByCadDetailsSpecification(cardNumber, expMonth, expYear, fName, lName, csv)).get(0);
                 doPayment(account, application.getPrice());
                 application.setStatus(ApplicationStatus.CONFIRMED);
                 return (repository.update(application) & accountRepository.update(account));

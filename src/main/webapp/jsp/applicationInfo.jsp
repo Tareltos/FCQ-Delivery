@@ -1,6 +1,7 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="tareltostag" uri="https://journaldev.com/jsp/tlds/tareltostag" %>
 <c:set var="language"
        value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}"
        scope="session"/>
@@ -73,7 +74,8 @@
                         key="footer.text.phone"/> ${application.courier.driverPhone}
                     <fmt:message key="footer.text.email"/> ${application.courier.driverEmail}</h4>
                 <hr size="1px" style=" background-color: #1c7430">
-                <h4><fmt:message key="appTotalPrice.label"/> ${application.price}</h4>
+                <h4><fmt:message key="appTotalPrice.label"/><tareltostag:formatNumber number="2124231.325" format="#,###.00"/></h4>
+                ${application.price}
             </c:if>
             <c:if test="${null==application.courier}">
                 <fmt:message key="courierNotSelected.label"/>

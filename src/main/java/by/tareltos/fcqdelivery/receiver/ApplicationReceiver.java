@@ -13,21 +13,21 @@ import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
 import by.tareltos.fcqdelivery.specification.account.AccountByCadDetailsSpecification;
 import by.tareltos.fcqdelivery.specification.application.AllApplicationSpecification;
 import by.tareltos.fcqdelivery.specification.application.ApplicationByIdSpecification;
+import by.tareltos.fcqdelivery.specification.application.ApplicationByOwnerAndStatusSpecification;
 import by.tareltos.fcqdelivery.specification.application.ApplicationByOwnerSpecification;
-import by.tareltos.fcqdelivery.specification.courier.AllCourierSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByStatusSpecification;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ApplicationReceiver {
 
     final static Logger LOGGER = LogManager.getLogger();
     private final String ACTIVE_STATUS = "active";
+    private final String ALL_APPLICATION_STATUS = "all";
     private ApplicationRepository repository = new ApplicationRepository();
     private CourierRepository courierRepository = new CourierRepository();
     private AccountRepository accountRepository = new AccountRepository();
@@ -158,5 +158,23 @@ public class ApplicationReceiver {
         } else {
             throw new ReceiverException("Недостаточно стредств");
         }
+    }
+
+    public List<Application> getSelectedApplications(String customerEmail, String applicationStatus) {
+        List<Application> resultList = null;
+        try {
+            if (applicationStatus.equals(ALL_APPLICATION_STATUS)) {
+                resultList = repository.query(new ApplicationByOwnerSpecification(customerEmail));
+                LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
+            } else {
+                resultList = repository.query(new ApplicationByOwnerAndStatusSpecification(customerEmail, applicationStatus));
+                LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
+            }
+            return resultList;
+        } catch (RepositoryException e) {
+            new ReceiverException("Exception in getAllApplication method", e);
+        }
+        return resultList;
+
     }
 }

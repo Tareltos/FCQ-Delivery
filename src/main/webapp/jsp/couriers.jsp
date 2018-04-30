@@ -21,7 +21,6 @@
 <body>
 <div class="container" style="min-height: 80%;">
     <div class="row">
-        ${successfulMsg}
         <c:forEach items="${courierList}" var="courier">
             <div class="col-md-4 p-4" style="border: 4px double black; background: #dbe1f5;">
                 <img class="img-fluid d-block rounded-0 mx-auto" src="../files/${courier.imageFileName}">

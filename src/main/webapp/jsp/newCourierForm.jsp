@@ -22,7 +22,6 @@
 <div class="container" style="min-height: 80%;">
     <h5 style="margin-left: 40%; color: green; text-emphasis: #1c7430"><fmt:message key="fillForm.label"/></h5>
     <div class="row">
-        <h4 style="color: red; position: center">${errorMessage}${successfulMsg}</h4>
         <div class="col-md-12 bg-light">
             <form method="POST" action="${pageContext.request.contextPath}/saveCourier">
                 <div class="form-group"><label><fmt:message

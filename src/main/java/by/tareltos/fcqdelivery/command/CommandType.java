@@ -34,7 +34,8 @@ public enum CommandType {
     COMPLETE_APPLICATION(new CompleteApplicationCommand(new ApplicationReceiver())),
     DELETE_APPLICATION(new DeleteApplicationCommand(new ApplicationReceiver())),
     CANCEL_APPLICATION(new CancelApplicationCommand(new ApplicationReceiver())),
-    LOAD_FILE(new LoadFileCommand(new CourierReceiver()));
+    LOAD_FILE(new LoadFileCommand(new CourierReceiver())),
+    FIND_APPLICATIONS(new FindApplicationsCommand(new ApplicationReceiver()));
 
 
     private Command command;

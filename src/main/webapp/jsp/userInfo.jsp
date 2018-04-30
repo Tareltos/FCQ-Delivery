@@ -24,7 +24,6 @@
         <div class="col-md-12 bg-light">
             <h3><fmt:message key="emailField"/>: ${loginedUser.email}, <fmt:message
                     key="userInfo.label.role"/>${loginedUser.role.role}</h3>
-            <h6 style="color: red">${errorLoginMessage}${successfulMsg}</h6>
             <form method="POST" action="${pageContext.request.contextPath}/doLogin">
                 <input hidden name="action" value="save_user">
                 <div class="form-group"><label><fmt:message key="fNameField"/></label>

@@ -21,6 +21,9 @@ import java.sql.SQLException;
 public class LoadFileCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();
     private static final String LOGINED_USER_PRM = "loginedUser";
+    private static final String CUSTOMER_ROLE = "customer";
+    private static final String ADMIN_ROLE = "admin";
+    private static final String MESSAGE_ATR = "message";
     private static final String UPLOAD_DIR_PRM = "files";
     private static final String COURIER_ID_PRM = "id";
     private CourierReceiver courierReceiver;
@@ -31,15 +34,15 @@ public class LoadFileCommand implements Command {
 
     @Override
     public String execute(HttpServletRequest request) {
+
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
-            LOGGER.log(Level.DEBUG, "Пользователь is null");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        if (!"manager".equals(loginedUser.getRole().getRole())) {
-            LOGGER.log(Level.DEBUG, "Нарушение прав доступа Пользователь: " + loginedUser.getRole().getRole());
-            request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
+        if (ADMIN_ROLE.equals(loginedUser.getRole().getRole()) | CUSTOMER_ROLE.equals(loginedUser.getRole().getRole())) {
+            LOGGER.log(Level.DEBUG, "This page only for Manager! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            request.setAttribute(MESSAGE_ATR, "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
         String courierId = request.getParameter(COURIER_ID_PRM);
@@ -50,6 +53,7 @@ public class LoadFileCommand implements Command {
             fileSaveDir.mkdirs();
         }
         LOGGER.log(Level.INFO, "Upload File Directory = " + fileSaveDir.getAbsolutePath());
+
         try {
             for (Part part : request.getParts()) {
                 if (part.getSubmittedFileName() != null) {
@@ -62,18 +66,17 @@ public class LoadFileCommand implements Command {
                         request.setAttribute("courier", courier);
                         return PagePath.PATH_EDIT_COURIER_FORM.getPath();
                     }
-
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage());
         } catch (ServletException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage());
         } catch (ReceiverException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage());
         }
-        request.setAttribute("errorMessage", "Невозможно сохранить изображение на сервер");
-        return PagePath.PATH_NEW_COURIER_FORM.getPath();
+        request.setAttribute(MESSAGE_ATR, "fileUploadError.text");
+        return PagePath.PATH_INF_PAGE.getPath();
     }
 }
 

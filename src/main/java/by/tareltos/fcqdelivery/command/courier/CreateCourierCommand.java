@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 public class CreateCourierCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();
+    private static final String MESSAGE_ATR = "message";
     private static final String LOGINED_USER_PRM = "loginedUser";
     private static final String CAR_NUMBER_PRM = "carNumber";
     private static final String CAR_PRODUCER_PRM = "carProducer";
@@ -27,11 +28,13 @@ public class CreateCourierCommand implements Command {
     private static final String CARGO_PRM = "cargo";
     private static final String TAX_PRM = "tax";
     private static final String STATUS_PRM = "status";
+    private static final String CUSTOMER_ROLE = "customer";
+    private static final String ADMIN_ROLE = "admin";
     private CourierReceiver receiver;
 
 
-    public CreateCourierCommand(CourierReceiver rceiver) {
-        this.receiver = rceiver;
+    public CreateCourierCommand(CourierReceiver receiver) {
+        this.receiver = receiver;
     }
 
     @Override
@@ -39,12 +42,12 @@ public class CreateCourierCommand implements Command {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
         if (null == loginedUser) {
-            LOGGER.log(Level.DEBUG, "Пользователь is null");
+            LOGGER.log(Level.DEBUG, "User is null");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        if (!"manager".equals(loginedUser.getRole().getRole())) {
-            LOGGER.log(Level.DEBUG, "Нарушение прав доступа Пользователь: " + loginedUser.getRole().getRole());
-            request.setAttribute("errorMessage", "У Вас нет прав доступа к этой странице");
+        if (ADMIN_ROLE.equals(loginedUser.getRole().getRole()) | CUSTOMER_ROLE.equals(loginedUser.getRole().getRole())) {
+            LOGGER.log(Level.DEBUG, "This page only for Manager! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            request.setAttribute(MESSAGE_ATR, "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
         String carNumber = request.getParameter(CAR_NUMBER_PRM);
@@ -60,28 +63,29 @@ public class CreateCourierCommand implements Command {
         String status = request.getParameter(STATUS_PRM);
         int maxCargo = Integer.parseInt(request.getParameter(CARGO_PRM));
         double tax = Double.parseDouble(request.getParameter(TAX_PRM));
-        if (DataValidator.validateCarNumber(carNumber) & DataValidator.validateCarProducer(carProducer)
-                & DataValidator.validateCarModel(carModel) & DataValidator.validatePhone(driverPhone)
-                & DataValidator.validateName(driverName) & DataValidator.validateEmail(driverEmail)
-                & DataValidator.validateCargo(maxCargo) & DataValidator.validateTax(tax)
-                & DataValidator.validateStatus(status)) {
-            boolean result = false;
-            try {
-                result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
-            } catch (ReceiverException e) {
-                e.printStackTrace();
-            }
-            if (result) {
-                request.setAttribute("successfulMsg", "Данные успешно добавлены");
-                request.setAttribute("method", "redirect");
-                request.setAttribute("redirectUrl", "/couriers?action=get_couriers_pg&firstRow=0&rowCount=3");
-                return PagePath.PATH_COURIERS_PAGE.getPath();
-            }
-            request.setAttribute("errorMessage", "Сохранения данных");
-            return PagePath.PATH_NEW_COURIER_FORM.getPath();
+        if (!DataValidator.validateCarNumber(carNumber) & !DataValidator.validateCarProducer(carProducer)
+                & !DataValidator.validateCarModel(carModel) & !DataValidator.validatePhone(driverPhone)
+                & !DataValidator.validateName(driverName) & !DataValidator.validateEmail(driverEmail)
+                & !DataValidator.validateCargo(maxCargo) & !DataValidator.validateTax(tax)
+                & !DataValidator.validateStatus(status)) {
+            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            return PagePath.PATH_INF_PAGE.getPath();
         }
-        request.setAttribute("errorMessage", "Данные невалидные, невозможно сохранить изменения");
-        return PagePath.PATH_NEW_COURIER_FORM.getPath();
+        boolean result;
+        try {
+            result = receiver.createCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute("exception", e.getMessage());
+            return PagePath.PATH_INF_PAGE.getPath();
+        }
+        if (result) {
+            request.setAttribute("method", "redirect");
+            request.setAttribute("redirectUrl", "/couriers?action=get_couriers_pg&firstRow=0&rowCount=3");
+            return PagePath.PATH_COURIERS_PAGE.getPath();
+        }
+        request.setAttribute(MESSAGE_ATR, "failedToSaveCourier.text");
+        return PagePath.PATH_INF_PAGE.getPath();
     }
 
 }

@@ -1,7 +1,5 @@
 package by.tareltos.fcqdelivery.validator;
 
-import sun.util.resources.cldr.rm.CalendarData_rm_CH;
-
 public class DataValidator {
 
     public static boolean validateEmail(String email) {

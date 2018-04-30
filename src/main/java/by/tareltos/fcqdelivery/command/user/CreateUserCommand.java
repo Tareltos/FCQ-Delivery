@@ -6,6 +6,7 @@ import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import by.tareltos.fcqdelivery.validator.DataValidator;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,11 +19,16 @@ import java.util.Properties;
 public class CreateUserCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
+    private static final String MESSAGE_ATR = "message";
     private static final String EMAIL_PRM = "mail";
+    private static final String FILE_NAME = "mail";
+    private static final String LOGINED_USER_PRM = "loginedUser";
     private static final String FIRST_NAME_PRM = "fName";
     private static final String LAST_NAME_PRM = "lName";
     private static final String PHONE_PRM = "phone";
     private static final String ROLE_PRM = "role";
+    private static final String MANAGER_ROLE = "manager";
+    private static final String CUSTOMER_ROLE = "customer";
     private UserReceiver receiver;
 
     public CreateUserCommand(UserReceiver userReceiver) {
@@ -33,40 +39,59 @@ public class CreateUserCommand implements Command {
     public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
-        String filename = context.getInitParameter("mail");
+        String filename = context.getInitParameter(FILE_NAME);
         try {
             properties.load(context.getResourceAsStream(filename));
         } catch (IOException e) {
-
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute("exception", "Failed to load data to send password to email. Please, try again");
+            return PagePath.PATH_INF_PAGE.getPath();
         }
-        HttpSession session = request.getSession(true);
-        User admin = (User) session.getAttribute("loginedUser");
-        if (null != admin) {
-            String email = request.getParameter(EMAIL_PRM);
-            String fName = request.getParameter(FIRST_NAME_PRM);
-            String lName = request.getParameter(LAST_NAME_PRM);
-            String phone = request.getParameter(PHONE_PRM);
-            try {
-                if (receiver.checkEmail(email) && DataValidator.validateEmail(email) && DataValidator.validateName(fName) && DataValidator.validateName(lName) && DataValidator.validatePhone(phone)) {
-                    String role = request.getParameter(ROLE_PRM);
-                    receiver.createUser(email, fName, lName, phone, role, properties);
-                    request.setAttribute("successfulMsg", "Пользователь успешно создань, пароль отправлен на почту!");
-                    request.setAttribute("method", "redirect");
-                    request.setAttribute("redirectUrl", "/users?action=get_users");
-                    return PagePath.PATH_INF_PAGE.getPath();
-                } else {
-                    request.setAttribute("errorMessage", "Пользователь с таким Email существует");
-                    request.setAttribute("method", "redirect");
-                    request.setAttribute("redirectUrl", "/users?action=get_users");
-                    return PagePath.PATH_INF_PAGE.getPath();
-                }
-            } catch (ReceiverException e) {
-                e.printStackTrace();
-            }
 
-        } else {
+        HttpSession session = request.getSession(true);
+        User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        return null;
+        try {
+            if (!receiver.checkUserStatus(loginedUser.getEmail())) {
+                session.setAttribute(LOGINED_USER_PRM, null);
+                return PagePath.PATH_SINGIN_PAGE.getPath();
+            }
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            return PagePath.PATH_INF_PAGE.getPath();
+        }
+        if (CUSTOMER_ROLE.equals(loginedUser.getRole().getRole()) | MANAGER_ROLE.equals(loginedUser.getRole().getRole())) {
+            LOGGER.log(Level.INFO, "This page only for Admin! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            request.setAttribute(MESSAGE_ATR, "accessDenied.text");
+            return PagePath.PATH_INF_PAGE.getPath();
+        }
+        String email = request.getParameter(EMAIL_PRM);
+        String fName = request.getParameter(FIRST_NAME_PRM);
+        String lName = request.getParameter(LAST_NAME_PRM);
+        String phone = request.getParameter(PHONE_PRM);
+        try {
+            if (!receiver.checkEmail(email)) {
+                request.setAttribute(MESSAGE_ATR, "userExist.text");
+                return PagePath.PATH_INF_PAGE.getPath();
+            }
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+        }
+        if (DataValidator.validateEmail(email) && DataValidator.validateName(fName) && DataValidator.validateName(lName) && DataValidator.validatePhone(phone)) {
+            String role = request.getParameter(ROLE_PRM);
+            try {
+                receiver.createUser(email, fName, lName, phone, role, properties);
+            } catch (ReceiverException e) {
+                LOGGER.log(Level.WARN, e.getMessage());
+            }
+            request.setAttribute("method", "redirect");
+            request.setAttribute("redirectUrl", "/users?action=get_users");
+            return PagePath.PATH_INF_PAGE.getPath();
+        } else {
+            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            return PagePath.PATH_INF_PAGE.getPath();
+        }
     }
 }

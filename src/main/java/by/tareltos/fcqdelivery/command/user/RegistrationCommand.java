@@ -5,6 +5,7 @@ import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import by.tareltos.fcqdelivery.validator.DataValidator;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,6 +16,8 @@ import java.util.Properties;
 
 public class RegistrationCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();
+    private static final String FILE_NAME = "mail";
+    private static final String MESSAGE_ATR = "message";
     private static final String EMAIL_PRM = "mail";
     private static final String FIRST_NAME_PRM = "fName";
     private static final String LAST_NAME_PRM = "lName";
@@ -30,45 +33,52 @@ public class RegistrationCommand implements Command {
     public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
-        String filename = context.getInitParameter("mail");
-
+        String filename = context.getInitParameter(FILE_NAME);
         try {
             properties.load(context.getResourceAsStream(filename));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute("exception", "Failed to load data to send password to email. Please, try again");
+            return PagePath.PATH_INF_PAGE.getPath();
         }
-
         String email = request.getParameter(EMAIL_PRM);
-        String fname = request.getParameter(FIRST_NAME_PRM);
-        String lname = request.getParameter(LAST_NAME_PRM);
-        String phone = request.getParameter(PHONE_PRM);
+        boolean result;
         try {
-            if (DataValidator.validateEmail(email) && !receiver.checkEmail(email)) {
-                request.setAttribute("errorLoginMessage", "Пользователя уже существует. Воспользуйтесь восстановлением пароля!");
-                return PagePath.PATH_SINGIN_PAGE.getPath();
-            }
+            result = receiver.checkEmail(email);
         } catch (ReceiverException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute(MESSAGE_ATR, "checkEmailExc.text");
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        if (DataValidator.validateEmail(email) && DataValidator.validateName(fname)
-                && DataValidator.validateName(lname) && DataValidator.validatePassword(phone)) {
-            boolean result = false;
-            try {
-                result = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties);
-            } catch (ReceiverException e) {
-                e.printStackTrace();
-            }
-            if (result) {
-                request.setAttribute("successfulMsg", "Ругистрация завершена, пароль выслан на почту.");
-                return PagePath.PATH_SINGIN_PAGE.getPath();
-            } else {
-                request.setAttribute("errorLoginMessage", "Пользователь не сохранен, попробуйте еще раз!");
-                return PagePath.PATH_SINGIN_PAGE.getPath();
-            }
-        } else {
-            request.setAttribute("errorLoginMessage", "Введены некорректные данные!");
+        if (!result) {
+            request.setAttribute(MESSAGE_ATR, "userExist.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
 
+        String fname = request.getParameter(FIRST_NAME_PRM);
+        String lname = request.getParameter(LAST_NAME_PRM);
+        String phone = request.getParameter(PHONE_PRM);
+        if (!DataValidator.validateEmail(email) & !DataValidator.validateName(fname)
+                & !DataValidator.validateName(lname) & !DataValidator.validatePassword(phone)) {
+            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            return PagePath.PATH_SINGIN_PAGE.getPath();
+        }
+        boolean createUserResult;
+
+        try {
+            createUserResult = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties);
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute(MESSAGE_ATR, "error.text");
+            return PagePath.PATH_SINGIN_PAGE.getPath();
+        }
+        if (createUserResult) {
+            request.setAttribute(MESSAGE_ATR, "successfulRegResult.text");
+            return PagePath.PATH_SINGIN_PAGE.getPath();
+        } else {
+            request.setAttribute(MESSAGE_ATR, "failedRegResult.text");
+            return PagePath.PATH_SINGIN_PAGE.getPath();
+        }
     }
+
 }

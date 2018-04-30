@@ -33,7 +33,9 @@
             <form method="POST" action="${pageContext.request.contextPath}/doLogin">
                 <input hidden name="action" value="log_in">
                 <h2 class="loginTitle"><fmt:message key="loginForm.loginTitle"/></h2>
-                <h6 style="color: red">${errorLoginMessage}${successfulMsg}</h6>
+                <c:if test="${message != null}">
+                    <h6 style="color: red"><fmt:message key="${message}"/></h6>
+                </c:if>
                 <br>
                 <div class="loginContent">
                     <div class="inputWrapper">
@@ -70,7 +72,8 @@
                     <div class="inputWrapper">
                         <input required type="text" name="mail"
                                pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
-                               title="<fmt:message key="emailFieldTitle"/>" placeholder="<fmt:message key="emailField"/>"/>
+                               title="<fmt:message key="emailFieldTitle"/>"
+                               placeholder="<fmt:message key="emailField"/>"/>
                     </div>
                     <div class=" inputWrapper">
                         <input required minlength="13" maxlength="13" name="phone" type="text"
@@ -93,7 +96,8 @@
                     <div class="inputWrapper">
                         <input required type="text" name="mail"
                                pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
-                               title="<fmt:message key="emailFieldTitle"/>" placeholder="<fmt:message key="emailField"/>"/>
+                               title="<fmt:message key="emailFieldTitle"/>"
+                               placeholder="<fmt:message key="emailField"/>"/>
                     </div>
                     <div class="placeholder"></div>
                 </div>

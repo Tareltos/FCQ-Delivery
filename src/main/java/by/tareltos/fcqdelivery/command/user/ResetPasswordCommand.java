@@ -5,6 +5,9 @@ import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import by.tareltos.fcqdelivery.validator.DataValidator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +16,9 @@ import java.util.Properties;
 
 public class ResetPasswordCommand implements Command {
 
+    final static Logger LOGGER = LogManager.getLogger();
+    private static final String MESSAGE_ATR = "message";
+    private static final String FILE_NAME = "mail";
     private static final String EMAIL_PRM = "mail";
     private UserReceiver receiver;
 
@@ -25,27 +31,34 @@ public class ResetPasswordCommand implements Command {
     public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
         ServletContext context = request.getServletContext();
-        String filename = context.getInitParameter("mail");
+        String filename = context.getInitParameter(FILE_NAME);
         try {
             properties.load(context.getResourceAsStream(filename));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute("exception", "Failed to load data to send password to email. Please, try again");
+            return PagePath.PATH_INF_PAGE.getPath();
         }
 
         String email = request.getParameter(EMAIL_PRM);
-        if (DataValidator.validateEmail(email)) {
-            try {
-                if (receiver.resetUserPassword(email, properties)) {
-                    request.setAttribute("successfulMsg", "Пароль обновлен, проверьте почту");
-                } else {
-                    request.setAttribute("errorLoginMessage", "Пользователя не существует");
-                }
-            } catch (ReceiverException e) {
-                e.printStackTrace();
-            }
+        if (!DataValidator.validateEmail(email)) {
+            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            return PagePath.PATH_SINGIN_PAGE.getPath();
+        }
+        boolean result;
+        try {
+            result = receiver.resetUserPassword(email, properties);
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute(MESSAGE_ATR, "passwordUpdateError.text");
+            return PagePath.PATH_SINGIN_PAGE.getPath();
+        }
+        if (result) {
+            request.setAttribute(MESSAGE_ATR, "updatePassword.text");
         } else {
-            request.setAttribute("errorLoginMessage", "Неправильный Email");
+            request.setAttribute(MESSAGE_ATR, "userNotFound.text");
         }
         return PagePath.PATH_SINGIN_PAGE.getPath();
+
     }
 }

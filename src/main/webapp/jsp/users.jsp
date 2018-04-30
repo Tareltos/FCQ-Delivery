@@ -20,7 +20,6 @@
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
 <div class="container" style="min-height: 80%;">
-    <h6 style="color: red">${errorMessage}${successfulMsg}</h6>
     <div class="row">
         <table class="table table-hover">
             <thead class="thead-inverse">

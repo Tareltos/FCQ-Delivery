@@ -11,10 +11,7 @@ import by.tareltos.fcqdelivery.repository.impl.AccountRepository;
 import by.tareltos.fcqdelivery.repository.impl.ApplicationRepository;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
 import by.tareltos.fcqdelivery.specification.account.AccountByCadDetailsSpecification;
-import by.tareltos.fcqdelivery.specification.application.AllApplicationSpecification;
-import by.tareltos.fcqdelivery.specification.application.ApplicationByIdSpecification;
-import by.tareltos.fcqdelivery.specification.application.ApplicationByOwnerAndStatusSpecification;
-import by.tareltos.fcqdelivery.specification.application.ApplicationByOwnerSpecification;
+import by.tareltos.fcqdelivery.specification.application.*;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByStatusSpecification;
 import org.apache.logging.log4j.Level;
@@ -163,14 +160,25 @@ public class ApplicationReceiver {
     public List<Application> getSelectedApplications(String customerEmail, String applicationStatus) {
         List<Application> resultList = null;
         try {
+            if (customerEmail.equals("") && !applicationStatus.equals(ALL_APPLICATION_STATUS)) {
+                resultList = repository.query(new ApplicationByStatusSpecification(applicationStatus));
+                LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
+                return resultList;
+            }
+            if (customerEmail.equals("") && applicationStatus.equals(ALL_APPLICATION_STATUS)) {
+                resultList = repository.query(new AllApplicationSpecification());
+                LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
+                return resultList;
+            }
             if (applicationStatus.equals(ALL_APPLICATION_STATUS)) {
                 resultList = repository.query(new ApplicationByOwnerSpecification(customerEmail));
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
+                return resultList;
             } else {
                 resultList = repository.query(new ApplicationByOwnerAndStatusSpecification(customerEmail, applicationStatus));
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
+                return resultList;
             }
-            return resultList;
         } catch (RepositoryException e) {
             new ReceiverException("Exception in getAllApplication method", e);
         }

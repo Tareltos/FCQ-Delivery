@@ -27,7 +27,7 @@
             <th>
             <td style="margin-right: 2%"><fmt:message key="search.label"/></td>
             <td style="margin-right: 2%">
-                <input required type="text" name="email"
+                <input type="text" name="email"
                        pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
                        class="form-control mr-2" type="text" placeholder="email@amail.com">
             </td>

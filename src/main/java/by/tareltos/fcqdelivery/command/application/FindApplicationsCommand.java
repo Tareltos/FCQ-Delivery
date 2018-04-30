@@ -40,6 +40,7 @@ public class FindApplicationsCommand implements Command {
             return PagePath.PATH_INF_PAGE.getPath();
         }
         String customerEmail = request.getParameter(CUSTOMER_EMAIL_PRM);
+        LOGGER.log(Level.DEBUG, "Customer email" + customerEmail);
         String applicationStatus = request.getParameter(APPLICATION_STATUS_PRM);
 
         List<Application> appList = receiver.getSelectedApplications(customerEmail, applicationStatus);

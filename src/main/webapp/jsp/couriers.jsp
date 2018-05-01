@@ -24,13 +24,13 @@
         <c:forEach items="${courierList}" var="courier">
             <div class="col-md-4 p-4" style="border: 4px double black; background: #dbe1f5;">
                 <img class="img-fluid d-block rounded-0 mx-auto" src="../files/${courier.imageFileName}">
-                <p><i>Автомобиль: ${courier.carProducer} ${courier.carModel}</i></p>
-                <p><i>Грузоподъемность: ${courier.maxCargo}</i></p>
-                <p><i>Тарив за км: ${courier.kmTax}</i></p>
-                <p><i>Статус: ${courier.status.status}</i></p>
+                <p><i><fmt:message key="courierCarModel.text"/>${courier.carProducer} ${courier.carModel}</i></p>
+                <p><i><fmt:message key="courierMaxCargo.text"/>${courier.maxCargo}</i></p>
+                <p><i><fmt:message key="courierTax.text"/>${courier.kmTax}</i></p>
+                <p><i><fmt:message key="courierStatus.text"/>${courier.status.status}</i></p>
                 <c:if test="${loginedUser.role.role =='manager'}">
                     <a href="${pageContext.request.contextPath}/courierForm?action=edit_courier&carNumber=${courier.carNumber}"><img
-                            src="img/edit.png" width="20" height="20" title="Редактировать">
+                            src="img/edit.png" width="20" height="20" title="<fmt:message key="editImgTitle.text"/>">
                     </a>
                 </c:if>
             </div>

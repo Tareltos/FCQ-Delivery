@@ -179,7 +179,7 @@
             </form>
             <span>
                 <button style="margin-left: 35%; margin-bottom: 2%;" type="button" class="btn btn-warning"
-                        data-dismiss="modal">Отмена</button>
+                        data-dismiss="modal"><fmt:message key="cancelButton.text"/></button>
                 <button id="formSubmit" style="margin-bottom: 2%;" type="button" class="btn btn-success"
                         onclick="formSubmit"><fmt:message key="submitApplication.button"/> </button>
             <script language="javascript">

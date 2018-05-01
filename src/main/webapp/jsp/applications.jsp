@@ -88,7 +88,7 @@
                                     key="deliveredAppStatus.label"/></button>
                         </c:if>
                         <c:if test="${app.status.status=='canceled'}">
-                            <button type="button" class="btn btn-info" disabled><fmt:message
+                            <button type="button" class="btn btn-info"  title="${app.cancelationReason}" disabled><fmt:message
                                     key="canceledAppStatus.label"/></button>
                         </c:if>
                     </td>

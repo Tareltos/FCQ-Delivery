@@ -97,18 +97,18 @@
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="userInfo.label.role"/></label>
                     <select required name="role" type="text" class="form-control">
-                        <option value="admin">Администратор</option>
-                        <option value="customer">Клиент</option>
-                        <option value="manager">Менеджер</option>
+                        <option value="admin"><fmt:message key="adminRole.text"/></option>
+                        <option value="customer"><fmt:message key="customerRole.text"/></option>
+                        <option value="manager"><fmt:message key="managerRole.text"/></option>
                     </select>
                 </div>
             </form>
             <span>
                 <button style="margin-left: 35%; margin-bottom: 2%;" type="button" class="btn btn-warning"
-                        data-dismiss="modal">Отмена
+                        data-dismiss="modal"><fmt:message key="cancelButton.text"/>
                 </button>
                 <button id="formSubmit" style="margin-bottom: 2%;" type="button" class="btn btn-success"
-                        onclick="formSubmit">Создать
+                        onclick="formSubmit"><fmt:message key="createButton.text"/>
                 </button>
             <script language="javascript">
                  $('#formSubmit').on('click', function () {

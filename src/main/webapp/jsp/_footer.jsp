@@ -1,6 +1,7 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="/WEB-INF/printdate.tld" prefix="m" %>
 <c:set var="language"
        value="${not empty param.language ? param.language : not empty language ? language : pageContext.request.locale}"
        scope="session"/>
@@ -17,6 +18,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 mt-3">
+                    <h6 style="margin-left: 40%"><m:date/></h6>
                     <p class="text-center text-white">© Copyright 2018 Pingendo - <fmt:message key="footer.text.right"/> </p>
                 </div>
             </div>

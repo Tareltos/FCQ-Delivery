@@ -10,7 +10,7 @@ public class PasswordGenerator {
 
     final static Logger LOGGER = LogManager.getLogger();
 
-    public static String generatePassword(String mail) {
+    public static String generatePassword() {
 
         String password ="pass"+ new Random().nextInt(200)+"n";
         LOGGER.log(Level.DEBUG, "Generated Password: " + password);

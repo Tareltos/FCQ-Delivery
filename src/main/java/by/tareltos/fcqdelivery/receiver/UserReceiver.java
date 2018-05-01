@@ -82,7 +82,7 @@ public class UserReceiver {
     public boolean resetUserPassword(String email, Properties props) throws ReceiverException {
         boolean result = false;
         try {
-            String password = PasswordGenerator.generatePassword(email);
+            String password = PasswordGenerator.generatePassword();
             List<User> listUser = repository.query(new UserByEmailSpecification(email));
             LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
             if (listUser.size() == 1) {
@@ -100,7 +100,7 @@ public class UserReceiver {
     public boolean createUser(String email, String fName, String lName, String phone, String role, Properties props) throws ReceiverException {
         boolean result;
         try {
-            String pass = PasswordGenerator.generatePassword(email);
+            String pass = PasswordGenerator.generatePassword();
             UserRole userRole = null;
             switch (role.toUpperCase()) {
                 case "CUSTOMER":

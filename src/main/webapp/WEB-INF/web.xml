@@ -27,13 +27,6 @@
         <filter-name>encodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <jsp-config>
-        <taglib>
-            <taglib-uri>https://journaldev.com/jsp/tlds/tareltostag</taglib-uri>
-            <taglib-location>/WEB-INF/numberformatter.tld</taglib-location>
-        </taglib>
-    </jsp-config>
-
 
 </web-app>
 

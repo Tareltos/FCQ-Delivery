@@ -24,11 +24,9 @@ import java.util.List;
 public class ApplicationRepository implements Repository<Application> {
 
     final static Logger LOGGER = LogManager.getLogger();
-    final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status, cancelation_reason ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
+    static final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status, cancelation_reason ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
     final String REMOVE_APPLICATION_QUERY = "DELETE FROM application WHERE id=? ";
     final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=?, cancelation_reason=? where id=? ";
-    private UserRepository userRepository = new UserRepository();
-    private CourierRepository courierRepository = new CourierRepository();
 
     @Override
     public boolean add(Application application) throws RepositoryException {
@@ -51,8 +49,8 @@ public class ApplicationRepository implements Repository<Application> {
             LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in add method\n" + e, e);
+
+            throw new RepositoryException("SQLException in add method\n", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -70,8 +68,8 @@ public class ApplicationRepository implements Repository<Application> {
             LOGGER.log(Level.DEBUG, "Execute result in remove: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in remove method \n" + e, e);
+
+            throw new RepositoryException("SQLException in remove method \n", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
@@ -116,8 +114,11 @@ public class ApplicationRepository implements Repository<Application> {
             while (rs.next()) {
                 Application application = new Application();
                 application.setId(rs.getInt("id"));
-                List<User> list = userRepository.query(new UserByEmailSpecification(rs.getString("user_email")));
-                User owner = list.get(0);
+                User owner  = new User();
+                owner.setEmail(rs.getString("user_email"));
+                owner.setFirstName(rs.getString("firstName"));
+                owner.setLastName(rs.getString("lastName"));
+                owner.setPhone(rs.getString("phone"));
                 LOGGER.log(Level.DEBUG, owner.toString());
                 application.setOwner(owner);
                 application.setStartPoint(rs.getString("start_point"));
@@ -129,7 +130,13 @@ public class ApplicationRepository implements Repository<Application> {
                 String carNumber = rs.getString("car_number");
                 LOGGER.log(Level.DEBUG, carNumber);
                 if (carNumber != null) {
-                    Courier courier = (Courier) courierRepository.query(new CourierByRegNumberSpecification(carNumber)).get(0);
+                    Courier courier = new Courier();
+                    courier.setCarNumber(carNumber);
+                    courier.setCarProducer(rs.getString("car_producer"));
+                    courier.setCarModel(rs.getNString("car_model"));
+                    courier.setDriverEmail(rs.getString("driver_email"));
+                    courier.setDriverPhone(rs.getString("driver_phone"));
+                    courier.setDriverName(rs.getString("driver_name"));
                     LOGGER.log(Level.DEBUG, courier.toString());
                     application.setCourier(courier);
                 }

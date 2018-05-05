@@ -21,31 +21,33 @@
 <body>
 <div class="container" style="min-height: 80%;">
     <div class="row">
-        <form class="form-inline m-0" style="margin-top: 2%; width: 100%; background-color: #7e7e7e;" method="POST"
-              action="${pageContext.request.contextPath}/applications">
-            <input hidden name="action" value="find_applications">
-            <th>
-            <td style="margin-right: 2%"><fmt:message key="search.label"/></td>
-            <td style="margin-right: 2%">
-                <input type="text" name="email"
-                       pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
-                       class="form-control mr-2" type="text" placeholder="email@amail.com">
-            </td>
-            <td style="margin-right: 2%">
-                <select required name="status" type="text" class="form-control">
-                    <option value="all"><fmt:message key="allAppStatus.label"/></option>
-                    <option value="new"><fmt:message key="newAppStatus.label"/></option>
-                    <option value="waiting"><fmt:message key="waitingAppStatus.label"/></option>
-                    <option value="confirmed"><fmt:message key="confirmedAppStatus.label"/></option>
-                    <option value="delivered"><fmt:message key="deliveredAppStatus.label"/></option>
-                    <option value="canceled"><fmt:message key="canceledAppStatus.label"/></option>
-                </select>
-            </td>
-            <td style="margin-right: 2%">
-                <button class="btn btn-warning" type="submit"><fmt:message key="searchButton.text"/></button>
-            </td>
-            </th>
-        </form>
+        <c:if test="${loginedUser.role.role =='manager'}">
+            <form class="form-inline m-0" style="margin-top: 2%; width: 100%; background-color: #7e7e7e;" method="POST"
+                  action="${pageContext.request.contextPath}/applications">
+                <input hidden name="action" value="find_applications">
+                <th>
+                <td style="margin-right: 2%"><fmt:message key="search.label"/></td>
+                <td style="margin-right: 2%">
+                    <input type="text" name="email"
+                           pattern="^[A-Za-z0-9][A-Za-z0-9\.\-_]*[A-Za-z0-9]*@([A-Za-z0-9]+([A-Za-z0-9-]*[A-Za-z0-9]+)*\.)+[A-Za-z]*$"
+                           class="form-control mr-2" type="text" placeholder="email@amail.com">
+                </td>
+                <td style="margin-right: 2%">
+                    <select required name="status" type="text" class="form-control">
+                        <option value="all"><fmt:message key="allAppStatus.label"/></option>
+                        <option value="new"><fmt:message key="newAppStatus.label"/></option>
+                        <option value="waiting"><fmt:message key="waitingAppStatus.label"/></option>
+                        <option value="confirmed"><fmt:message key="confirmedAppStatus.label"/></option>
+                        <option value="delivered"><fmt:message key="deliveredAppStatus.label"/></option>
+                        <option value="canceled"><fmt:message key="canceledAppStatus.label"/></option>
+                    </select>
+                </td>
+                <td style="margin-right: 2%">
+                    <button class="btn btn-warning" type="submit"><fmt:message key="searchButton.text"/></button>
+                </td>
+                </th>
+            </form>
+        </c:if>
         <table class="table table-hover">
             <thead class="thead-inverse">
             <tr>
@@ -88,8 +90,9 @@
                                     key="deliveredAppStatus.label"/></button>
                         </c:if>
                         <c:if test="${app.status.status=='canceled'}">
-                            <button type="button" class="btn btn-info"  title="${app.cancelationReason}" disabled><fmt:message
-                                    key="canceledAppStatus.label"/></button>
+                            <button type="button" class="btn btn-info" title="${app.cancelationReason}" disabled>
+                                <fmt:message
+                                        key="canceledAppStatus.label"/></button>
                         </c:if>
                     </td>
                     <td>

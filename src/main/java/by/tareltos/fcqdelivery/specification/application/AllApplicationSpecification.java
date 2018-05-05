@@ -4,7 +4,7 @@ import by.tareltos.fcqdelivery.specification.SqlSpecification;
 
 public class AllApplicationSpecification implements SqlSpecification {
 
-    private final String SELECT_ALL_QUERY = "SELECT * FROM application ";
+    private final String SELECT_ALL_QUERY = "SELECT * FROM application a LEFT JOIN user u ON a.user_email = u.email LEFT JOIN courier c ON a.car_number  = c.car_number";
 
     public AllApplicationSpecification() {
     }

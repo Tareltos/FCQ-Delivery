@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 public class CreateApplicationCommand implements Command {
     final static Logger LOGGER = LogManager.getLogger();
+    //request parameter names
     private static final String LOGINED_USER_PRM = "loginedUser";
     private static final String START_POINT_PRM = "start";
     private static final String FINISH_POINT_PRM = "finish";
@@ -60,9 +61,10 @@ public class CreateApplicationCommand implements Command {
                 }
             } catch (ReceiverException e) {
                 LOGGER.log(Level.WARN, e);
+                return PagePath.PATH_INF_PAGE.getPath();
             }
             request.setAttribute("message", "error.text");
-            return PagePath.PATH_INF_PAGE.getPath();
+
         }
         request.setAttribute("message", "invalidData.text");
         return PagePath.PATH_INF_PAGE.getPath();

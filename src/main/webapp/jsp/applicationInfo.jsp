@@ -73,8 +73,7 @@
                         key="footer.text.phone"/> ${application.courier.driverPhone}
                     <fmt:message key="footer.text.email"/> ${application.courier.driverEmail}</h4>
                 <hr size="1px" style=" background-color: #1c7430">
-                <h4><fmt:message key="appTotalPrice.label"/></h4>
-                ${application.price}
+                <h4 style=""><fmt:message key="appTotalPrice.label"/>  ${application.price}</h4>
             </c:if>
             <c:if test="${null==application.courier}">
                 <fmt:message key="courierNotSelected.label"/>

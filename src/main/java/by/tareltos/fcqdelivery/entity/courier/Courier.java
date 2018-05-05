@@ -1,11 +1,16 @@
 package by.tareltos.fcqdelivery.entity.courier;
 
 import java.util.Objects;
-
 /**
- * Task 1 Chapter A
- * Created by Vitali Tarelko on 26.03.2018.
- * tareltos@gmail.com; skype: tareltos
+ * The class serves to store objects with properties
+ * <b>carNumber</b>, <b>carProducer/b>
+ * <b>carModel</b>,<b>driverPhone</b>,
+ * <b>driverName</b>,<b>driverEmail</b>,
+ * <b>maxCargo</b>,<b>kmTax</b>,
+ * <b>imageFileName</b>,<b>status</b>.
+ *
+ * @version 1.0
+ * @autor Tarelko Vitali
  */
 public class Courier {
 
@@ -116,7 +121,9 @@ public class Courier {
     public void setStatus(CourierStatus status) {
         this.status = status;
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public boolean equals(Object o) {
 
@@ -134,13 +141,17 @@ public class Courier {
                 Objects.equals(imageFileName, courier.imageFileName) &&
                 status == courier.status;
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public int hashCode() {
 
         return Objects.hash(carNumber, carProducer, carModel, driverPhone, driverName, driverEmail, maxCargo, kmTax, imageFileName, status);
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public String toString() {
         return "Courier{" +

@@ -4,7 +4,17 @@ import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.user.User;
 
 import java.util.Objects;
-
+/**
+ * The class serves to store objects with properties
+ * <b>id</b>, <b>owner/b>
+ * <b>startPoint</b>,<b>finishPoint</b>,
+ * <b>deliveryDate</b>,<b>cargo</b>,
+ * <b>comment</b>,<b>price</b>,
+ * <b>status</b>,<b>cancelationReason</b>.
+ *
+ * @version 1.0
+ * @autor Tarelko Vitali
+ */
 public class Application {
 
     private int id;
@@ -123,7 +133,9 @@ public class Application {
     public void setCancelationReason(String cancelationReason) {
         this.cancelationReason = cancelationReason;
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -141,13 +153,17 @@ public class Application {
                 status == that.status &&
                 Objects.equals(cancelationReason, that.cancelationReason);
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public int hashCode() {
 
         return Objects.hash(id, owner, startPoint, finishPoint, deliveryDate, cargo, comment, courier, price, status, cancelationReason);
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public String toString() {
         return "Application{" +

@@ -2,6 +2,16 @@ package by.tareltos.fcqdelivery.entity.user;
 
 import java.util.Objects;
 
+/**
+ * The class serves to store objects with properties
+ * <b>email</b>, <b>password/b>
+ * <b>firstName</b>,<b>lastName</b>,
+ * <b>phone</b>,<b>role</b>,
+ * <b>status/b>.
+ *
+ * @version 1.0
+ * @autor Tarelko Vitali
+ */
 public class User {
 
     private String email;
@@ -81,7 +91,9 @@ public class User {
     public void setStatus(UserStatus status) {
         this.status = status;
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -95,13 +107,17 @@ public class User {
                 role == user.role &&
                 status == user.status;
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public int hashCode() {
 
         return Objects.hash(email, password, firstName, lastName, phone, role, status);
     }
-
+    /**
+     * @see java.lang.Object
+     */
     @Override
     public String toString() {
         return "User{" +

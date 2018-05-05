@@ -16,14 +16,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * The class is used work with the database
+ * contains requests to the database and the logger
+ *
+ * @see by.tareltos.fcqdelivery.repository.Repository
+ */
 public class CourierRepository implements Repository<Courier> {
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**Parameter stores an add query to the database */
+    private static final String ADD_COURIER_QUERY = "INSERT INTO courier(car_number, car_producer, car_model, car_photo, driver_phone, driver_name, driver_email, max_cargo, km_tax, status  ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
+    /**Parameter stores an remove query to the database */
+    private static final String REMOVE_COURIER_QUERY = "DELETE FROM courier WHERE car_number=? ";
+    /**Parameter stores an update query to the database */
+    private static final String UPDATE_COURIER_QUERY = "UPDATE courier SET car_producer=?, car_model=?, car_photo=?, driver_phone=?, driver_name=?, driver_email=?, max_cargo=?, km_tax=?, status=? where car_number=? ";
 
-    final static Logger LOGGER = LogManager.getLogger();
-    final String ADD_COURIER_QUERY = "INSERT INTO courier(car_number, car_producer, car_model, car_photo, driver_phone, driver_name, driver_email, max_cargo, km_tax, status  ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
-    final String REMOVE_COURIER_QUERY = "DELETE FROM courier WHERE car_number=? ";
-    final String UPDATE_COURIER_QUERY = "UPDATE courier SET car_producer=?, car_model=?, car_photo=?, driver_phone=?, driver_name=?, driver_email=?, max_cargo=?, km_tax=?, status=? where car_number=? ";
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     @Override
     public boolean add(Courier courier) throws RepositoryException {
         int executeResult;
@@ -42,16 +58,18 @@ public class CourierRepository implements Repository<Courier> {
             pstm.setDouble(9, courier.getKmTax());
             pstm.setString(10, courier.getStatus().getStatus());
             executeResult = pstm.executeUpdate();
-            LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
+            LOGGER.log(Level.INFO, "Execute result in add method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in add method \n" + e, e);
+            throw new RepositoryException("SQLException in add method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     @Override
     public boolean remove(Courier courier) throws RepositoryException {
         int executeResult;
@@ -64,12 +82,15 @@ public class CourierRepository implements Repository<Courier> {
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
             LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in remove method \n" + e, e);
+            throw new RepositoryException("SQLException in remove method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     @Override
     public boolean update(Courier courier) throws RepositoryException {
         int executeResult;
@@ -88,18 +109,20 @@ public class CourierRepository implements Repository<Courier> {
             pstm.setString(9, courier.getStatus().getStatus());
             pstm.setString(10, courier.getCarNumber());
             executeResult = pstm.executeUpdate();
-            LOGGER.log(Level.DEBUG, "Execute result in update method: " + executeResult);
+            LOGGER.log(Level.INFO, "Execute result in update method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in update method \n" + e, e);
+            throw new RepositoryException("SQLException in update method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     @Override
-    public List query(SqlSpecification specification) throws RepositoryException {
+    public List<Courier> query(SqlSpecification specification) throws RepositoryException {
         Connection connection = ConnectionPool.getInstance().getConnection();
         try {
             PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
@@ -130,12 +153,11 @@ public class CourierRepository implements Repository<Courier> {
 
             }
             if (courierList.isEmpty()) {
-                LOGGER.log(Level.WARN, "Result list is empty!");
+                LOGGER.log(Level.INFO, "Result list is empty!");
             }
             return courierList;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("Exception in query method \n" + e, e);
+            throw new RepositoryException("Exception in query method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }

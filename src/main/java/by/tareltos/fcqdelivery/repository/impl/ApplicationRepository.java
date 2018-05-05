@@ -8,8 +8,6 @@ import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.repository.Repository;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
-import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
-import by.tareltos.fcqdelivery.specification.user.UserByEmailSpecification;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,13 +19,30 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The class is used work with the database
+ * contains requests to the database and the logger
+ *
+ * @see by.tareltos.fcqdelivery.repository.Repository
+ */
 public class ApplicationRepository implements Repository<Application> {
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private final static Logger LOGGER = LogManager.getLogger();
+    /**Parameter stores an add query to the database */
+    private static final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status, cancelation_reason ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
+    /**Parameter stores an remove query to the database */
+    private static final String REMOVE_APPLICATION_QUERY = "DELETE FROM application WHERE id=? ";
+    /**Parameter stores an update query to the database */
+    private static final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=?, cancelation_reason=? where id=? ";
 
-    final static Logger LOGGER = LogManager.getLogger();
-    static final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status, cancelation_reason ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
-    final String REMOVE_APPLICATION_QUERY = "DELETE FROM application WHERE id=? ";
-    final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=?, cancelation_reason=? where id=? ";
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.application.Application
+     */
     @Override
     public boolean add(Application application) throws RepositoryException {
         int executeResult;
@@ -46,16 +61,19 @@ public class ApplicationRepository implements Repository<Application> {
             pstm.setString(9, application.getStatus().getStatus());
             pstm.setString(10, null);
             executeResult = pstm.executeUpdate();
-            LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
+            LOGGER.log(Level.INFO, "Execute result in add method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-
-            throw new RepositoryException("SQLException in add method\n", e);
+            throw new RepositoryException("SQLException in add method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
 
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.application.Application
+     */
     @Override
     public boolean remove(Application application) throws RepositoryException {
         int executeResult;
@@ -65,16 +83,18 @@ public class ApplicationRepository implements Repository<Application> {
             pstm = connection.prepareStatement(REMOVE_APPLICATION_QUERY);
             pstm.setInt(1, application.getId());
             executeResult = pstm.executeUpdate();
-            LOGGER.log(Level.DEBUG, "Execute result in remove: " + executeResult);
+            LOGGER.log(Level.INFO, "Execute result in remove: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-
-            throw new RepositoryException("SQLException in remove method \n", e);
+            throw new RepositoryException("SQLException in remove method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.application.Application
+     */
     @Override
     public boolean update(Application application) throws RepositoryException {
         int executeResult;
@@ -97,13 +117,16 @@ public class ApplicationRepository implements Repository<Application> {
             LOGGER.log(Level.DEBUG, "Execute result in update method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in update method \n" + e, e);
+            throw new RepositoryException("SQLException in update method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
 
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.application.Application
+     */
     @Override
     public List<Application> query(SqlSpecification specification) throws RepositoryException {
         List<Application> appList = new ArrayList<>();
@@ -114,7 +137,7 @@ public class ApplicationRepository implements Repository<Application> {
             while (rs.next()) {
                 Application application = new Application();
                 application.setId(rs.getInt("id"));
-                User owner  = new User();
+                User owner = new User();
                 owner.setEmail(rs.getString("user_email"));
                 owner.setFirstName(rs.getString("firstName"));
                 owner.setLastName(rs.getString("lastName"));
@@ -160,7 +183,7 @@ public class ApplicationRepository implements Repository<Application> {
                         application.setCancelationReason(rs.getString("cancelation_reason"));
                         break;
                 }
-                LOGGER.log(Level.DEBUG, application.toString());
+                LOGGER.log(Level.INFO, application.toString());
                 appList.add(application);
             }
             if (appList.isEmpty()) {
@@ -168,8 +191,7 @@ public class ApplicationRepository implements Repository<Application> {
             }
             return appList;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("Exception in query method \n" + e, e);
+            throw new RepositoryException("Exception in query method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }

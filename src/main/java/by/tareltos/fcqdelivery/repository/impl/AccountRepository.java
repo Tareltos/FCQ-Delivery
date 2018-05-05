@@ -15,14 +15,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * The class is used work with the database
+ * contains requests to the database and the logger
+ *
+ * @see by.tareltos.fcqdelivery.repository.Repository
+ */
 public class AccountRepository implements Repository<Account> {
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**Parameter stores an add query to the database */
+    private static final String ADD_ACCOUNT_QUERY = "INSERT INTO account(card_number, expiration_month, expiration_year, csv, balance, first_name, last_name) VALUES (?,?,?,?,?,?,?) ";
+    /**Parameter stores an remove query to the database */
+    private static final String REMOVE_ACCOUNT_QUERY = "DELETE FROM account WHERE card_number=? ";
+    /**Parameter stores an update query to the database */
+    private static final String UPDATE_ACCOUNT_QUERY = "UPDATE account SET expiration_month=?, expiration_year=?, csv=?,  balance=?, first_name=?, last_name=? where card_number=? ";
 
-    final static Logger LOGGER = LogManager.getLogger();
-    final String ADD_ACCOUNT_QUERY = "INSERT INTO account(card_number, expiration_month, expiration_year, csv, balance, first_name, last_name) VALUES (?,?,?,?,?,?,?) ";
-    final String REMOVE_ACCOUNT_QUERY = "DELETE FROM account WHERE card_number=? ";
-    final String UPDATE_ACCOUNT_QUERY = "UPDATE account SET expiration_month=?, expiration_year=?, csv=?,  balance=?, first_name=?, last_name=? where card_number=? ";
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.account.Account
+     */
     @Override
     public boolean add(Account account) throws RepositoryException {
         int executeResult;
@@ -38,16 +54,18 @@ public class AccountRepository implements Repository<Account> {
             pstm.setString(6, account.getFirstName());
             pstm.setString(7, account.getLastName());
             executeResult = pstm.executeUpdate();
-            LOGGER.log(Level.DEBUG, "Execute result in add method: " + executeResult);
+            LOGGER.log(Level.INFO, "Execute result in add method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in add method in" + getClass() + "\n" + e, e);
+            throw new RepositoryException("SQLException in add method in", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.account.Account
+     */
     @Override
     public boolean remove(Account account) throws RepositoryException {
         int executeResult;
@@ -56,16 +74,18 @@ public class AccountRepository implements Repository<Account> {
         try {
             pstm = connection.prepareStatement(String.format(REMOVE_ACCOUNT_QUERY, account.getCardNumber()));
             executeResult = pstm.executeUpdate();
-            LOGGER.log(Level.DEBUG, "Execute result in remove: " + executeResult);
+            LOGGER.log(Level.INFO, "Execute result in remove: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in remove method \n" + e, e);
+            throw new RepositoryException("SQLException in remove method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.account.Account
+     */
     @Override
     public boolean update(Account account) throws RepositoryException {
         int executeResult;
@@ -81,16 +101,18 @@ public class AccountRepository implements Repository<Account> {
             pstm.setString(6, account.getLastName());
             pstm.setString(7, account.getCardNumber());
             executeResult = pstm.executeUpdate();
-            LOGGER.log(Level.DEBUG, "Execute result in update method: " + executeResult);
+            LOGGER.log(Level.INFO, "Execute result in update method: " + executeResult);
             return executeResult == 1 ? true : false;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("SQLException in update method \n" + e, e);
+            throw new RepositoryException("SQLException in update method", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }
     }
-
+    /**
+     * @see by.tareltos.fcqdelivery.repository.Repository
+     * @see by.tareltos.fcqdelivery.entity.account.Account
+     */
     @Override
     public List<Account> query(SqlSpecification specification) throws RepositoryException {
         List<Account> accountList = new ArrayList<>();
@@ -107,16 +129,15 @@ public class AccountRepository implements Repository<Account> {
                 account.setFirstName(rs.getString("first_name"));
                 account.setBalance(rs.getDouble("balance"));
                 account.setLastName(rs.getString("last_name"));
-                LOGGER.log(Level.DEBUG, account.toString());
+                LOGGER.log(Level.INFO, account.toString());
                 accountList.add(account);
             }
             if (accountList.isEmpty()) {
-                LOGGER.log(Level.WARN, "Result list is empty!");
+                LOGGER.log(Level.INFO, "Result list is empty!");
             }
             return accountList;
         } catch (SQLException e) {
-            LOGGER.log(Level.WARN, e);
-            throw new RepositoryException("Exception in query method \n" + e, e);
+            throw new RepositoryException("Exception in query method ", e);
         } finally {
             ConnectionPool.getInstance().freeConnection(connection);
         }

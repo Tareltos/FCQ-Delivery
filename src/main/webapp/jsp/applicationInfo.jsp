@@ -24,23 +24,28 @@
 
             <c:if test="${application.status.status=='new'}">
                <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-primary"
-                        style="margin-bottom: 2%;">${application.status.status}</button>
+                        style="margin-bottom: 2%;"><fmt:message
+                    key="newAppStatus.label"/></button>
             </c:if>
             <c:if test="${application.status.status=='waiting'}">
                 <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-warning"
-                        style="margin-bottom: 2%;">${application.status.status}</button>
+                        style="margin-bottom: 2%;"><fmt:message
+                    key="waitingAppStatus.label"/></button>
             </c:if>
             <c:if test="${application.status.status=='confirmed'}">
                 <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-danger"
-                        style="margin-bottom: 2%;">${application.status.status}</button>
+                        style="margin-bottom: 2%;"><fmt:message
+                    key="confirmedAppStatus.label"/></button>
             </c:if>
             <c:if test="${application.status.status=='delivered'}">
                 <h3><fmt:message key="userInfo.label.status"/></h3> <button type="button" class="btn btn-success"
-                        style="margin-bottom: 2%;">${application.status.status}</button>
+                        style="margin-bottom: 2%;"><fmt:message
+                    key="deliveredAppStatus.label"/></button>
             </c:if>
             <c:if test="${application.status.status=='canceled'}">
                 <h3><fmt:message key="userInfo.label.status"/></h3><button type="button" class="btn btn-info"
-                        style="margin-bottom: 2%;">${application.status.status}</button>
+                        style="margin-bottom: 2%;"><fmt:message
+                    key="canceledAppStatus.label"/></button>
             </c:if>
         <div class="col-md-12 bg-light">
             <div class="form-group"><label><fmt:message

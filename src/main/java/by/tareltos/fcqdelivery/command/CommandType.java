@@ -7,6 +7,11 @@ import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 
+/**
+ * The ENUM class whith stores command name
+ *
+ * @autor Tarelko Vitali
+ */
 public enum CommandType {
     MAIN(new MainCommand()),
     SING_IN(new SinginCommand()),
@@ -36,11 +41,14 @@ public enum CommandType {
     CANCEL_APPLICATION(new CancelApplicationCommand(new ApplicationReceiver())),
     LOAD_FILE(new LoadFileCommand(new CourierReceiver())),
     FIND_APPLICATIONS(new FindApplicationsCommand(new ApplicationReceiver()));
-
-
+    /**
+     * Command field which defined while initialization
+     */
     private Command command;
 
-
+    /**
+     * Constructs CommandType and initialize private command variable
+     */
     CommandType(Command command) {
         this.command = command;
     }

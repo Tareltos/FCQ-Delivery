@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command;
 
 /**
- * Task 1 Chapter A
  * Created by Vitali Tarelko on 27.03.2018.
  * tareltos@gmail.com; skype: tareltos
  */

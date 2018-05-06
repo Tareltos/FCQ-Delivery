@@ -54,6 +54,7 @@ public class UpdateCourierCommand implements Command {
 
         String carNumber = request.getParameter(CAR_NUMBER_PRM);
         String carProducer = request.getParameter(CAR_PRODUCER_PRM);
+        LOGGER.log(Level.DEBUG, "Test JS-injection protection " +carProducer);
         String carModel = request.getParameter(CAR_MODEL_PRM);
         String carPhotoFullPath = request.getParameter(CAR_IMG_PRM);
         if (carPhotoFullPath == null) {

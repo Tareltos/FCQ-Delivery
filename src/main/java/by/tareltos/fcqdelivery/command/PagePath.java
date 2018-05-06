@@ -1,5 +1,10 @@
 package by.tareltos.fcqdelivery.command;
 
+/**
+ * The ENUM class whith stores paths to jsp page
+ *
+ * @autor Tarelko Vitali
+ */
 public enum PagePath {
 
     PATH_USERS_PAGE("/jsp/users.jsp"),
@@ -14,6 +19,7 @@ public enum PagePath {
     PATH_NEWAPP_FORM_PAGE("/jsp/newApplicationForm.jsp"),
     PATH_APPLICATION_INFO_PAGE("/jsp/applicationInfo.jsp"),
     PATH_SELECT_COURIER_PAGE("/jsp/selectCourier.jsp");
+
     private String path;
 
     PagePath(String path) {

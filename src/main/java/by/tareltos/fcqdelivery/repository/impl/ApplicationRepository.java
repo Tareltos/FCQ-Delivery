@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.repository.impl;
 
-import by.tareltos.fcqdelivery.connection.ConnectionPool;
+import by.tareltos.fcqdelivery.dbconnection.ConnectionException;
+import by.tareltos.fcqdelivery.dbconnection.ConnectionPool;
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.application.ApplicationStatus;
 import by.tareltos.fcqdelivery.entity.courier.Courier;
@@ -32,11 +33,17 @@ public class ApplicationRepository implements Repository<Application> {
      * @see org.apache.logging.log4j.Logger
      */
     private final static Logger LOGGER = LogManager.getLogger();
-    /**Parameter stores an add query to the database */
+    /**
+     * Parameter stores an add query to the database
+     */
     private static final String ADD_APPLICATION_QUERY = "INSERT INTO application( user_email, start_point, finish_point, delivery_date, cargo_kg, comment, car_number, total_value, app_status, cancelation_reason ) VALUES (?,?,?,?,?,?,?,?,?,?) ";
-    /**Parameter stores an remove query to the database */
+    /**
+     * Parameter stores an remove query to the database
+     */
     private static final String REMOVE_APPLICATION_QUERY = "DELETE FROM application WHERE id=? ";
-    /**Parameter stores an update query to the database */
+    /**
+     * Parameter stores an update query to the database
+     */
     private static final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=?, cancelation_reason=? where id=? ";
 
     /**
@@ -46,7 +53,12 @@ public class ApplicationRepository implements Repository<Application> {
     @Override
     public boolean add(Application application) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in add method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(ADD_APPLICATION_QUERY);
@@ -66,7 +78,11 @@ public class ApplicationRepository implements Repository<Application> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in add method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in add method" + e.getMessage(), e);
+            }
         }
     }
 
@@ -77,7 +93,12 @@ public class ApplicationRepository implements Repository<Application> {
     @Override
     public boolean remove(Application application) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in remove method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(REMOVE_APPLICATION_QUERY);
@@ -88,9 +109,14 @@ public class ApplicationRepository implements Repository<Application> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in remove method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in remove method" + e.getMessage(), e);
+            }
         }
     }
+
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository
      * @see by.tareltos.fcqdelivery.entity.application.Application
@@ -98,7 +124,12 @@ public class ApplicationRepository implements Repository<Application> {
     @Override
     public boolean update(Application application) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in update method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(UPDATE_APPLICATION_QUERY);
@@ -119,7 +150,11 @@ public class ApplicationRepository implements Repository<Application> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in update method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in update method" + e.getMessage(), e);
+            }
         }
     }
 
@@ -130,7 +165,12 @@ public class ApplicationRepository implements Repository<Application> {
     @Override
     public List<Application> query(SqlSpecification specification) throws RepositoryException {
         List<Application> appList = new ArrayList<>();
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
+        }
         try {
             PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
             ResultSet rs = pstm.executeQuery();
@@ -193,8 +233,11 @@ public class ApplicationRepository implements Repository<Application> {
         } catch (SQLException e) {
             throw new RepositoryException("Exception in query method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
+            }
         }
-
     }
 }

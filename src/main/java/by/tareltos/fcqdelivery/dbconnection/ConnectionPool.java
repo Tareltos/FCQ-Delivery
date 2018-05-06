@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.connection;
+package by.tareltos.fcqdelivery.dbconnection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,38 +13,42 @@ import java.util.concurrent.locks.ReentrantLock;
 import com.mysql.jdbc.Driver;
 
 public class ConnectionPool {
+    private static final String PROPERTIES_FILE_NAME = "db.properties";
+    private static final String DB_URL = "url";
+    private static final String DB_USER_NAME = "userName";
+    private static final String DB_USER_PASSWORD = "password";
+    private static final String DB_POOL_SIZE = "poolSize";
     private LinkedBlockingQueue<Connection> connectionPool;
     private static ConnectionPool instance;
     private static AtomicBoolean isNull = new AtomicBoolean(true);
     private static ReentrantLock lock = new ReentrantLock();
 
-    private ConnectionPool() {
+    private ConnectionPool() throws ConnectionException {
         try {
             DriverManager.registerDriver(new Driver());
-            InputStream inputStream = ConnectionPool.class.getClassLoader().getResourceAsStream("db.properties");
+            InputStream inputStream = ConnectionPool.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME);
             Properties properties = new Properties();
             if (properties != null) {
                 try {
                     properties.load(inputStream);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new ConnectionException("Exception in loading properties", e);
                 }
             }
-            String  url = properties.getProperty("url");
-            String user = properties.getProperty("userName");
-            String password = properties.getProperty("password");
-            int poolSize = Integer.parseInt(properties.getProperty("poolSize"));
-
+            String url = properties.getProperty(DB_URL);
+            String user = properties.getProperty(DB_USER_NAME);
+            String password = properties.getProperty(DB_USER_PASSWORD);
+            int poolSize = Integer.parseInt(properties.getProperty(DB_POOL_SIZE));
             connectionPool = new LinkedBlockingQueue<>(poolSize);
             for (int i = 0; i < poolSize; i++) {
                 connectionPool.put(DriverManager.getConnection(url, user, password));
             }
         } catch (SQLException | InterruptedException e) {
-            throw new ExceptionInInitializerError(e);//not runtimeExc
+            throw new ExceptionInInitializerError(e);
         }
     }
 
-    public static ConnectionPool getInstance() {
+    public static ConnectionPool getInstance() throws ConnectionException {
         if (isNull.get()) {
             lock.lock();
             try {
@@ -59,34 +63,34 @@ public class ConnectionPool {
         return instance;
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws ConnectionException {
         Connection connection = null;
         try {
             connection = connectionPool.take();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            throw new ConnectionException("Can not getConnection", e);
         }
         return connection;
     }
 
-    public void freeConnection(Connection connection) {
+    public void returnConnection(Connection connection) throws ConnectionException {
         try {
             if (!connection.isClosed()) {
                 connectionPool.put(connection);
             }
         } catch (SQLException | InterruptedException e) {
-            e.printStackTrace();
+            throw new ConnectionException("Can not returnConnection", e);
         }
     }
 
-    public void shutDown() {
+    public void shutDown() throws ConnectionException {
         for (int i = 0; i < connectionPool.size(); i++) {
             try {
                 connectionPool.take().close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new ConnectionException("Can not close connection", e);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new ConnectionException("Can not close connection", e);
             }
         }
     }

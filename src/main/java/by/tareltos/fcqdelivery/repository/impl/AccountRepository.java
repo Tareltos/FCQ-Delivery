@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.repository.impl;
 
-import by.tareltos.fcqdelivery.connection.ConnectionPool;
+import by.tareltos.fcqdelivery.dbconnection.ConnectionException;
+import by.tareltos.fcqdelivery.dbconnection.ConnectionPool;
 import by.tareltos.fcqdelivery.entity.account.Account;
 import by.tareltos.fcqdelivery.repository.Repository;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
@@ -15,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * The class is used work with the database
  * contains requests to the database and the logger
@@ -28,11 +30,17 @@ public class AccountRepository implements Repository<Account> {
      * @see org.apache.logging.log4j.Logger
      */
     private static final Logger LOGGER = LogManager.getLogger();
-    /**Parameter stores an add query to the database */
+    /**
+     * Parameter stores an add query to the database
+     */
     private static final String ADD_ACCOUNT_QUERY = "INSERT INTO account(card_number, expiration_month, expiration_year, csv, balance, first_name, last_name) VALUES (?,?,?,?,?,?,?) ";
-    /**Parameter stores an remove query to the database */
+    /**
+     * Parameter stores an remove query to the database
+     */
     private static final String REMOVE_ACCOUNT_QUERY = "DELETE FROM account WHERE card_number=? ";
-    /**Parameter stores an update query to the database */
+    /**
+     * Parameter stores an update query to the database
+     */
     private static final String UPDATE_ACCOUNT_QUERY = "UPDATE account SET expiration_month=?, expiration_year=?, csv=?,  balance=?, first_name=?, last_name=? where card_number=? ";
 
     /**
@@ -42,7 +50,12 @@ public class AccountRepository implements Repository<Account> {
     @Override
     public boolean add(Account account) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in add method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(ADD_ACCOUNT_QUERY);
@@ -59,9 +72,14 @@ public class AccountRepository implements Repository<Account> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in add method in", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in add method" + e.getMessage(), e);
+            }
         }
     }
+
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository
      * @see by.tareltos.fcqdelivery.entity.account.Account
@@ -69,7 +87,12 @@ public class AccountRepository implements Repository<Account> {
     @Override
     public boolean remove(Account account) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in remove method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(String.format(REMOVE_ACCOUNT_QUERY, account.getCardNumber()));
@@ -79,9 +102,14 @@ public class AccountRepository implements Repository<Account> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in remove method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in remove method" + e.getMessage(), e);
+            }
         }
     }
+
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository
      * @see by.tareltos.fcqdelivery.entity.account.Account
@@ -89,7 +117,12 @@ public class AccountRepository implements Repository<Account> {
     @Override
     public boolean update(Account account) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in update method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(UPDATE_ACCOUNT_QUERY);
@@ -106,9 +139,14 @@ public class AccountRepository implements Repository<Account> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in update method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in update method" + e.getMessage(), e);
+            }
         }
     }
+
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository
      * @see by.tareltos.fcqdelivery.entity.account.Account
@@ -116,7 +154,12 @@ public class AccountRepository implements Repository<Account> {
     @Override
     public List<Account> query(SqlSpecification specification) throws RepositoryException {
         List<Account> accountList = new ArrayList<>();
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
+        }
         try {
             PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
             ResultSet rs = pstm.executeQuery();
@@ -139,7 +182,11 @@ public class AccountRepository implements Repository<Account> {
         } catch (SQLException e) {
             throw new RepositoryException("Exception in query method ", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
+            }
         }
     }
 

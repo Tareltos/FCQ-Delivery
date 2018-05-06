@@ -1,12 +1,13 @@
 package by.tareltos.fcqdelivery.repository.impl;
 
+import by.tareltos.fcqdelivery.dbconnection.ConnectionException;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.entity.user.UserRole;
 import by.tareltos.fcqdelivery.entity.user.UserStatus;
 import by.tareltos.fcqdelivery.repository.Repository;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
-import by.tareltos.fcqdelivery.connection.ConnectionPool;
+import by.tareltos.fcqdelivery.dbconnection.ConnectionPool;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * The class is used work with the database
  * contains requests to the database and the logger
@@ -30,11 +32,17 @@ public class UserRepository implements Repository<User> {
      * @see org.apache.logging.log4j.Logger
      */
     private static final Logger LOGGER = LogManager.getLogger();
-    /**Parameter stores an add query to the database */
+    /**
+     * Parameter stores an add query to the database
+     */
     private static final String ADD_USER_QUERY = "INSERT INTO user(email, password, role, firstName, lastName, phone, status) VALUES (?,?,?,?,?,?,?) ";
-    /**Parameter stores an remove query to the database */
+    /**
+     * Parameter stores an remove query to the database
+     */
     private static final String REMOVE_USER_QUERY = "DELETE FROM user WHERE email=\"%s\" ";
-    /**Parameter stores an update query to the database */
+    /**
+     * Parameter stores an update query to the database
+     */
     private static final String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=?, status=? where email=? ";
 
     /**
@@ -44,7 +52,12 @@ public class UserRepository implements Repository<User> {
     @Override
     public boolean add(User u) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in add method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(ADD_USER_QUERY);
@@ -61,7 +74,11 @@ public class UserRepository implements Repository<User> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in add method ", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in add method" + e.getMessage(), e);
+            }
         }
     }
 
@@ -72,7 +89,12 @@ public class UserRepository implements Repository<User> {
     @Override
     public boolean remove(User user) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in remove method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(String.format(REMOVE_USER_QUERY, user.getEmail()));
@@ -82,7 +104,11 @@ public class UserRepository implements Repository<User> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in remove method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in remove method" + e.getMessage(), e);
+            }
         }
     }
 
@@ -93,7 +119,12 @@ public class UserRepository implements Repository<User> {
     @Override
     public boolean update(User user) throws RepositoryException {
         int executeResult;
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in update method" + e.getMessage(), e);
+        }
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(UPDATE_USER_QUERY);
@@ -110,7 +141,11 @@ public class UserRepository implements Repository<User> {
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in update method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in update method" + e.getMessage(), e);
+            }
         }
     }
 
@@ -121,7 +156,12 @@ public class UserRepository implements Repository<User> {
     @Override
     public List query(SqlSpecification specification) throws RepositoryException {
         List<User> userList = new ArrayList<>();
-        Connection connection = ConnectionPool.getInstance().getConnection();
+        Connection connection;
+        try {
+            connection = ConnectionPool.getInstance().getConnection();
+        } catch (ConnectionException e) {
+            throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
+        }
         try {
             PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
             ResultSet rs = pstm.executeQuery();
@@ -162,7 +202,11 @@ public class UserRepository implements Repository<User> {
         } catch (SQLException e) {
             throw new RepositoryException("Exception in query method", e);
         } finally {
-            ConnectionPool.getInstance().freeConnection(connection);
+            try {
+                ConnectionPool.getInstance().returnConnection(connection);
+            } catch (ConnectionException e) {
+                throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
+            }
         }
     }
 }

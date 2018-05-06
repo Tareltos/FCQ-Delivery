@@ -6,6 +6,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
+@Deprecated
 public class IdGenerator {
     private static Random random = new Random();
     private static String base = "";
@@ -31,6 +32,6 @@ public class IdGenerator {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        return new BigInteger( 1, bytesEncoded);
+        return new BigInteger(1, bytesEncoded);
     }
 }

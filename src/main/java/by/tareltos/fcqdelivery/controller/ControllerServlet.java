@@ -16,22 +16,48 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Class controls the operation of the application,
+ * makes a redirect or forward to the jsp page
+ *
+ * @autor Tarelko Vitali
+ */
 @WebServlet(name = "ControllerServlet", urlPatterns = {"/main", "/applications", "/info", "/singIn", "/doLogin", "/reset", "/doRegistration", "/logout", "/users", "/couriers", "/courierForm", "/saveCourier"})
 @MultipartConfig
 public class ControllerServlet extends HttpServlet {
-    final static Logger LOGGER = LogManager.getLogger();
-    private final String ACTION_PRM = "action";
-    private final String REDIRECT_PRM = "redirect";
-    private final String METHOD_PRM = "method";
-    private final String REDIRECT_URL_PRM = "redirectUrl";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * Parameter used to identify input command from request
+     */
+    private final String ACTION = "action";
+    /**
+     * Parameter used to identify method from request and
+     * than send redirect or do forward
+     */
+    private final String METHOD = "method";
+    /**
+     * Parameter used to identify redirect action from request
+     */
+    private final String REDIRECT = "redirect";
+    /**
+     * Parameter used to identify redirectUrl for redirect from request
+     */
+    private final String REDIRECT_URL = "redirectUrl";
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-        String action = request.getParameter(ACTION_PRM);
+        String action = request.getParameter(ACTION);
         LOGGER.log(Level.DEBUG, "Command is: " + action);
         Command command = CommandFactory.getInstance().getCommand(action);
         String page = null;
@@ -41,8 +67,8 @@ public class ControllerServlet extends HttpServlet {
         if (page == null) {
             page = PagePath.PATH_MAIN_PAGE.getPath();
         }
-        if (REDIRECT_PRM.equals(request.getAttribute(METHOD_PRM))) {
-            response.sendRedirect(String.valueOf(request.getAttribute(REDIRECT_URL_PRM)));
+        if (REDIRECT.equals(request.getAttribute(METHOD))) {
+            response.sendRedirect(String.valueOf(request.getAttribute(REDIRECT_URL)));
         } else {
             request.getRequestDispatcher(page).forward(request, response);
         }

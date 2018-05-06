@@ -13,9 +13,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
           type="text/css">
-    <link rel="stylesheet" href="../css/theme.css" type="text/css">
+    <link rel="stylesheet" href="../../css/theme.css" type="text/css">
     <title><fmt:message key="loginForm.singin"/></title>
-    <link rel="stylesheet" href="../css/style.css" media="screen" type="text/css"/>
+    <link rel="stylesheet" href="../../css/style.css" media="screen" type="text/css"/>
 </head>
 <jsp:include page="_header.jsp"></jsp:include>
 <body>
@@ -109,7 +109,7 @@
     </div>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script src="../js/index.js"></script>
+<script src="../js"></script>
 </body>
 <jsp:include page="_footer.jsp"></jsp:include>
 </html>

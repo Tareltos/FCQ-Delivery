@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
           type="text/css">
-    <link rel="stylesheet" href="../css/theme.css" type="text/css">
+    <link rel="stylesheet" href="../../css/theme.css" type="text/css">
     <title><fmt:message key="page.title.label"/></title>
     <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.min.css'>
 </head>
@@ -23,7 +23,7 @@
     <div class="row">
         <c:forEach items="${courierList}" var="courier">
             <div class="col-md-4 p-4" style="border: 4px double black; background: #dbe1f5;">
-                <img class="img-fluid d-block rounded-0 mx-auto" src="../files/${courier.imageFileName}">
+                <img class="img-fluid d-block rounded-0 mx-auto" src="../../files/${courier.imageFileName}">
                 <p><i><fmt:message key="courierCarModel.text"/>${courier.carProducer} ${courier.carModel}</i></p>
                 <p><i><fmt:message key="courierMaxCargo.text"/>${courier.maxCargo}</i></p>
                 <p><i><fmt:message key="courierTax.text"/>${courier.kmTax}</i></p>
@@ -60,7 +60,7 @@
     </ul>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script src="../js/index.js"></script>
+<script src="../js"></script>
 </body>
 <jsp:include page="_footer.jsp"></jsp:include>
 </html>

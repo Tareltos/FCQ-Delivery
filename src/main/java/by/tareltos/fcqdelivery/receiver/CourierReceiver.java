@@ -12,15 +12,39 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * The class serves to implement the logic of the application
+ * processing parameters from the command
+ * and transfer them to the receiver.
+ *
+ * @autor Tarelko Vitali
+ */
 public class CourierReceiver {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    final private String ACTIVE_COURIER_STATUS = "active";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * Parameter used to identify current courier status
+     */
+    private static final String ACTIVE_COURIER_STATUS = "active";
+    /**
+     * Object for work with courier table in the database
+     *
+     * @see by.tareltos.fcqdelivery.repository.impl.CourierRepository
+     */
     private CourierRepository repository = new CourierRepository();
 
+    /**
+     * Method is used to obtain list of couriers
+     *
+     * @throws ReceiverException if a RepositoryException was caught
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     public List<Courier> getCouriers() throws ReceiverException {
         try {
             return repository.query(new AllCourierSpecification());
@@ -30,6 +54,13 @@ public class CourierReceiver {
         throw new ReceiverException("Couriers are not found");
     }
 
+    /**
+     * Method is used to create new courier
+     *
+     * @return true if the courier was successfully created and recorded in the database. Otherwise false
+     * @throws ReceiverException if a RepositoryException was caught
+     * @see by.tareltos.fcqdelivery.entity.application.Application
+     */
     public boolean createCourier(String carNumber, String carProducer, String carModel, String carPhotoPath, String driverName, String driverPhone, String driverEmail, int maxCargo, double tax, String status) throws ReceiverException {
         CourierStatus courierStatus;
         if (ACTIVE_COURIER_STATUS.equals(status)) {
@@ -45,6 +76,14 @@ public class CourierReceiver {
         }
     }
 
+    /**
+     * Method is used to obtain  courier by primary key
+     *
+     * @param carNumber -primary key of courier in database
+     * @return Object of Courier.class
+     * @throws ReceiverException if a RepositoryException was caught
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     public Courier getCourier(String carNumber) throws ReceiverException {
         try {
             List<Courier> courierList = repository.query(new CourierByRegNumberSpecification(carNumber));
@@ -62,6 +101,12 @@ public class CourierReceiver {
         }
     }
 
+    /**
+     * Method is used to update courier in database
+     *
+     * @throws ReceiverException if a RepositoryException was caught
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     public boolean updateCourier(String carNumber, String carProducer, String carModel, String carPhotoPath, String driverName, String driverPhone, String driverEmail, int maxCargo, double tax, String status) throws ReceiverException {
         CourierStatus courierStatus;
         if (ACTIVE_COURIER_STATUS.equals(status)) {
@@ -77,6 +122,12 @@ public class CourierReceiver {
         }
     }
 
+    /**
+     * Method is used to obtain list of couriers for pagination
+     *
+     * @throws ReceiverException if a RepositoryException was caught
+     * @see by.tareltos.fcqdelivery.entity.courier.Courier
+     */
     public List<Courier> getCouriers(String firstRow, String rowCount, String userRole) throws ReceiverException {
         List<Courier> courierList = null;
         try {

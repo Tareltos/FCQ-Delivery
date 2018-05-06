@@ -17,11 +17,29 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Properties;
-
+/**
+ * The class serves to implement the logic of the application
+ * processing parameters from the command
+ * and transfer them to the receiver.
+ *
+ * @autor Tarelko Vitali
+ */
 public class UserReceiver {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    final private String ACTIVE_USER_STATUS = "active";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final  Logger LOGGER = LogManager.getLogger();
+    /**
+     * Parameter used to identify current user status
+     */
+    private static final String ACTIVE_USER_STATUS = "active";
+    /**
+     * Object for work with user table in the database
+     *
+     * @see by.tareltos.fcqdelivery.repository.impl.UserRepository
+     */
     private UserRepository repository = new UserRepository();
 
     public boolean checkUserStatus(String email) throws ReceiverException {

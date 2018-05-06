@@ -30,7 +30,7 @@ public enum CommandType {
     EDIT_COURIER(new EditCourierFormCommand(new CourierReceiver())),
     UPDATE_COURIER(new UpdateCourierCommand(new CourierReceiver())),
     GET_APPLICATIONS(new GetApplicationsCommand(new ApplicationReceiver())),
-    GET_NEWAPP_FORM(new GetNewApplicatinFormCommand()),
+    GET_NEWAPP_FORM(new GetNewApplicationFormCommand()),
     CREATE_APPLICATION(new CreateApplicationCommand(new ApplicationReceiver())),
     GET_APP_DETAILS(new GetAppDetailsCommand(new ApplicationReceiver())),
     SELECT_COURIER(new SelectCourierCommand(new ApplicationReceiver())),

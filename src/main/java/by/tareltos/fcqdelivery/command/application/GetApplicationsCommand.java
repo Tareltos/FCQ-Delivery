@@ -14,11 +14,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class GetApplicationsCommand implements Command {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    private static final String LOGINED_USER_PRM = "loginedUser";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * The variable stores the name of the session attribute
+     */
+    private static final String LOGINED_USER = "loginedUser";
+    /**
+     * Variable used to determine the role of the admin
+     */
     private static final String ADMIN_ROLE = "admin";
+    /**
+     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
+     */
     private ApplicationReceiver receiver;
 
     public GetApplicationsCommand(ApplicationReceiver applicationReceiver) {
@@ -28,12 +48,12 @@ public class GetApplicationsCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        User loginedUser = (User) session.getAttribute(LOGINED_USER);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (ADMIN_ROLE.equals(loginedUser.getRole().getRole())) {
-            LOGGER.log(Level.INFO, "This page only for Customer and Manager! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            LOGGER.log(Level.WARN, "This page only for Customer and Manager! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
             request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }

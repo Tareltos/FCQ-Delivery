@@ -14,40 +14,84 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class CreateApplicationCommand implements Command {
-    final static Logger LOGGER = LogManager.getLogger();
-    //request parameter names
-    private static final String LOGINED_USER_PRM = "loginedUser";
-    private static final String START_POINT_PRM = "start";
-    private static final String FINISH_POINT_PRM = "finish";
-    private static final String COMMENT_PRM = "comment";
-    private static final String DATE_PRM = "date";
-    private static final String WEIGHT_PRM = "weight";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * The variable stores the name of the session attribute
+     */
+    private static final String LOGINED_USER = "loginedUser";
+    /**
+     * Parameter name in the request
+     */
+    private static final String START_POINT = "start";
+    /**
+     * Parameter name in the request
+     */
+    private static final String FINISH_POINT = "finish";
+    /**
+     * Parameter name in the request
+     */
+    private static final String COMMENT = "comment";
+    /**
+     * Parameter name in the request
+     */
+    private static final String DATE = "date";
+    /**
+     * Parameter name in the request
+     */
+    private static final String WEIGHT = "weight";
+    /**
+     * Variable used to determine the role of the manager
+     */
     private static final String MANAGER_ROLE = "manager";
+    /**
+     * Variable used to determine the role of the admin
+     */
     private static final String ADMIN_ROLE = "admin";
+    /**
+     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
+     */
     private ApplicationReceiver receiver;
 
     public CreateApplicationCommand(ApplicationReceiver receiver) {
         this.receiver = receiver;
     }
 
+    /**
+     * Method returns the path to the jsp page
+     *
+     * @return return the path to the jsp page
+     * @see by.tareltos.fcqdelivery.command.Command
+     */
     @Override
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        User loginedUser = (User) session.getAttribute(LOGINED_USER);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (ADMIN_ROLE.equals(loginedUser.getRole().getRole()) | MANAGER_ROLE.equals(loginedUser.getRole().getRole())) {
-            LOGGER.log(Level.INFO, "This page only for Customer! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
+            LOGGER.log(Level.WARN, "This page only for Customer! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
             request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        String startPoint = request.getParameter(START_POINT_PRM);
-        String finishPoint = request.getParameter(FINISH_POINT_PRM);
-        String date = request.getParameter(DATE_PRM);
-        String comment = request.getParameter(COMMENT_PRM);
-        String weight = request.getParameter(WEIGHT_PRM);
+        String startPoint = request.getParameter(START_POINT);
+        String finishPoint = request.getParameter(FINISH_POINT);
+        String date = request.getParameter(DATE);
+        String comment = request.getParameter(COMMENT);
+        String weight = request.getParameter(WEIGHT);
         if (DataValidator.validateStartPoint(startPoint) & DataValidator.validateFinishPoint(finishPoint) &
                 DataValidator.validateDate(date) & DataValidator.validateComment(comment) &
                 DataValidator.validateCargo(Integer.parseInt(weight))) {
@@ -60,11 +104,11 @@ public class CreateApplicationCommand implements Command {
                     return PagePath.PATH_APPLICATIONS_PAGE.getPath();
                 }
             } catch (ReceiverException e) {
-                LOGGER.log(Level.WARN, e);
+                LOGGER.log(Level.ERROR, e.getMessage());
+                request.setAttribute("exception", "Application is not created: " + e.getMessage());
                 return PagePath.PATH_INF_PAGE.getPath();
             }
             request.setAttribute("message", "error.text");
-
         }
         request.setAttribute("message", "invalidData.text");
         return PagePath.PATH_INF_PAGE.getPath();

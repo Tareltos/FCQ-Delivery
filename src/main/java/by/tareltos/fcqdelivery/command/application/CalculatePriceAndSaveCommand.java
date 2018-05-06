@@ -13,32 +13,70 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class CalculatePriceAndSaveCommand implements Command {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    private static final String LOGINED_USER_PRM = "loginedUser";
-    private static final String APPLICATION_ID_PRM = "id";
-    private static final String COURIER_ID_PRM = "courier";
-    private static final String DISTANCE_PRM = "distance";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * The variable stores the name of the session attribute
+     */
+    private static final String LOGINED_USER = "loginedUser";
+    /**
+     * Parameter name in the request
+     */
+    private static final String APPLICATION_ID = "id";
+    /**
+     * Parameter name in the request
+     */
+    private static final String COURIER_ID = "courier";
+    /**
+     * Parameter name in the request
+     */
+    private static final String DISTANCE = "distance";
+    /**
+     * Variable used to determine the role of the manager
+     */
     private static final String MANAGER_ROLE = "manager";
+    /**
+     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
+     */
     private ApplicationReceiver receiver;
 
+    /**
+     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
+     */
     public CalculatePriceAndSaveCommand(ApplicationReceiver receiver) {
         this.receiver = receiver;
     }
 
+    /**
+     * Method returns the path to the jsp page
+     *
+     * @return return the path to the jsp page
+     * @see by.tareltos.fcqdelivery.command.Command
+     */
     @Override
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        User user = (User) session.getAttribute(LOGINED_USER_PRM);
+        User user = (User) session.getAttribute(LOGINED_USER);
         if (null == user) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (MANAGER_ROLE.equals(user.getRole().getRole())) {
 
-            String appId = request.getParameter(APPLICATION_ID_PRM);
-            String courierId = request.getParameter(COURIER_ID_PRM);
-            String distance = request.getParameter(DISTANCE_PRM);// валидация!!!
+            String appId = request.getParameter(APPLICATION_ID);
+            String courierId = request.getParameter(COURIER_ID);
+            String distance = request.getParameter(DISTANCE);
             if (DataValidator.validateApplicationId(appId) & DataValidator.validateCarNumber(courierId) & DataValidator.validateDistance(distance)) {
                 boolean result;
                 try {
@@ -50,8 +88,8 @@ public class CalculatePriceAndSaveCommand implements Command {
                     }
 
                 } catch (ReceiverException e) {
-                    LOGGER.log(Level.WARN, e.getMessage());
-                    request.setAttribute("message", "Application is not cancelled: " + e.getMessage());
+                    LOGGER.log(Level.ERROR, e.getMessage());
+                    request.setAttribute("exception", "Application is not saved: " + e.getMessage());
                 }
             } else {
                 request.setAttribute("message", "invalidData.text");

@@ -13,27 +13,75 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class DoPaymentApplicationCommand implements Command {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    private static final String LOGINED_USER_PRM = "loginedUser";
-    private static final String APPLICATION_ID_PRM = "id";
-    private static final String CARD_NUMBER_PRM = "cardNumber";
-    private static final String EXPIRATION_MOUNTH_PRM = "expirationMonth";
-    private static final String EXPIRATION_YEAR_PRM = "expirationYear";
-    private static final String OWNER_PRM = "owner";
-    private static final String CSV_PRM = "csv";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * The variable stores the name of the session attribute
+     */
+    private static final String LOGINED_USER = "loginedUser";
+    /**
+     * Parameter name in the request
+     */
+    private static final String APPLICATION_ID = "id";
+    /**
+     * Parameter name in the request
+     */
+    private static final String CARD_NUMBER = "cardNumber";
+    /**
+     * Parameter name in the request
+     */
+    private static final String EXPIRATION_MOUNTH = "expirationMonth";
+    /**
+     * Parameter name in the request
+     */
+    private static final String EXPIRATION_YEAR = "expirationYear";
+    /**
+     * Parameter name in the request
+     */
+    private static final String OWNER = "owner";
+    /**
+     * Parameter name in the request
+     */
+    private static final String CSV = "csv";
+    /**
+     * Variable used to determine the role of the manager
+     */
     private static final String MANAGER_ROLE = "manager";
+    /**
+     * Variable used to determine the role of the admin
+     */
     private static final String ADMIN_ROLE = "admin";
+    /**
+     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
+     */
     private ApplicationReceiver receiver;
 
     public DoPaymentApplicationCommand(ApplicationReceiver receiver) {
         this.receiver = receiver;
     }
 
+    /**
+     * Method returns the path to the jsp page
+     *
+     * @return return the path to the jsp page
+     * @see by.tareltos.fcqdelivery.command.Command
+     */
+    @Override
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        User loginedUser = (User) session.getAttribute(LOGINED_USER);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
@@ -42,15 +90,15 @@ public class DoPaymentApplicationCommand implements Command {
             request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        String appId = request.getParameter(APPLICATION_ID_PRM);
-        String cardNumber = request.getParameter(CARD_NUMBER_PRM);
-        String expMonth = request.getParameter(EXPIRATION_MOUNTH_PRM);
-        String expYear = request.getParameter(EXPIRATION_YEAR_PRM);
-        String owner = request.getParameter(OWNER_PRM);
-        String csv = request.getParameter(CSV_PRM);
+        String appId = request.getParameter(APPLICATION_ID);
+        String cardNumber = request.getParameter(CARD_NUMBER);
+        String expMonth = request.getParameter(EXPIRATION_MOUNTH);
+        String expYear = request.getParameter(EXPIRATION_YEAR);
+        String owner = request.getParameter(OWNER);
+        String csv = request.getParameter(CSV);
         if (DataValidator.validateApplicationId(appId) & DataValidator.validateCardNumber(cardNumber) &
-        DataValidator.validateExpirationMonth(expMonth) & DataValidator.validateExpirationYear(expYear) &
-        DataValidator.validateOwner(owner) & DataValidator.validateCsv(csv)) {
+                DataValidator.validateExpirationMonth(expMonth) & DataValidator.validateExpirationYear(expYear) &
+                DataValidator.validateOwner(owner) & DataValidator.validateCsv(csv)) {
             try {
                 boolean result;
                 result = receiver.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv);
@@ -63,8 +111,8 @@ public class DoPaymentApplicationCommand implements Command {
                     return PagePath.PATH_INF_PAGE.getPath();
                 }
             } catch (ReceiverException e) {
-                LOGGER.log(Level.WARN, e.getMessage());
-                request.setAttribute("message", "error.text");
+                LOGGER.log(Level.ERROR, e.getMessage());
+                request.setAttribute("exception", "Payment is not accepted: " + e.getMessage());
             }
         }
         request.setAttribute("message", "invalidData.text");

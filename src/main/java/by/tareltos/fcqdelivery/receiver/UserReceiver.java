@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.Properties;
+
 /**
  * The class serves to implement the logic of the application
  * processing parameters from the command
@@ -30,7 +31,7 @@ public class UserReceiver {
      *
      * @see org.apache.logging.log4j.Logger
      */
-    private static final  Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
     /**
      * Parameter used to identify current user status
      */
@@ -42,25 +43,16 @@ public class UserReceiver {
      */
     private UserRepository repository = new UserRepository();
 
+    /**
+     * Method is used to check user status
+     *
+     * @param email -primary key of user in database
+     * @return true if user status is active. Otherwise false
+     * @throws ReceiverException if a RepositoryException was caught and if user not found
+     * @see by.tareltos.fcqdelivery.entity.user.User
+     */
     public boolean checkUserStatus(String email) throws ReceiverException {
-        try {
-            List<User> listUser = repository.query(new UserByEmailSpecification(email));
-            if (listUser.isEmpty()) {
-                throw new ReceiverException("User not found");
-            }
-            if (listUser.size() > 1) {
-                throw new ReceiverException("Count of users " + listUser.size() + " must be 1");
-            }
-            LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
-            User u = listUser.get(0);
-            if (ACTIVE_USER_STATUS.equals(u.getStatus().getStatus())) {
-                LOGGER.log(Level.DEBUG, "User status:" + u.getEmail() + " is active");
-                return true;
-            }
-            return false;
-        } catch (RepositoryException e) {
-            throw new ReceiverException("Exception in checkUserStatus", e);
-        }
+        return CheckUserStatusUtil.checkUserStatus(email, repository, LOGGER, ACTIVE_USER_STATUS);
     }
 
     public boolean checkUser(String email, String password) throws ReceiverException {

@@ -10,6 +10,7 @@ import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.AccountRepository;
 import by.tareltos.fcqdelivery.repository.impl.ApplicationRepository;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
+import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.account.AccountByCadDetailsSpecification;
 import by.tareltos.fcqdelivery.specification.application.*;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
@@ -37,7 +38,12 @@ public class ApplicationReceiver {
     /**
      * Parameter used to identify current user status
      */
-    private static final String ACTIVE_STATUS = "active";
+    private static final String ACTIVE_USER_STATUS = "active";
+    /**
+     * Parameter used to identify current courier status
+     */
+    private static final String ACTIVE_COURIER_STATUS = "active";
+
     /**
      * Parameter is used to determine the application with what status to search in the database
      */
@@ -60,6 +66,12 @@ public class ApplicationReceiver {
      * @see by.tareltos.fcqdelivery.repository.impl.AccountRepository
      */
     private AccountRepository accountRepository = new AccountRepository();
+    /**
+     * Object for work with user table in the database
+     *
+     * @see by.tareltos.fcqdelivery.repository.impl.UserRepository
+     */
+    private UserRepository userRepository = new UserRepository();
 
     /**
      * Method is used to obtain a list of applications
@@ -146,7 +158,7 @@ public class ApplicationReceiver {
      */
     public List<Courier> getCourierForAppointment() {
         try {
-            return courierRepository.query(new CourierByStatusSpecification(ACTIVE_STATUS));
+            return courierRepository.query(new CourierByStatusSpecification(ACTIVE_COURIER_STATUS));
         } catch (RepositoryException e) {
             new ReceiverException("Exception in getCourierForAppointment method", e);
         }
@@ -230,6 +242,7 @@ public class ApplicationReceiver {
             throw new ReceiverException("Exception in completeApplication method", e);
         }
     }
+
     /**
      * Method is used to delete application
      *
@@ -249,11 +262,12 @@ public class ApplicationReceiver {
             throw new ReceiverException("Exception in deleteApplication method", e);
         }
     }
+
     /**
      * Method is used to set status "canceled" for the application
      *
      * @param applicationId -primary key of application in database
-     * @param reason - reason for canceling the application
+     * @param reason        - reason for canceling the application
      * @return true if changing was successful. Otherwise false
      * @throws ReceiverException if a RepositoryException was caught
      * @see by.tareltos.fcqdelivery.entity.application.Application
@@ -268,6 +282,7 @@ public class ApplicationReceiver {
             throw new ReceiverException("Exception in cancelApplication method", e);
         }
     }
+
     /**
      * Method is used to obtain list of filtered applications
      *
@@ -305,6 +320,19 @@ public class ApplicationReceiver {
         return resultList;
 
     }
+
+    /**
+     * Method is used to check user status
+     *
+     * @param email -primary key of user in database
+     * @return true if user status is active. Otherwise false
+     * @throws ReceiverException if a RepositoryException was caught and if user not found
+     * @see by.tareltos.fcqdelivery.entity.user.User
+     */
+    public boolean checkUserStatus(String email) throws ReceiverException {
+        return CheckUserStatusUtil.checkUserStatus(email, userRepository, LOGGER, ACTIVE_USER_STATUS);
+    }
+
     /**
      * Method is used to check account balance and do payment
      *

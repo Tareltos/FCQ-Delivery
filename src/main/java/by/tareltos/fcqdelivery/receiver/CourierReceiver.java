@@ -4,6 +4,7 @@ import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.courier.CourierStatus;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
+import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.courier.AllCourierSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
 import by.tareltos.fcqdelivery.specification.courier.PaginationCourierByStatusSpecification;
@@ -33,11 +34,21 @@ public class CourierReceiver {
      */
     private static final String ACTIVE_COURIER_STATUS = "active";
     /**
+     * Parameter used to identify current user status
+     */
+    private static final String ACTIVE_USER_STATUS = "active";
+    /**
      * Object for work with courier table in the database
      *
      * @see by.tareltos.fcqdelivery.repository.impl.CourierRepository
      */
     private CourierRepository repository = new CourierRepository();
+    /**
+     * Object for work with user table in the database
+     *
+     * @see by.tareltos.fcqdelivery.repository.impl.UserRepository
+     */
+    private UserRepository userRepository = new UserRepository();
 
     /**
      * Method is used to obtain list of couriers
@@ -151,4 +162,18 @@ public class CourierReceiver {
         }
         return courierList;
     }
+    /**
+     * Method is used to check user status
+     *
+     * @param email -primary key of user in database
+     * @return true if user status is active. Otherwise false
+     * @throws ReceiverException if a RepositoryException was caught and if user not found
+     * @see by.tareltos.fcqdelivery.entity.user.User
+     */
+    public boolean checkUserStatus(String email) throws ReceiverException {
+        return CheckUserStatusUtil.checkUserStatus(email, userRepository, LOGGER, ACTIVE_USER_STATUS);
+    }
+
+
 }
+

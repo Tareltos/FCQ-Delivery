@@ -34,10 +34,6 @@ public class CourierReceiver {
      */
     private static final String ACTIVE_COURIER_STATUS = "active";
     /**
-     * Parameter used to identify current user status
-     */
-    private static final String ACTIVE_USER_STATUS = "active";
-    /**
      * Object for work with courier table in the database
      *
      * @see by.tareltos.fcqdelivery.repository.impl.CourierRepository
@@ -171,7 +167,7 @@ public class CourierReceiver {
      * @see by.tareltos.fcqdelivery.entity.user.User
      */
     public boolean checkUserStatus(String email) throws ReceiverException {
-        return CheckUserStatusUtil.checkUserStatus(email, userRepository, LOGGER, ACTIVE_USER_STATUS);
+        return CheckUserStatusUtil.checkUserStatus(email, userRepository);
     }
 
 

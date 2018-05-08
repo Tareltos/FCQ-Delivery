@@ -10,6 +10,10 @@ import org.apache.logging.log4j.Logger;
 import java.util.List;
 
 public class CheckUserStatusUtil {
+    /**
+     * Parameter used to identify current user status
+     */
+    private static final String ACTIVE_USER_STATUS = "active";
 
     /**
      * Method is used to check user status
@@ -19,7 +23,7 @@ public class CheckUserStatusUtil {
      * @throws ReceiverException if a RepositoryException was caught and if user not found
      * @see by.tareltos.fcqdelivery.entity.user.User
      */
-    public static boolean checkUserStatus(String email, UserRepository userRepository, Logger logger, String activeUserStatus) throws ReceiverException {
+    public static boolean checkUserStatus(String email, UserRepository userRepository) throws ReceiverException {
         try {
             List<User> listUser = userRepository.query(new UserByEmailSpecification(email));
             if (listUser.isEmpty()) {
@@ -28,10 +32,8 @@ public class CheckUserStatusUtil {
             if (listUser.size() > 1) {
                 throw new ReceiverException("Count of users " + listUser.size() + " must be 1");
             }
-            logger.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
             User u = listUser.get(0);
-            if (activeUserStatus.equals(u.getStatus().getStatus())) {
-                logger.log(Level.DEBUG, "User status:" + u.getEmail() + " is active");
+            if (ACTIVE_USER_STATUS.equals(u.getStatus().getStatus())) {
                 return true;
             }
             return false;

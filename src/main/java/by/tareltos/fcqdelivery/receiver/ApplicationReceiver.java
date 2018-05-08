@@ -36,10 +36,6 @@ public class ApplicationReceiver {
      */
     private static final Logger LOGGER = LogManager.getLogger();
     /**
-     * Parameter used to identify current user status
-     */
-    private static final String ACTIVE_USER_STATUS = "active";
-    /**
      * Parameter used to identify current courier status
      */
     private static final String ACTIVE_COURIER_STATUS = "active";
@@ -330,7 +326,7 @@ public class ApplicationReceiver {
      * @see by.tareltos.fcqdelivery.entity.user.User
      */
     public boolean checkUserStatus(String email) throws ReceiverException {
-        return CheckUserStatusUtil.checkUserStatus(email, userRepository, LOGGER, ACTIVE_USER_STATUS);
+        return CheckUserStatusUtil.checkUserStatus(email, userRepository);
     }
 
     /**

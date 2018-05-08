@@ -52,7 +52,7 @@ public class UserReceiver {
      * @see by.tareltos.fcqdelivery.entity.user.User
      */
     public boolean checkUserStatus(String email) throws ReceiverException {
-        return CheckUserStatusUtil.checkUserStatus(email, repository, LOGGER, ACTIVE_USER_STATUS);
+        return CheckUserStatusUtil.checkUserStatus(email, repository);
     }
 
     public boolean checkUser(String email, String password) throws ReceiverException {

@@ -31,6 +31,17 @@ public class SaveUserCommand implements Command {
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        try {
+            if (!receiver.checkUserStatus(loginedUser.getEmail())) {
+                session.setAttribute(LOGINED_USER_PRM, null);
+                request.setAttribute(MESSAGE_ATR, "blockedUser.text");
+                return PagePath.PATH_SINGIN_PAGE.getPath();
+            }
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute("exception", e.getMessage());
+            return PagePath.PATH_INF_PAGE.getPath();
+        }
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }

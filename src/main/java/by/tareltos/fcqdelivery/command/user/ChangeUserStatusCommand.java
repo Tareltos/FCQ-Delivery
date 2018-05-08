@@ -35,6 +35,17 @@ public class ChangeUserStatusCommand implements Command {
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
+        try {
+            if (!receiver.checkUserStatus(loginedUser.getEmail())) {
+                session.setAttribute(LOGINED_USER_PRM, null);
+                request.setAttribute(MESSAGE_ATR, "blockedUser.text");
+                return PagePath.PATH_SINGIN_PAGE.getPath();
+            }
+        } catch (ReceiverException e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            request.setAttribute("exception", e.getMessage());
+            return PagePath.PATH_INF_PAGE.getPath();
+        }
         if (CUSTOMER_ROLE.equals(loginedUser.getRole().getRole()) | MANAGER_ROLE.equals(loginedUser.getRole().getRole())) {
             LOGGER.log(Level.INFO, "This page only for Admin! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
             request.setAttribute(MESSAGE_ATR, "accessDenied.text");

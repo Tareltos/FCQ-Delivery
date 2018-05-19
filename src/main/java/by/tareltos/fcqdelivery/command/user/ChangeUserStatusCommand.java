@@ -37,12 +37,12 @@ public class ChangeUserStatusCommand implements Command {
         }
         try {
             if (!receiver.checkUserStatus(loginedUser.getEmail())) {
+                LOGGER.log(Level.WARN, "User is blocked");
                 session.setAttribute(LOGINED_USER_PRM, null);
                 request.setAttribute(MESSAGE_ATR, "blockedUser.text");
                 return PagePath.PATH_SINGIN_PAGE.getPath();
             }
         } catch (ReceiverException e) {
-            LOGGER.log(Level.WARN, e.getMessage());
             request.setAttribute("exception", e.getMessage());
             return PagePath.PATH_INF_PAGE.getPath();
         }

@@ -5,10 +5,14 @@ import by.tareltos.fcqdelivery.command.PagePath;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class MainCommand implements Command {
-
-    public MainCommand() {
-    }
 
     @Override
     public String execute(HttpServletRequest request) {

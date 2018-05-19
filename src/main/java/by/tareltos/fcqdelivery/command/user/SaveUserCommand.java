@@ -13,14 +13,40 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class SaveUserCommand implements Command {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    private static final String MESSAGE_ATR = "message";
-    private static final String LOGINED_USER_PRM = "loginedUser";
-    private static final String FIRST_NAME_PRM = "fName";
-    private static final String LAST_NAME_PRM = "lName";
-    private static final String PHONE_PRM = "phone";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * Parameter name in the request
+     */
+    private static final String MESSAGE = "message";
+    /**
+     * The variable stores the name of the session attribute
+     */
+    private static final String LOGINED_USER = "loginedUser";
+    /**
+     * Parameter name in the request
+     */
+    private static final String FIRST_NAME = "fName";
+    /**
+     * Parameter name in the request
+     */
+    private static final String LAST_NAME = "lName";
+    /**
+     * Parameter name in the request
+     */
+    private static final String PHONE = "phone";
     private UserReceiver receiver;
 
     public SaveUserCommand(UserReceiver userReceiver) {
@@ -30,26 +56,26 @@ public class SaveUserCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        User loginedUser = (User) session.getAttribute(LOGINED_USER);
         try {
             if (!receiver.checkUserStatus(loginedUser.getEmail())) {
-                session.setAttribute(LOGINED_USER_PRM, null);
-                request.setAttribute(MESSAGE_ATR, "blockedUser.text");
+                session.setAttribute(LOGINED_USER, null);
+                LOGGER.log(Level.WARN, "User is blocked");
+                request.setAttribute(MESSAGE, "blockedUser.text");
                 return PagePath.PATH_SINGIN_PAGE.getPath();
             }
         } catch (ReceiverException e) {
-            LOGGER.log(Level.WARN, e.getMessage());
             request.setAttribute("exception", e.getMessage());
             return PagePath.PATH_INF_PAGE.getPath();
         }
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        String fname = request.getParameter(FIRST_NAME_PRM);
-        String lname = request.getParameter(LAST_NAME_PRM);
-        String phone = request.getParameter(PHONE_PRM);
+        String fname = request.getParameter(FIRST_NAME);
+        String lname = request.getParameter(LAST_NAME);
+        String phone = request.getParameter(PHONE);
         if (!DataValidator.validateName(fname) & !DataValidator.validateName(lname) & !DataValidator.validatePhone(phone)) {
-            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            request.setAttribute(MESSAGE, "invalidData.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
         loginedUser.setFirstName(fname);
@@ -69,10 +95,10 @@ public class SaveUserCommand implements Command {
             } catch (ReceiverException e) {
                 LOGGER.log(Level.WARN, e.getMessage());
             }
-            session.setAttribute(LOGINED_USER_PRM, loginedUser);
+            session.setAttribute(LOGINED_USER, loginedUser);
             return PagePath.PATH_USER_INFO_PAGE.getPath();
         } else {
-            request.setAttribute(MESSAGE_ATR, "error.text");
+            request.setAttribute(MESSAGE, "error.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
 

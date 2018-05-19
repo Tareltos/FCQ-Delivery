@@ -14,12 +14,32 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class ResetPasswordCommand implements Command {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    private static final String MESSAGE_ATR = "message";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * Parameter name in the request
+     */
+    private static final String MESSAGE = "message";
+    /**
+     * Properties file name
+     */
     private static final String FILE_NAME = "mail";
-    private static final String EMAIL_PRM = "mail";
+    /**
+     * Parameter name in the request
+     */
+    private static final String EMAIL = "mail";
     private UserReceiver receiver;
 
 
@@ -40,9 +60,9 @@ public class ResetPasswordCommand implements Command {
             return PagePath.PATH_INF_PAGE.getPath();
         }
 
-        String email = request.getParameter(EMAIL_PRM);
+        String email = request.getParameter(EMAIL);
         if (!DataValidator.validateEmail(email)) {
-            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            request.setAttribute(MESSAGE, "invalidData.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         boolean result;
@@ -50,13 +70,13 @@ public class ResetPasswordCommand implements Command {
             result = receiver.resetUserPassword(email, properties);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
-            request.setAttribute(MESSAGE_ATR, "passwordUpdateError.text");
+            request.setAttribute(MESSAGE, "passwordUpdateError.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (result) {
-            request.setAttribute(MESSAGE_ATR, "updatePassword.text");
+            request.setAttribute(MESSAGE, "updatePassword.text");
         } else {
-            request.setAttribute(MESSAGE_ATR, "userNotFound.text");
+            request.setAttribute(MESSAGE, "userNotFound.text");
         }
         return PagePath.PATH_SINGIN_PAGE.getPath();
 

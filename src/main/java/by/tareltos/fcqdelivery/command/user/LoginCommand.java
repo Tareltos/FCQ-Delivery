@@ -13,13 +13,36 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class LoginCommand implements Command {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    private static final String LOGINED_USER_PRM = "loginedUser";
-    private static final String MESSAGE_ATR = "message";
-    private static final String EMAIL_PRM = "mail";
-    private static final String PASSWORD_PRM = "password";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * The variable stores the name of the session attribute
+     */
+    private static final String LOGINED_USER = "loginedUser";
+    /**
+     * Parameter name in the request
+     */
+    private static final String MESSAGE = "message";
+    /**
+     * Parameter name in the request
+     */
+    private static final String EMAIL = "mail";
+    /**
+     * Parameter name in the request
+     */
+    private static final String PASSWORD = "password";
     private UserReceiver receiver;
 
     public LoginCommand(UserReceiver userReceiver) {
@@ -28,11 +51,11 @@ public class LoginCommand implements Command {
 
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        String email = request.getParameter(EMAIL_PRM);
-        String password = request.getParameter(PASSWORD_PRM);
+        String email = request.getParameter(EMAIL);
+        String password = request.getParameter(PASSWORD);
 
         if (!DataValidator.validateEmail(email) & !DataValidator.validatePassword(password)) {
-            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            request.setAttribute(MESSAGE, "invalidData.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         boolean result;
@@ -40,7 +63,7 @@ public class LoginCommand implements Command {
             result = receiver.checkUser(email, password);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
-            request.setAttribute(MESSAGE_ATR, "dataNotFound.text");
+            request.setAttribute(MESSAGE, "dataNotFound.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (result) {
@@ -49,13 +72,13 @@ public class LoginCommand implements Command {
                 user = receiver.getUserForSession(email);
             } catch (ReceiverException e) {
                 LOGGER.log(Level.WARN, e.getMessage());
-                request.setAttribute(MESSAGE_ATR, "getUserForSessionExc.text");
+                request.setAttribute(MESSAGE, "getUserForSessionExc.text");
                 return PagePath.PATH_SINGIN_PAGE.getPath();
             }
-            session.setAttribute(LOGINED_USER_PRM, user);
+            session.setAttribute(LOGINED_USER, user);
             return PagePath.PATH_USER_INFO_PAGE.getPath();
         } else {
-            request.setAttribute(MESSAGE_ATR, "errorInEmailOrPassword.text");
+            request.setAttribute(MESSAGE, "errorInEmailOrPassword.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
     }

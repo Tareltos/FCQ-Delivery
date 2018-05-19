@@ -12,13 +12,35 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class AllUsersCommand implements Command {
-
-    final static Logger LOGGER = LogManager.getLogger();
-    private static final String MESSAGE_ATR = "message";
-    private static final String LOGINED_USER_PRM = "loginedUser";
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
+    /**
+     * Parameter name in the request
+     */
+    private static final String MESSAGE = "message";
+    /**
+     * The variable stores the name of the session attribute
+     */
+    private static final String LOGINED_USER = "loginedUser";
+    /**
+     * Variable used to determine the role of the manager
+     */
     private static final String MANAGER_ROLE = "manager";
+    /**
+     * Variable used to determine the role of the customer
+     */
     private static final String CUSTOMER_ROLE = "customer";
     private UserReceiver receiver;
 
@@ -30,14 +52,14 @@ public class AllUsersCommand implements Command {
     public String execute(HttpServletRequest request) {
 
         HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        User loginedUser = (User) session.getAttribute(LOGINED_USER);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         try {
             if (!receiver.checkUserStatus(loginedUser.getEmail())) {
-                session.setAttribute(LOGINED_USER_PRM, null);
-                request.setAttribute(MESSAGE_ATR, "blockedUser.text");
+                session.setAttribute(LOGINED_USER, null);
+                request.setAttribute(MESSAGE, "blockedUser.text");
                 return PagePath.PATH_SINGIN_PAGE.getPath();
             }
         } catch (ReceiverException e) {
@@ -47,7 +69,7 @@ public class AllUsersCommand implements Command {
         }
         if (CUSTOMER_ROLE.equals(loginedUser.getRole().getRole()) | MANAGER_ROLE.equals(loginedUser.getRole().getRole())) {
             LOGGER.log(Level.INFO, "This page only for Admin! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
-            request.setAttribute(MESSAGE_ATR, "accessDenied.text");
+            request.setAttribute(MESSAGE, "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
         List<User> users;
@@ -62,7 +84,7 @@ public class AllUsersCommand implements Command {
             request.setAttribute("userList", users);
             return PagePath.PATH_USERS_PAGE.getPath();
         } else {
-            request.setAttribute(MESSAGE_ATR, "dataNotFound.text");
+            request.setAttribute(MESSAGE, "dataNotFound.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
     }

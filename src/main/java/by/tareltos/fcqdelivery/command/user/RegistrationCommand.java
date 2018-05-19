@@ -13,18 +13,51 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
+/**
+ * Class is used to obtain parameters from request,
+ * send them into receiver and to return path to jsp page in controller.
+ *
+ * @autor Tarelko Vitali
+ * @see Command
+ */
 public class RegistrationCommand implements Command {
-    final static Logger LOGGER = LogManager.getLogger();
+    /**
+     * The logger object, used to write logs
+     *
+     * @see org.apache.logging.log4j.Logger
+     */
+    private static final Logger LOGGER = LogManager.getLogger();
     /**
      * Parameter name in the request
      */
     private static final String LOCALE = "locale";
+    /**
+     * Properties file name
+     */
     private static final String FILE_NAME = "mail";
-    private static final String MESSAGE_ATR = "message";
-    private static final String EMAIL_PRM = "mail";
-    private static final String FIRST_NAME_PRM = "fName";
-    private static final String LAST_NAME_PRM = "lName";
-    private static final String PHONE_PRM = "phone";
+    /**
+     * Parameter name in the request
+     */
+    private static final String MESSAGE = "message";
+    /**
+     * Parameter name in the request
+     */
+    private static final String EMAIL = "mail";
+    /**
+     * Parameter name in the request
+     */
+    private static final String FIRST_NAME = "fName";
+    /**
+     * Parameter name in the request
+     */
+    private static final String LAST_NAME = "lName";
+    /**
+     * Parameter name in the request
+     */
+    private static final String PHONE = "phone";
+    /**
+     * Variable used to determine the role of the customer
+     */
     private static final String CUSTOMER_ROLE = "customer";
     private UserReceiver receiver;
 
@@ -38,27 +71,27 @@ public class RegistrationCommand implements Command {
         if (!CommandUtil.loadProperies(request, properties, FILE_NAME)) {
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        String email = request.getParameter(EMAIL_PRM);
+        String email = request.getParameter(EMAIL);
         boolean result;
         try {
             result = receiver.checkEmail(email);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
-            request.setAttribute(MESSAGE_ATR, "checkEmailExc.text");
+            request.setAttribute(MESSAGE, "checkEmailExc.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (!result) {
-            request.setAttribute(MESSAGE_ATR, "userExist.text");
+            request.setAttribute(MESSAGE, "userExist.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
 
-        String fname = request.getParameter(FIRST_NAME_PRM);
-        String lname = request.getParameter(LAST_NAME_PRM);
-        String phone = request.getParameter(PHONE_PRM);
+        String fname = request.getParameter(FIRST_NAME);
+        String lname = request.getParameter(LAST_NAME);
+        String phone = request.getParameter(PHONE);
         String locale = request.getParameter(LOCALE);
         if (!DataValidator.validateEmail(email) & !DataValidator.validateName(fname)
                 & !DataValidator.validateName(lname) & !DataValidator.validatePassword(phone)) {
-            request.setAttribute(MESSAGE_ATR, "invalidData.text");
+            request.setAttribute(MESSAGE, "invalidData.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         boolean createUserResult;
@@ -67,14 +100,14 @@ public class RegistrationCommand implements Command {
             createUserResult = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties, locale);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
-            request.setAttribute(MESSAGE_ATR, "error.text");
+            request.setAttribute(MESSAGE, "error.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (createUserResult) {
-            request.setAttribute(MESSAGE_ATR, "successfulRegResult.text");
+            request.setAttribute(MESSAGE, "successfulRegResult.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         } else {
-            request.setAttribute(MESSAGE_ATR, "failedRegResult.text");
+            request.setAttribute(MESSAGE, "failedRegResult.text");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
     }

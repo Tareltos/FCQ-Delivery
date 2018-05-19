@@ -58,6 +58,7 @@
                 </div>
                 <hr size="1px" style=" background-color: #1c7430">
                 <input hidden name="id" value="${application.id}">
+                <input hidden name="locale" value="${language}">
                 <input hidden name="action" value="calculate_price_and_save">
                 <button type="submit" class="btn btn-secondary" style="background-color: green; margin-left: 45%">
                     <fmt:message key="button.saveButtob"/></button>

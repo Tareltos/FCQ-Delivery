@@ -8,6 +8,7 @@ import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.user.AllUserSpecification;
 import by.tareltos.fcqdelivery.specification.user.UserByEmailSpecification;
 import by.tareltos.fcqdelivery.util.EmailSender;
+import by.tareltos.fcqdelivery.util.MessageManager;
 import by.tareltos.fcqdelivery.util.PasswordGenerator;
 
 import org.apache.logging.log4j.Level;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -107,7 +109,7 @@ public class UserReceiver {
         return result;
     }
 
-    public boolean createUser(String email, String fName, String lName, String phone, String role, Properties props) throws ReceiverException {
+    public boolean createUser(String email, String fName, String lName, String phone, String role, Properties props, String locale) throws ReceiverException {
         boolean result;
         try {
             String pass = PasswordGenerator.generatePassword();
@@ -126,7 +128,8 @@ public class UserReceiver {
             User newUser = new User(email, pass, fName, lName, phone, userRole, UserStatus.ACTIVE);
             LOGGER.log(Level.DEBUG, "Created new user: ", newUser.toString());
             result = repository.add(newUser);
-            EmailSender.sendMail(newUser.getEmail(), "FCQ-Delivery-Registration", "Password:" + newUser.getPassword(), props);
+            String mailText = MessageManager.getProperty("registrationMessage", locale) + newUser.getPassword();
+            EmailSender.sendMail(newUser.getEmail(), "FCQ-Delivery-Registration", mailText, props);
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception in createUser method", e);
         }

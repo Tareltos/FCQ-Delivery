@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.CommandUtil;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
@@ -19,6 +20,10 @@ import java.util.Properties;
 public class CreateUserCommand implements Command {
 
     final static Logger LOGGER = LogManager.getLogger();
+    /**
+     * Parameter name in the request
+     */
+    private static final String LOCALE = "locale";
     private static final String MESSAGE_ATR = "message";
     private static final String EMAIL_PRM = "mail";
     private static final String FILE_NAME = "mail";
@@ -38,18 +43,14 @@ public class CreateUserCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
-        ServletContext context = request.getServletContext();
-        String filename = context.getInitParameter(FILE_NAME);
-        try {
-            properties.load(context.getResourceAsStream(filename));
-        } catch (IOException e) {
-            LOGGER.log(Level.WARN, e.getMessage());
-            request.setAttribute("exception", "Failed to load data to send password to email. Please, try again");
+        if (!CommandUtil.loadProperies(request, properties, FILE_NAME)) {
             return PagePath.PATH_INF_PAGE.getPath();
         }
-
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER_PRM);
+        if (null == loginedUser) {
+            return PagePath.PATH_SINGIN_PAGE.getPath();
+        }
         try {
             if (!receiver.checkUserStatus(loginedUser.getEmail())) {
                 session.setAttribute(LOGINED_USER_PRM, null);
@@ -61,18 +62,6 @@ public class CreateUserCommand implements Command {
             request.setAttribute("exception", e.getMessage());
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        if (null == loginedUser) {
-            return PagePath.PATH_SINGIN_PAGE.getPath();
-        }
-        try {
-            if (!receiver.checkUserStatus(loginedUser.getEmail())) {
-                session.setAttribute(LOGINED_USER_PRM, null);
-                return PagePath.PATH_SINGIN_PAGE.getPath();
-            }
-        } catch (ReceiverException e) {
-            LOGGER.log(Level.WARN, e.getMessage());
-            return PagePath.PATH_INF_PAGE.getPath();
-        }
         if (CUSTOMER_ROLE.equals(loginedUser.getRole().getRole()) | MANAGER_ROLE.equals(loginedUser.getRole().getRole())) {
             LOGGER.log(Level.INFO, "This page only for Admin! Access denied, you do not have rights: userRole= " + loginedUser.getRole().getRole());
             request.setAttribute(MESSAGE_ATR, "accessDenied.text");
@@ -82,6 +71,7 @@ public class CreateUserCommand implements Command {
         String fName = request.getParameter(FIRST_NAME_PRM);
         String lName = request.getParameter(LAST_NAME_PRM);
         String phone = request.getParameter(PHONE_PRM);
+        String locale = request.getParameter(LOCALE);
         try {
             if (!receiver.checkEmail(email)) {
                 request.setAttribute(MESSAGE_ATR, "userExist.text");
@@ -93,7 +83,7 @@ public class CreateUserCommand implements Command {
         if (DataValidator.validateEmail(email) && DataValidator.validateName(fName) && DataValidator.validateName(lName) && DataValidator.validatePhone(phone)) {
             String role = request.getParameter(ROLE_PRM);
             try {
-                receiver.createUser(email, fName, lName, phone, role, properties);
+                receiver.createUser(email, fName, lName, phone, role, properties, locale);
             } catch (ReceiverException e) {
                 LOGGER.log(Level.WARN, e.getMessage());
             }

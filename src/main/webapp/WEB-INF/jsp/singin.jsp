@@ -58,6 +58,7 @@
         <div id="containerRegister" class="tabContainer">
             <form method="POST" action="${pageContext.request.contextPath}/doRegistration">
                 <input hidden name="action" value="registration">
+                <input hidden name="locale" value="${language}">
                 <h2 class="loginTitle"><fmt:message key="loginForm.regTitle"/></h2>
                 <div class="registerContent">
                     <div class="inputWrapper">
@@ -109,7 +110,7 @@
     </div>
 </div>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script src="../js"></script>
+<script src="../js/index.js"></script>
 </body>
 <jsp:include page="_footer.jsp"></jsp:include>
 </html>

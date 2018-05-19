@@ -1,6 +1,7 @@
 package by.tareltos.fcqdelivery.command.application;
 
 import by.tareltos.fcqdelivery.command.Command;
+import by.tareltos.fcqdelivery.command.CommandUtil;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Properties;
 
 /**
  * Class is used to obtain parameters from request,
@@ -52,9 +54,17 @@ public class DoPaymentApplicationCommand implements Command {
      */
     private static final String OWNER = "owner";
     /**
+     * Properties file name for emailSender
+     */
+    private static final String FILE_NAME = "mail";
+    /**
      * Parameter name in the request
      */
     private static final String CSV = "csv";
+    /**
+     * Parameter name in the request
+     */
+    private static final String LOCALE = "locale";
     /**
      * Variable used to determine the role of the manager
      */
@@ -80,6 +90,10 @@ public class DoPaymentApplicationCommand implements Command {
      */
     @Override
     public String execute(HttpServletRequest request) {
+        Properties properties = new Properties();
+        if (!CommandUtil.loadProperies(request, properties, FILE_NAME)) {
+            return PagePath.PATH_INF_PAGE.getPath();
+        }
         HttpSession session = request.getSession(true);
         User loginedUser = (User) session.getAttribute(LOGINED_USER);
         if (null == loginedUser) {
@@ -96,12 +110,13 @@ public class DoPaymentApplicationCommand implements Command {
         String expYear = request.getParameter(EXPIRATION_YEAR);
         String owner = request.getParameter(OWNER);
         String csv = request.getParameter(CSV);
+        String locale = request.getParameter(LOCALE);
         if (DataValidator.validateApplicationId(appId) & DataValidator.validateCardNumber(cardNumber) &
                 DataValidator.validateExpirationMonth(expMonth) & DataValidator.validateExpirationYear(expYear) &
                 DataValidator.validateOwner(owner) & DataValidator.validateCsv(csv)) {
             try {
                 boolean result;
-                result = receiver.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv);
+                result = receiver.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv, properties, locale);
                 if (result) {
                     request.setAttribute("method", "redirect");
                     request.setAttribute("redirectUrl", "/applications?action=get_applications");

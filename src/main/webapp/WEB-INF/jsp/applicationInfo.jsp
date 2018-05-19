@@ -84,7 +84,7 @@
                 <fmt:message key="courierNotSelected.label"/>
                 <c:if test="${'manager'== loginedUser.role.role}">
                     <a href="${pageContext.request.contextPath}/applications?action=select_courier&id=${application.id}"
-                       type="submit" class="btn btn-danger">
+                    type="submit" class="btn btn-danger">
                         <fmt:message key="selectCourier.button"/></a>
                 </c:if>
             </c:if>
@@ -142,6 +142,7 @@
             <form method="POST" action="${pageContext.request.contextPath}/applications">
                 <input hidden name="action" value="do_payment">
                 <input hidden name="id" value="${application.id}">
+                <input hidden name="locale" value="${language}">
                 <div class="form-group" style="margin-left: 5%; margin-right: 5%;"><label><fmt:message
                         key="paymentForm.cardNumber.label"/></label>
                     <input required type="text" class="form-control" name="cardNumber" placeholder="**** **** **** ****"

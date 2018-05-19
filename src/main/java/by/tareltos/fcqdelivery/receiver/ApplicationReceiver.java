@@ -15,11 +15,17 @@ import by.tareltos.fcqdelivery.specification.account.AccountByCadDetailsSpecific
 import by.tareltos.fcqdelivery.specification.application.*;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
 import by.tareltos.fcqdelivery.specification.courier.CourierByStatusSpecification;
+import by.tareltos.fcqdelivery.util.EmailSender;
+import by.tareltos.fcqdelivery.util.MessageManager;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 /**
  * The class serves to implement the logic of the application
@@ -165,21 +171,26 @@ public class ApplicationReceiver {
      * Method is used to update existing application in database, set courier ind price,
      * the price calculated from the courier tariff and distance parameter.
      *
-     * @param appId     -primary key of application in database
-     * @param courierId -primary key of courier in database
-     * @param distance  -parameter that is used to calculate the price
+     * @param appId      -primary key of application in database
+     * @param courierId  -primary key of courier in database
+     * @param distance   -parameter that is used to calculate the price
+     * @param properties
+     * @param locale
      * @return true if the application was successfully updated. Otherwise false
      * @throws ReceiverException if a RepositoryException was caught
      * @see by.tareltos.fcqdelivery.entity.application.Application
      * @see by.tareltos.fcqdelivery.entity.courier.Courier
      */
-    public boolean updateApplication(String appId, String courierId, String distance) throws ReceiverException {
+    public boolean updateApplication(String appId, String courierId, String distance, Properties properties, String locale) throws ReceiverException {
         try {
             Application application = repository.query(new ApplicationByIdSpecification(appId)).get(0);
             Courier courier = courierRepository.query(new CourierByRegNumberSpecification(courierId)).get(0);
             application.setCourier(courier);
-            application.setPrice(courier.getKmTax() * Integer.parseInt(distance));
+            double price = new BigDecimal(courier.getKmTax() * Integer.parseInt(distance)).setScale(2, RoundingMode.UP).doubleValue();
+            application.setPrice(price);
             application.setStatus(ApplicationStatus.WAITING);
+            String mailText = MessageManager.getProperty("applicationInfo", locale) + application.getPrice();
+            EmailSender.sendMail(application.getOwner().getEmail(), "FCQ-Delivery Info", mailText, properties);
             return repository.update(application);
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception in updateApplication method", e);
@@ -195,15 +206,16 @@ public class ApplicationReceiver {
      * @param expYear    - expiration year of card
      * @param owner      - card owner's first and last name
      * @param csv        - csv code of card
+     * @param properties
+     * @param locale
      * @return true if payment was successful. Otherwise false
      * @throws ReceiverException if a RepositoryException was caught
      * @see by.tareltos.fcqdelivery.entity.application.Application
      * @see by.tareltos.fcqdelivery.entity.account.Account
      */
-    public boolean payForApplication(String appId, String cardNumber, String expMonth, String expYear, String owner, String csv) throws ReceiverException {
+    public boolean payForApplication(String appId, String cardNumber, String expMonth, String expYear, String owner, String csv, Properties properties, String locale) throws ReceiverException {
         try {
             Application application = repository.query(new ApplicationByIdSpecification(appId)).get(0);
-
             String ownerData[] = owner.split(" ");// в константы
             String fName = ownerData[0];
             String lName = ownerData[1];
@@ -212,6 +224,8 @@ public class ApplicationReceiver {
                 Account account = accountRepository.query(new AccountByCadDetailsSpecification(cardNumber, expMonth, expYear, fName, lName, csv)).get(0);
                 doPayment(account, application.getPrice());
                 application.setStatus(ApplicationStatus.CONFIRMED);
+                String emailText = MessageManager.getProperty("emailForDriver", locale);
+                EmailSender.sendMail(application.getCourier().getDriverEmail(), "FCQ-Delivery Info", preparedMessage(emailText, application), properties);
                 return (repository.update(application) & accountRepository.update(account));
             } else {
                 return false;
@@ -342,6 +356,10 @@ public class ApplicationReceiver {
         } else {
             throw new ReceiverException("Insufficient funds");
         }
+    }
+
+    private String preparedMessage(String text, Application application) {
+        return String.format(text, application.getCourier().getDriverName(), application.getStartPoint(), application.getFinishPoint(), application.getDeliveryDate(), application.getOwner().getEmail() + " phone: " + application.getOwner().getPhone());
     }
 
 }

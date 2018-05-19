@@ -172,7 +172,7 @@ public class ApplicationRepository implements Repository<Application> {
             throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
         }
         try {
-            PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
+            PreparedStatement pstm = specification.preparedStatement(connection);
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 Application application = new Application();

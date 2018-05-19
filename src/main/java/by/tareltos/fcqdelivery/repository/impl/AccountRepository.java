@@ -37,7 +37,7 @@ public class AccountRepository implements Repository<Account> {
     /**
      * Parameter stores an remove query to the database
      */
-    private static final String REMOVE_ACCOUNT_QUERY = "DELETE FROM account WHERE card_number=? ";
+    private static final String REMOVE_ACCOUNT_QUERY = "DELETE FROM account WHERE card_number= ? ";
     /**
      * Parameter stores an update query to the database
      */
@@ -95,7 +95,8 @@ public class AccountRepository implements Repository<Account> {
         }
         PreparedStatement pstm;
         try {
-            pstm = connection.prepareStatement(String.format(REMOVE_ACCOUNT_QUERY, account.getCardNumber()));
+            pstm = connection.prepareStatement(REMOVE_ACCOUNT_QUERY);
+            pstm.setString(1, account.getCardNumber());
             executeResult = pstm.executeUpdate();
             LOGGER.log(Level.INFO, "Execute result in remove: " + executeResult);
             return executeResult == 1 ? true : false;
@@ -161,7 +162,7 @@ public class AccountRepository implements Repository<Account> {
             throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
         }
         try {
-            PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
+            PreparedStatement pstm = specification.preparedStatement(connection);
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 Account account = new Account();

@@ -1,6 +1,11 @@
 package by.tareltos.fcqdelivery.specification.courier;
 
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  * The class is used to create and return sql query
  *
@@ -9,7 +14,7 @@ import by.tareltos.fcqdelivery.specification.SqlSpecification;
  */
 public class PaginationCourierSpecification implements SqlSpecification {
     /**Parameter stores an query to the database */
-    private String query = "SELECT * FROM courier contact ORDER BY max_cargo LIMIT %d OFFSET %d";
+    private String query = "SELECT * FROM courier contact ORDER BY max_cargo LIMIT ? OFFSET ?";
     /**Parameter that will be added in query like OFFSET*/
     private int firstRow;
     /**Parameter that will be added in query like LIMIT*/
@@ -27,8 +32,10 @@ public class PaginationCourierSpecification implements SqlSpecification {
     /**
      * @see by.tareltos.fcqdelivery.specification.SqlSpecification
      */
-    @Override
-    public String toSqlClauses() {
-        return String.format(query, rowCount,  firstRow);
+    public PreparedStatement preparedStatement(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, rowCount);
+        preparedStatement.setInt(2, firstRow);
+        return preparedStatement;
     }
 }

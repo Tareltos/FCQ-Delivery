@@ -168,7 +168,7 @@ public class CourierRepository implements Repository<Courier> {
             throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
         }
         try {
-            PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
+            PreparedStatement pstm = specification.preparedStatement(connection);
             ResultSet rs = pstm.executeQuery();
             List<Courier> courierList = new ArrayList<>();
             while (rs.next()) {

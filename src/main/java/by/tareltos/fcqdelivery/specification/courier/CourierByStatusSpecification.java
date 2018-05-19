@@ -1,6 +1,11 @@
 package by.tareltos.fcqdelivery.specification.courier;
 
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  * The class is used to create and return sql query
  *
@@ -9,7 +14,7 @@ import by.tareltos.fcqdelivery.specification.SqlSpecification;
  */
 public class CourierByStatusSpecification implements SqlSpecification {
     /**Parameter stores an query to the database */
-    private String query = "SELECT * FROM courier WHERE status = \"%s\" ";
+    private String query = "SELECT * FROM courier WHERE status = ? ";
     /**Parameter that will be added in query like status*/
     private String status;
     /**
@@ -22,8 +27,9 @@ public class CourierByStatusSpecification implements SqlSpecification {
     /**
      * @see by.tareltos.fcqdelivery.specification.SqlSpecification
      */
-    @Override
-    public String toSqlClauses() {
-        return String.format(query, status);
+    public PreparedStatement preparedStatement(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setString(1, status);
+        return preparedStatement;
     }
 }

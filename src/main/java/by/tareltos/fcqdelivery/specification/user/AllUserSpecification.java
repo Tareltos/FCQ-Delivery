@@ -1,6 +1,11 @@
 package by.tareltos.fcqdelivery.specification.user;
 
 import by.tareltos.fcqdelivery.specification.SqlSpecification;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
  * The class is used to create and return sql query
  *
@@ -17,7 +22,8 @@ public class AllUserSpecification implements SqlSpecification {
      * @see by.tareltos.fcqdelivery.specification.SqlSpecification
      */
     @Override
-    public String toSqlClauses() {
-        return query;
+    public PreparedStatement preparedStatement(Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        return preparedStatement;
     }
 }

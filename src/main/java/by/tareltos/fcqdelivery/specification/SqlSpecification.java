@@ -2,18 +2,22 @@ package by.tareltos.fcqdelivery.specification;
 
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 /**
- * The interface is used to create and return sql query
+ * The interface is used to create and return preparedStatment for query
  *
  * @autor Tarelko Vitali
  */
 public interface SqlSpecification {
 
     /**
-     * Create sql query for repository
+     * return preparedStatment for repository
      *
-     * @return query string to the database
+     * @return preparedStatment with parameters
      */
-    String toSqlClauses();
+    PreparedStatement preparedStatement(Connection connection) throws SQLException;
 
 }

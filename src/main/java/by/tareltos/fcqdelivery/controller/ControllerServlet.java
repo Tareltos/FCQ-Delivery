@@ -1,6 +1,8 @@
 package by.tareltos.fcqdelivery.controller;
 
 import by.tareltos.fcqdelivery.command.*;
+import by.tareltos.fcqdelivery.dbconnection.ConnectionException;
+import by.tareltos.fcqdelivery.dbconnection.ConnectionPool;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import com.sun.org.apache.regexp.internal.RE;
 import org.apache.logging.log4j.Level;
@@ -69,9 +71,20 @@ public class ControllerServlet extends HttpServlet {
         }
         if (REDIRECT.equals(request.getAttribute(METHOD))) {
             response.sendRedirect(String.valueOf(request.getAttribute(REDIRECT_URL))); //if idea
-          //  response.sendRedirect(request.getContextPath() + "/" + String.valueOf(request.getAttribute(REDIRECT_URL)));  //if tomcat
+             // response.sendRedirect(request.getContextPath() + "/" + String.valueOf(request.getAttribute(REDIRECT_URL)));  //if tomcat
         } else {
             request.getRequestDispatcher(page).forward(request, response);
         }
+    }
+
+    @Override
+    public void destroy() {
+        try {
+            LOGGER.log(Level.INFO, "Method destroy: Before Closing connection in pool");
+            ConnectionPool.getInstance().closeAllConnections();
+        } catch (ConnectionException e) {
+
+        }
+        super.destroy();
     }
 }

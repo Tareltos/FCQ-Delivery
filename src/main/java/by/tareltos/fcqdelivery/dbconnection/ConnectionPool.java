@@ -11,8 +11,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.mysql.jdbc.Driver;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConnectionPool {
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String PROPERTIES_FILE_NAME = "db.properties";
     private static final String DB_URL = "url";
     private static final String DB_USER_NAME = "userName";
@@ -43,6 +47,7 @@ public class ConnectionPool {
             for (int i = 0; i < poolSize; i++) {
                 connectionPool.put(DriverManager.getConnection(url, user, password));
             }
+            LOGGER.log(Level.DEBUG, "SIZE " + connectionPool.size());
         } catch (SQLException | InterruptedException e) {
             throw new ExceptionInInitializerError(e);
         }
@@ -64,7 +69,7 @@ public class ConnectionPool {
     }
 
     public Connection getConnection() throws ConnectionException {
-        Connection connection = null;
+        Connection connection;
         try {
             connection = connectionPool.take();
         } catch (InterruptedException e) {
@@ -83,13 +88,19 @@ public class ConnectionPool {
         }
     }
 
-    public void shutDown() throws ConnectionException {
-        for (int i = 0; i < connectionPool.size(); i++) {
+    public void closeAllConnections() throws ConnectionException {
+        int countOfClosingConnection = 0;
+        while (connectionPool.size()>0) {
+            LOGGER.log(Level.DEBUG, "SIZE " + connectionPool.size());
             try {
                 connectionPool.take().close();
+                countOfClosingConnection++;
+                LOGGER.log(Level.DEBUG, "Connection were closing, count of closing " + countOfClosingConnection);
             } catch (SQLException e) {
+                LOGGER.log(Level.ERROR, "Connection were not closing, cause: " + e.getMessage());
                 throw new ConnectionException("Can not close connection", e);
             } catch (InterruptedException e) {
+                LOGGER.log(Level.ERROR, "Connection were not closing, cause: " + e.getMessage());
                 throw new ConnectionException("Can not close connection", e);
             }
         }

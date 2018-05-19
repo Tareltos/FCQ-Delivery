@@ -163,7 +163,7 @@ public class UserRepository implements Repository<User> {
             throw new RepositoryException("ConnectionException in query method" + e.getMessage(), e);
         }
         try {
-            PreparedStatement pstm = connection.prepareStatement(specification.toSqlClauses());
+            PreparedStatement pstm = specification.preparedStatement(connection);
             ResultSet rs = pstm.executeQuery();
             while (rs.next()) {
                 User user = new User();

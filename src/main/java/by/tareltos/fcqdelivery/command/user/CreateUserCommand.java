@@ -1,7 +1,6 @@
 package by.tareltos.fcqdelivery.command.user;
 
 import by.tareltos.fcqdelivery.command.Command;
-import by.tareltos.fcqdelivery.command.CommandUtil;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
@@ -25,7 +24,7 @@ public class CreateUserCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
-        if (!CommandUtil.loadProperies(request, properties, FILE_NAME)) {
+        if (!loadProperies(request, properties, FILE_NAME)) {
             return PagePath.PATH_INF_PAGE.getPath();
         }
         User loginedUser = getUser(request);

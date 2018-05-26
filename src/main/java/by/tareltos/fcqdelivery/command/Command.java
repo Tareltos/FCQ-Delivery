@@ -6,8 +6,13 @@ import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import static by.tareltos.fcqdelivery.command.ParameterStore.*;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * The interface is used to obtain path to jsp page
@@ -39,8 +44,19 @@ public interface Command {
      * @param req HttpServletRequest request
      * @return object of user from current session
      */
-    default User getUser (HttpServletRequest req) {
+    default User getUser(HttpServletRequest req) {
         return (User) req.getSession().getAttribute(LOGINED_USER);
     }
 
+    default boolean loadProperies(HttpServletRequest request, Properties properties, String fileNamePrm) {
+        ServletContext context = request.getServletContext();
+        String filename = context.getInitParameter(fileNamePrm);
+        try {
+            properties.load(context.getResourceAsStream(filename));
+            return true;
+        } catch (IOException e) {
+            request.setAttribute("exception", "Failed to load data to send password to email. Please, try again");
+            return false;
+        }
+    }
 }

@@ -25,13 +25,7 @@ public class ResetPasswordCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         Properties properties = new Properties();
-        ServletContext context = request.getServletContext();
-        String filename = context.getInitParameter(FILE_NAME);
-        try {
-            properties.load(context.getResourceAsStream(filename));
-        } catch (IOException e) {
-            LOGGER.log(Level.WARN, e.getMessage());
-            request.setAttribute("exception", "Failed to load data to send password to email. Please, try again");
+        if (!loadProperies(request, properties, FILE_NAME)) {
             return PagePath.PATH_INF_PAGE.getPath();
         }
 

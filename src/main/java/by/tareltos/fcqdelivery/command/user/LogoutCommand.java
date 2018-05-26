@@ -17,24 +17,11 @@ import javax.servlet.http.HttpSession;
  * @see Command
  */
 public class LogoutCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-
-    public LogoutCommand() {
-    }
 
     public String execute(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
-        session.setAttribute(LOGINED_USER, null);
-        LOGGER.log(Level.DEBUG, "Kill user in session!");
+        session.invalidate();
+        LOGGER.log(Level.DEBUG, "Invalidate session!");
         return PagePath.PATH_SINGIN_PAGE.getPath();
     }
 }

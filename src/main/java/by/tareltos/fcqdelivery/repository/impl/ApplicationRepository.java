@@ -46,6 +46,15 @@ public class ApplicationRepository implements Repository<Application> {
      */
     private static final String UPDATE_APPLICATION_QUERY = "UPDATE application SET user_email=?, start_point=?, finish_point=?, delivery_date=?, cargo_kg=?, comment=?, car_number=?, total_value=?, app_status=?, cancelation_reason=? where id=? ";
 
+    private static ApplicationRepository instance = new ApplicationRepository();
+
+    public static ApplicationRepository getInstance() {
+        return instance;
+    }
+
+    private ApplicationRepository() {
+    }
+
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository
      * @see by.tareltos.fcqdelivery.entity.application.Application

@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -55,25 +54,34 @@ public class ApplicationReceiver {
      *
      * @see by.tareltos.fcqdelivery.repository.impl.ApplicationRepository
      */
-    private ApplicationRepository repository = new ApplicationRepository();
+    private ApplicationRepository repository = ApplicationRepository.getInstance();
     /**
      * Object for work with courier table in the database
      *
      * @see by.tareltos.fcqdelivery.repository.impl.CourierRepository
      */
-    private CourierRepository courierRepository = new CourierRepository();
+    private CourierRepository courierRepository = CourierRepository.getInstance();
     /**
      * Object for work with account table in the database
      *
      * @see by.tareltos.fcqdelivery.repository.impl.AccountRepository
      */
-    private AccountRepository accountRepository = new AccountRepository();
+    private AccountRepository accountRepository = AccountRepository.getInstance();
     /**
      * Object for work with user table in the database
      *
      * @see by.tareltos.fcqdelivery.repository.impl.UserRepository
      */
-    private UserRepository userRepository = new UserRepository();
+    private UserRepository userRepository = UserRepository.getInstance();
+
+    private static  ApplicationReceiver instance = new ApplicationReceiver();
+
+    public static ApplicationReceiver getInstance(){
+        return instance;
+    }
+
+    private ApplicationReceiver() {
+    }
 
     /**
      * Method is used to obtain a list of applications
@@ -329,18 +337,6 @@ public class ApplicationReceiver {
         }
         return resultList;
 
-    }
-
-    /**
-     * Method is used to check user status
-     *
-     * @param email -primary key of user in database
-     * @return true if user status is active. Otherwise false
-     * @throws ReceiverException if a RepositoryException was caught and if user not found
-     * @see by.tareltos.fcqdelivery.entity.user.User
-     */
-    public boolean checkUserStatus(String email) throws ReceiverException {
-        return CheckUserStatusUtil.checkUserStatus(email, userRepository);
     }
 
     /**

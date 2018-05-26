@@ -40,7 +40,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('1111222233334444',12,19,201,31,'VITALI','NOVIK'),('6666666688888888',1,19,666,347.99,'SERG','NOVIK');
+INSERT INTO `account` VALUES ('1111222233334444',12,19,201,360,'VITALI','NOVIK'),('6666666688888888',1,19,666,890.4,'SERG','NOVIK');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -68,7 +68,7 @@ CREATE TABLE `application` (
   KEY `car_number` (`car_number`),
   CONSTRAINT `car_number` FOREIGN KEY (`car_number`) REFERENCES `courier` (`car_number`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_application_user` FOREIGN KEY (`user_email`) REFERENCES `user` (`email`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `application` (
 
 LOCK TABLES `application` WRITE;
 /*!40000 ALTER TABLE `application` DISABLE KEYS */;
-INSERT INTO `application` VALUES (1,'hr@mail.ru','Minsk, Skriganova 4A, 317','Petrikov, Koroleva str 8, 13','2018-05-20',250,'Забрать груз 14.05.2018 в 18.00. Рояль!',NULL,NULL,'new',''),(2,'hr@mail.ru','Мозырь, Интрнационгальная 104б','Жлобин, Голубева 2','2018-04-30',10,'Небольшой пакет','3456XX-1',57.5,'delivered',NULL),(7,'customer1@mail.ru','Мозырь, Интернациональная 150','Петриков, Королева 7, 14','2018-04-21',200,'Небольшой пакет+ коробка','1442AX-7',18.9,'confirmed',''),(10,'hr@mail.ru','Витебск, Володарского 74б ','Петриков, Королева 7, 14','2018-04-15',400,'Доски','1442AX-7',189,'delivered',NULL),(11,'hr@mail.ru','Мозырь, Интернациональная 150','Петриков, Королева 7, 14','2018-04-28',400,'Цемент, позвонить за 15 минут.','3421MM-7',105,'canceled','Не актуально'),(12,'hr@mail.ru','Витебск, Володарского 74б ','Петриков, Королева 7, 14','2018-04-25',1233,'Цемент, позвонить за 15 минут.','3344TT-1',315,'delivered',NULL),(16,'hr@mail.ru','Витебск, Володарского 74б ','Могилев, Гурского 2, 317','2018-04-30',400,'Пианино','7667AM-7',160,'canceled','Дорого'),(17,'hr@mail.ru','Мозырь, Интернациональная 150','Могилев, Гурского 2, 317','2018-04-30',1500,'Небольшой пакет+ коробка','3344TT-1',87.5,'waiting',NULL),(18,'hr@mail.ru','Витабск, Володарского 74б ','Петриков, Королева 7, 14','2018-05-03',400,'Небольшой пакет+ коробка','3344TT-1',252,'canceled','Не актуально'),(20,'hr@mail.ru','Мозырь, Интернациональная 150','Петриков, Королева 7, 14','2018-05-27',400,'Небольшой пакет+ коробка','3344TT-1',252.01,'confirmed',NULL);
+INSERT INTO `application` VALUES (1,'romanov@fcq.com','Витебск, Володарского 74б ','Петриков, Королева 7, 14','2018-06-02',400,'Пианино','6697AS-4',270,'waiting',NULL),(2,'romanov@fcq.com','Витебск, Володарского 74б ','Могилев, Гурского 2, 317','2018-06-21',1233,'Небольшой пакет+ коробка',NULL,0,'new',NULL),(3,'romanov@fcq.com','Минск, Независимости 43, 12','Петриков, Королева 7, 14','2018-05-31',1200,'Мебель','3344TT-1',90,'canceled','Дорого'),(4,'romanov@fcq.com','Мозырь, Интернациональная 150','Петриков, Королева 7, 14','2018-05-30',100,'Небольшой пакет+ коробка','2332TT-1',23.41,'delivered',NULL),(5,'romanov@fcq.com','Мозырь, Интернациональная 150','Могилев, Гурского 2, 317','2018-07-31',200,'Двигатель и коробка передач, позвонить за 30 мин.','3388TT-7',105,'waiting',NULL),(27,'customer1@mail.ru','Мозырь, Интернациональная 150','Гродно, Космонавтов 45А','2018-08-03',1500,'Автозапчасти',NULL,0,'new',NULL),(28,'customer1@mail.ru','Гродно, Молодежная 12','Брест, Нововиленская 33','2018-06-16',1000,'5 бочек масла','3344TT-1',120,'confirmed',NULL),(29,'customer1@mail.ru','Брест, Котловца 66','Петриков, Королева 7, 14','2018-05-30',200,'Цемент, позвонить за 15 минут.','2323TS-4',98.01,'waiting',NULL),(30,'customer1@mail.ru','Витебск, Володарского 74б ','Могилев, Гурского 2, 317','2018-06-01',400,'Пианино',NULL,0,'new',NULL);
 /*!40000 ALTER TABLE `application` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -109,7 +109,7 @@ CREATE TABLE `courier` (
 
 LOCK TABLES `courier` WRITE;
 /*!40000 ALTER TABLE `courier` DISABLE KEYS */;
-INSERT INTO `courier` VALUES ('1212AX-2','Volkswagen','T5','Transporter.jpg','+375334454545','Nikolai','driver@dr.com',2000,0.26,'active'),('1442AX-7','Dacia','Logan','Dacia.jpg','+375443444494','Vladimir','vladimir@fcq.com',800,0.21,'active'),('2232AX-7','Renault','Dokker','Dokker.JPG','+375293586944','Nikita','ren_dr@fcq.com',800,0.2,'active'),('3344TT-1','Volvo','XC-60','xc-60.jpg','+375336520128','VOVAN','tareltos@gmail.com',600,0.28,'active'),('3421MM-7','Peugeout','Boxer','Boxer.jpg','+375444448877','Andrey','andrey@fcq.com',2100,0.3,'blocked'),('3456XX-1','Volkswagen','Polo','Polo.jpg','+375294444499','Ivan','ivan@fcq.com',800,0.23,'active'),('6753XC-4','Ford','Transit','Transit.jpg','+375293434499','Ivan','ivan@fcq.com',1900,0.26,'active'),('7667AM-7','Volkswagen','Crafter','Crafter.JPG','+375449998877','Maksim','maksim@fcq.com',2300,0.32,'active');
+INSERT INTO `courier` VALUES ('2323TS-4','Renault','Dokker','Dokker.JPG','+375336520128','Максим','tareltos@gmail.com',890,0.28,'active'),('2332TT-1','Volkswagen','Polo','Polo.jpg','+375336520128','Виталий','tareltos@gmail.com',600,0.26,'active'),('3344TT-1','Volkswagen','Crafter','Crafter.JPG','+375332345677','Павел','pavel@fcq.com',2200,0.3,'active'),('3388TT-7','Ford','Transit','Transit.jpg','+375336520100','Виталий','tareltos@gmail.com',1700,0.3,'active'),('3454VT-1','Volvo','XC-60','xc-60.jpg','+375443434366','Дмитрий','dmitri@fcq.com',1020,0.35,'blocked'),('5555TT-1','Peugeot','Boxer','Boxer.jpg','+375336520100','Николай','nikolay@fcq.com',1500,0.28,'active'),('6697AS-4','Volkswagen','Transporter','Transporter.jpg','+222222222222','Виталий','tareltos@mail.ru',1700,0.3,'active'),('8800VB-1','Dacia','Logan(универсал)','Dacia.jpg','+375336520128','Виталий','tareltos@gmail.com',800,0.26,'blocked');
 /*!40000 ALTER TABLE `courier` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,7 +138,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('calibry@tut.by','pass161n','customer','Vitali','Tarelko','+375443434366','active'),('customer1@mail.ru','pass160n','customer','Serg','Novik','+375336520128','blocked'),('darya.tarelko@mail.com','pass102n','admin','Darya','Sheshko','+375336520128','blocked'),('dayco@dw.com','pass9n','customer','Elizabet','Voron','+375443434366','blocked'),('hr@mail.ru','pass84n','customer','Vitali','Tarelko','+222222222222','active'),('tareltos@gmail.com','password','admin','Vitali','Tarelko','+375298340889','active'),('tareltos@mail.ru','pass18n','manager','Vladimir','Gogoleva','+375336520128','active');
+INSERT INTO `user` VALUES ('customer1@mail.ru','pass108n','customer','Татьяна','Самсоник','+375336520128','active'),('darya.tarelko@mail.com','pass146n','admin','Darya','Sheshko','+375336520128','blocked'),('romanov@fcq.com','pass119n','customer','Vasili','Romanov','+375332345678','active'),('tareltos@gmail.com','password','admin','Vitali','Tarelko','+375297340877','active'),('tareltos@mail.ru','pass62n','manager','Igor','Boiko','+375332322121','active');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -151,4 +151,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-20  0:57:10
+-- Dump completed on 2018-05-26 23:23:24

@@ -4,11 +4,11 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.CommandUtil;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.receiver.UserReceiver;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
@@ -21,49 +21,6 @@ import java.util.Properties;
  * @see Command
  */
 public class RegistrationCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * Parameter name in the request
-     */
-    private static final String LOCALE = "locale";
-    /**
-     * Properties file name
-     */
-    private static final String FILE_NAME = "mail";
-    /**
-     * Parameter name in the request
-     */
-    private static final String MESSAGE = "message";
-    /**
-     * Parameter name in the request
-     */
-    private static final String EMAIL = "mail";
-    /**
-     * Parameter name in the request
-     */
-    private static final String FIRST_NAME = "fName";
-    /**
-     * Parameter name in the request
-     */
-    private static final String LAST_NAME = "lName";
-    /**
-     * Parameter name in the request
-     */
-    private static final String PHONE = "phone";
-    /**
-     * Variable used to determine the role of the customer
-     */
-    private static final String CUSTOMER_ROLE = "customer";
-    private UserReceiver receiver;
-
-    public RegistrationCommand(UserReceiver userReceiver) {
-        receiver = userReceiver;
-    }
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -74,7 +31,7 @@ public class RegistrationCommand implements Command {
         String email = request.getParameter(EMAIL);
         boolean result;
         try {
-            result = receiver.checkEmail(email);
+            result = USER_RECEIVER.checkEmail(email);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
             request.setAttribute(MESSAGE, "checkEmailExc.text");
@@ -97,7 +54,7 @@ public class RegistrationCommand implements Command {
         boolean createUserResult;
 
         try {
-            createUserResult = receiver.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties, locale);
+            createUserResult = USER_RECEIVER.createUser(email, fname, lname, phone, CUSTOMER_ROLE, properties, locale);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
             request.setAttribute(MESSAGE, "error.text");

@@ -1,4 +1,4 @@
-package by.tareltos.fcqdelivery.validator;
+package by.tareltos.fcqdelivery.util;
 
 public class DataValidator {
 

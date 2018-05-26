@@ -43,6 +43,14 @@ public class AccountRepository implements Repository<Account> {
      */
     private static final String UPDATE_ACCOUNT_QUERY = "UPDATE account SET expiration_month=?, expiration_year=?, csv=?,  balance=?, first_name=?, last_name=? where card_number=? ";
 
+    private static AccountRepository instance = new AccountRepository();
+
+    public static AccountRepository getInstance() {
+        return instance;
+    }
+    private AccountRepository(){
+    }
+
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository
      * @see by.tareltos.fcqdelivery.entity.account.Account

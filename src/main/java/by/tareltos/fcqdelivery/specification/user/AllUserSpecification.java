@@ -16,7 +16,7 @@ public class AllUserSpecification implements SqlSpecification {
     /**
      * Parameter stores an query to the database
      */
-    private final String query = "SELECT email, password, role, firstName, lastName, phone, status FROM user ";
+    private final String query = "SELECT email, role, firstName, lastName, phone, status FROM user ";
 
     /**
      * @see by.tareltos.fcqdelivery.specification.SqlSpecification

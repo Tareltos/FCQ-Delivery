@@ -3,16 +3,15 @@ package by.tareltos.fcqdelivery.command.user;
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.receiver.UserReceiver;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Properties;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 /**
  * Class is used to obtain parameters from request,
@@ -22,30 +21,6 @@ import java.util.Properties;
  * @see Command
  */
 public class ResetPasswordCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * Parameter name in the request
-     */
-    private static final String MESSAGE = "message";
-    /**
-     * Properties file name
-     */
-    private static final String FILE_NAME = "mail";
-    /**
-     * Parameter name in the request
-     */
-    private static final String EMAIL = "mail";
-    private UserReceiver receiver;
-
-
-    public ResetPasswordCommand(UserReceiver userReceiver) {
-        receiver = userReceiver;
-    }
 
     @Override
     public String execute(HttpServletRequest request) {
@@ -67,7 +42,7 @@ public class ResetPasswordCommand implements Command {
         }
         boolean result;
         try {
-            result = receiver.resetUserPassword(email, properties);
+            result = USER_RECEIVER.resetUserPassword(email, properties);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
             request.setAttribute(MESSAGE, "passwordUpdateError.text");

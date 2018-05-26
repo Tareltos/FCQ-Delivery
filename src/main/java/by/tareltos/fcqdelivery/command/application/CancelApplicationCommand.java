@@ -4,15 +4,13 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * Class is used to obtain parameters from request,
@@ -22,54 +20,11 @@ import javax.servlet.http.HttpSession;
  * @see Command
  */
 public class CancelApplicationCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String APPLICATION_ID = "id";
-    /**
-     * Parameter name in the request
-     */
-    private static final String REASON = "reason";
-    /**
-     * Variable used to determine the role of the manager
-     */
-    private static final String MANAGER_ROLE = "manager";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-    /**
-     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
-     */
-    private ApplicationReceiver receiver;
 
-
-    public CancelApplicationCommand(ApplicationReceiver receiver) {
-        this.receiver = receiver;
-    }
-
-    /**
-     * Method returns the path to the jsp page
-     *
-     * @return return the path to the jsp page
-     * @see by.tareltos.fcqdelivery.command.Command
-     */
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
-            LOGGER.log(Level.INFO, "User is null");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (ADMIN_ROLE.equals(loginedUser.getRole().getRole()) | MANAGER_ROLE.equals(loginedUser.getRole().getRole())) {
@@ -81,8 +36,8 @@ public class CancelApplicationCommand implements Command {
         String reason = request.getParameter(REASON);
         if (DataValidator.validateApplicationId(applicationId) & DataValidator.validateReasonOfCancel(reason)) {
             try {
-                if (receiver.cancelApplication(applicationId, reason)) {
-                    Application application = receiver.getApplication(applicationId);
+                if (APPLICATION_RECEIVER.cancelApplication(applicationId, reason)) {
+                    Application application = APPLICATION_RECEIVER.getApplication(applicationId);
                     request.setAttribute("application", application);
                     return PagePath.PATH_APPLICATION_INFO_PAGE.getPath();
                 }

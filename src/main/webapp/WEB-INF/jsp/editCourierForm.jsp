@@ -27,10 +27,10 @@
                 <div class="form-group"><label><fmt:message
                         key="loadingfile.button"/></label>
                     <c:if test="${uploadInfo!=null}">
-                        <input type="text" class="form-control-file" name="files/img" value="${uploadInfo}" required>
+                        <input type="text" class="form-control-file" name="files/img" value="${uploadInfo}" >
                     </c:if>
                     <c:if test="${uploadInfo==null}">
-                        <input type="text" class="form-control-file" name="files/img" value="${courier.imageFileName}" required>
+                        <input type="text" class="form-control-file" name="files/img" value="${courier.imageFileName}" >
                     </c:if>
                     <a data-toggle="modal" data-target="#loadModal" class="btn btn-primary"
                        style="margin-left: 35%; margin-top: 2%;"><fmt:message
@@ -111,7 +111,7 @@
             <form method="POST" enctype="multipart/form-data"
                   action="${pageContext.request.contextPath}/courierForm?action=load_file">
                 <fmt:message key="loadingfile.fild"/>
-                <input hidden name="id" value="${courier.carNumber}">
+                <input hidden name="courierId" value="${courier.carNumber}">
                 <input name="data" type="file">
                 <span>
                 <button type="submit" style="margin-left: 35%; margin-bottom: 2%;" class="btn btn-secondary">

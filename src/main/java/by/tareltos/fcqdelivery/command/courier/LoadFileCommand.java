@@ -4,11 +4,8 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +13,9 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
+
 
 /**
  * Class is used to obtain parameters from request,
@@ -27,42 +26,6 @@ import java.sql.SQLException;
  */
 public class LoadFileCommand implements Command {
     /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Variable used to determine the role of the customer
-     */
-    private static final String CUSTOMER_ROLE = "customer";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-    /**
-     * Parameter name in the request
-     */
-    private static final String MESSAGE = "message";
-    /**
-     * Parameter name in the request
-     */
-    private static final String UPLOAD_DIR = "files";
-    /**
-     * Parameter name in the request
-     */
-    private static final String COURIER_ID = "id";
-    private CourierReceiver courierReceiver;
-
-    public LoadFileCommand(CourierReceiver courierReceiver) {
-        this.courierReceiver = courierReceiver;
-    }
-
-    /**
      * Method load file in the directory and returns the path to the jsp page
      *
      * @return return the path to the jsp page
@@ -70,9 +33,7 @@ public class LoadFileCommand implements Command {
      */
     @Override
     public String execute(HttpServletRequest request) {
-
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
@@ -98,7 +59,7 @@ public class LoadFileCommand implements Command {
                     if (courierId == null) {
                         return PagePath.PATH_NEW_COURIER_FORM.getPath();
                     } else {
-                        Courier courier = courierReceiver.getCourier(courierId);
+                        Courier courier = COURIER_RECEIVER.getCourier(courierId);
                         request.setAttribute("courier", courier);
                         return PagePath.PATH_EDIT_COURIER_FORM.getPath();
                     }

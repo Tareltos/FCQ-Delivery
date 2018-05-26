@@ -7,12 +7,12 @@ import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 /**
  * Class is used to obtain parameters from request,
  * send them into receiver and to return path to jsp page in controller.
@@ -22,31 +22,6 @@ import java.util.List;
  */
 public class GetCouriersCommand implements Command {
     /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String MESSAGE = "message";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-
-    private CourierReceiver receiver;
-
-    public GetCouriersCommand(CourierReceiver receiver) {
-        this.receiver = receiver;
-    }
-
-    /**
      * Method returns the path to the jsp page
      *
      * @return return the path to the jsp page
@@ -54,10 +29,8 @@ public class GetCouriersCommand implements Command {
      */
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
-            LOGGER.log(Level.DEBUG, "User is null");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (ADMIN_ROLE.equals(loginedUser.getRole().getRole())) {
@@ -67,7 +40,7 @@ public class GetCouriersCommand implements Command {
         }
         List<Courier> courierList;
         try {
-            courierList = receiver.getCouriers();
+            courierList = COURIER_RECEIVER.getCouriers();
             if (courierList.isEmpty()) {
                 request.setAttribute(MESSAGE, "dataNotFound.text");
                 return PagePath.PATH_INF_PAGE.getPath();

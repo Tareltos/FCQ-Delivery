@@ -4,15 +4,13 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.CommandUtil;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.Properties;
 
 /**
@@ -23,65 +21,6 @@ import java.util.Properties;
  * @see Command
  */
 public class DoPaymentApplicationCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String APPLICATION_ID = "id";
-    /**
-     * Parameter name in the request
-     */
-    private static final String CARD_NUMBER = "cardNumber";
-    /**
-     * Parameter name in the request
-     */
-    private static final String EXPIRATION_MOUNTH = "expirationMonth";
-    /**
-     * Parameter name in the request
-     */
-    private static final String EXPIRATION_YEAR = "expirationYear";
-    /**
-     * Parameter name in the request
-     */
-    private static final String OWNER = "owner";
-    /**
-     * Properties file name for emailSender
-     */
-    private static final String FILE_NAME = "mail";
-    /**
-     * Parameter name in the request
-     */
-    private static final String CSV = "csv";
-    /**
-     * Parameter name in the request
-     */
-    private static final String LOCALE = "locale";
-    /**
-     * Variable used to determine the role of the manager
-     */
-    private static final String MANAGER_ROLE = "manager";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-    /**
-     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
-     */
-    private ApplicationReceiver receiver;
-
-    public DoPaymentApplicationCommand(ApplicationReceiver receiver) {
-        this.receiver = receiver;
-    }
-
     /**
      * Method returns the path to the jsp page
      *
@@ -94,8 +33,7 @@ public class DoPaymentApplicationCommand implements Command {
         if (!CommandUtil.loadProperies(request, properties, FILE_NAME)) {
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
@@ -116,7 +54,7 @@ public class DoPaymentApplicationCommand implements Command {
                 DataValidator.validateOwner(owner) & DataValidator.validateCsv(csv)) {
             try {
                 boolean result;
-                result = receiver.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv, properties, locale);
+                result = APPLICATION_RECEIVER.payForApplication(appId, cardNumber, expMonth, expYear, owner, csv, properties, locale);
                 if (result) {
                     request.setAttribute("method", "redirect");
                     request.setAttribute("redirectUrl", "/applications?action=get_applications");
@@ -127,7 +65,6 @@ public class DoPaymentApplicationCommand implements Command {
                 }
             } catch (ReceiverException e) {
                 LOGGER.log(Level.ERROR, e.getMessage());
-                request.setAttribute("exception", "Payment is not accepted: " + e.getMessage());
             }
         }
         request.setAttribute("message", "invalidData.text");

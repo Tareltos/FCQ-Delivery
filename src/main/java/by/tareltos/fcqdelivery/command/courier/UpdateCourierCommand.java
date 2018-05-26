@@ -3,15 +3,13 @@ package by.tareltos.fcqdelivery.command.courier;
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 /**
  * Class is used to obtain parameters from request,
@@ -21,83 +19,11 @@ import javax.servlet.http.HttpSession;
  * @see Command
  */
 public class UpdateCourierCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String MESSAGE = "message";
-    /**
-     * Parameter name in the request
-     */
-    private static final String CAR_NUMBER = "carNumber";
-    /**
-     * Parameter name in the request
-     */
-    private static final String CAR_PRODUCER = "carProducer";
-    /**
-     * Parameter name in the request
-     */
-    private static final String CAR_MODEL = "carModel";
-    /**
-     * Parameter name in the request
-     */
-    private static final String CAR_IMG = "files/img";
-    /**
-     * Parameter name in the request
-     */
-    private static final String DRIVER_EMAIL = "email";
-    /**
-     * Parameter name in the request
-     */
-    private static final String DRIVER_NAME = "name";
-    /**
-     * Parameter name in the request
-     */
-    private static final String DRIVER_PHONE = "phone";
-    /**
-     * Parameter name in the request
-     */
-    private static final String CARGO = "cargo";
-    /**
-     * Parameter name in the request
-     */
-    private static final String TAX = "tax";
-    /**
-     * Parameter name in the request
-     */
-    private static final String STATUS = "status";
-    /**
-     * Variable used to determine the role of the customer
-     */
-    private static final String CUSTOMER_ROLE = "customer";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-
-    private CourierReceiver receiver;
-
-
-    public UpdateCourierCommand(CourierReceiver receiver) {
-        this.receiver = receiver;
-    }
 
     @Override
     public String execute(HttpServletRequest request) {
-
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
-            LOGGER.log(Level.DEBUG, "User is null");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (ADMIN_ROLE.equals(loginedUser.getRole().getRole()) | CUSTOMER_ROLE.equals(loginedUser.getRole().getRole())) {
@@ -130,7 +56,7 @@ public class UpdateCourierCommand implements Command {
         }
         boolean result;
         try {
-            result = receiver.updateCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
+            result = COURIER_RECEIVER.updateCourier(carNumber, carProducer, carModel, carPhotoFullPath, driverName, driverPhone, driverEmail, maxCargo, tax, status);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
             request.setAttribute("exception", e.getMessage());

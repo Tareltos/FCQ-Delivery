@@ -39,11 +39,25 @@ public class UserRepository implements Repository<User> {
     /**
      * Parameter stores an remove query to the database
      */
-    private static final String REMOVE_USER_QUERY = "DELETE FROM user WHERE email=\"%s\" ";
+    private static final String REMOVE_USER_QUERY = "DELETE FROM user WHERE email= ? ";
     /**
      * Parameter stores an update query to the database
      */
-    private static final String UPDATE_USER_QUERY = "UPDATE user SET password =?, firstName=?, lastName=?, role=?, phone=?, status=? where email=? ";
+    private static final String UPDATE_USER_QUERY = "UPDATE user SET firstName=?, lastName=?, role=?, phone=?, status=? where email=? ";
+    /**
+     * Parameter stores an update query to the database
+     */
+    private static final String UPDATE_PASSWORD_QUERY = "UPDATE user SET password =? where email=? ";
+
+    private static UserRepository instance = new UserRepository();
+
+    public static UserRepository getInstance() {
+        return instance;
+    }
+
+    private UserRepository() {
+
+    }
 
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository
@@ -97,7 +111,8 @@ public class UserRepository implements Repository<User> {
         }
         PreparedStatement pstm;
         try {
-            pstm = connection.prepareStatement(String.format(REMOVE_USER_QUERY, user.getEmail()));
+            pstm = connection.prepareStatement(REMOVE_USER_QUERY);
+            pstm.setString(1, user.getEmail());
             executeResult = pstm.executeUpdate();
             LOGGER.log(Level.INFO, "Execute result in remove: " + executeResult);
             return executeResult == 1 ? true : false;
@@ -128,16 +143,24 @@ public class UserRepository implements Repository<User> {
         PreparedStatement pstm;
         try {
             pstm = connection.prepareStatement(UPDATE_USER_QUERY);
-            pstm.setString(1, user.getPassword());
-            pstm.setString(2, user.getFirstName());
-            pstm.setString(3, user.getLastName());
-            pstm.setString(4, user.getRole().getRole());
-            pstm.setString(5, user.getPhone());
-            pstm.setString(6, user.getStatus().getStatus());
-            pstm.setString(7, user.getEmail());
+            pstm.setString(1, user.getFirstName());
+            pstm.setString(2, user.getLastName());
+            pstm.setString(3, user.getRole().getRole());
+            pstm.setString(4, user.getPhone());
+            pstm.setString(5, user.getStatus().getStatus());
+            pstm.setString(6, user.getEmail());
             executeResult = pstm.executeUpdate();
             LOGGER.log(Level.INFO, "Execute result in update method: " + executeResult);
-            return executeResult == 1 ? true : false;
+            if (user.getPassword() == null) {
+                return executeResult == 1 ? true : false;
+            } else {
+                pstm = connection.prepareStatement(UPDATE_PASSWORD_QUERY);
+                pstm.setString(1, user.getPassword());
+                pstm.setString(2, user.getEmail());
+                executeResult = pstm.executeUpdate();
+                LOGGER.log(Level.INFO, "Execute result in update_password method: " + executeResult);
+                return executeResult == 1 ? true : false;
+            }
         } catch (SQLException e) {
             throw new RepositoryException("SQLException in update method", e);
         } finally {
@@ -168,7 +191,6 @@ public class UserRepository implements Repository<User> {
             while (rs.next()) {
                 User user = new User();
                 user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
                 user.setFirstName(rs.getString("firstName"));
                 user.setLastName(rs.getString("lastName"));
                 user.setPhone(rs.getString("phone"));

@@ -43,6 +43,14 @@ public class CourierRepository implements Repository<Courier> {
      * Parameter stores an update query to the database
      */
     private static final String UPDATE_COURIER_QUERY = "UPDATE courier SET car_producer=?, car_model=?, car_photo=?, driver_phone=?, driver_name=?, driver_email=?, max_cargo=?, km_tax=?, status=? where car_number=? ";
+    private static CourierRepository instance = new CourierRepository();
+
+    public static CourierRepository getInstance() {
+        return instance;
+    }
+
+    private CourierRepository() {
+    }
 
     /**
      * @see by.tareltos.fcqdelivery.repository.Repository

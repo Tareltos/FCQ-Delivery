@@ -3,16 +3,13 @@ package by.tareltos.fcqdelivery.command.application;
 import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.repository.RepositoryException;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 /**
  * Class is used to obtain parameters from request,
@@ -22,52 +19,6 @@ import javax.servlet.http.HttpSession;
  * @see Command
  */
 public class CreateApplicationCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String START_POINT = "start";
-    /**
-     * Parameter name in the request
-     */
-    private static final String FINISH_POINT = "finish";
-    /**
-     * Parameter name in the request
-     */
-    private static final String COMMENT = "comment";
-    /**
-     * Parameter name in the request
-     */
-    private static final String DATE = "date";
-    /**
-     * Parameter name in the request
-     */
-    private static final String WEIGHT = "weight";
-    /**
-     * Variable used to determine the role of the manager
-     */
-    private static final String MANAGER_ROLE = "manager";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-    /**
-     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
-     */
-    private ApplicationReceiver receiver;
-
-    public CreateApplicationCommand(ApplicationReceiver receiver) {
-        this.receiver = receiver;
-    }
 
     /**
      * Method returns the path to the jsp page
@@ -77,8 +28,7 @@ public class CreateApplicationCommand implements Command {
      */
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
@@ -97,7 +47,7 @@ public class CreateApplicationCommand implements Command {
                 DataValidator.validateCargo(Integer.parseInt(weight))) {
             boolean result;
             try {
-                result = receiver.createNewApplication(loginedUser, startPoint, finishPoint, date, comment, weight);
+                result = APPLICATION_RECEIVER.createNewApplication(loginedUser, startPoint, finishPoint, date, comment, weight);
                 if (result) {
                     request.setAttribute("method", "redirect");
                     request.setAttribute("redirectUrl", "/applications?action=get_applications");

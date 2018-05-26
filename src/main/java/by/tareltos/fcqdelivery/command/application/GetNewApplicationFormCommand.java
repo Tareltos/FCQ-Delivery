@@ -4,8 +4,8 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,25 +19,6 @@ import javax.servlet.http.HttpSession;
  */
 public class GetNewApplicationFormCommand implements Command {
     /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Variable used to determine the role of the manager
-     */
-    private static final String MANAGER_ROLE = "manager";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-
-    /**
      * Method returns the path to the jsp page
      *
      * @return return the path to the jsp page
@@ -45,8 +26,7 @@ public class GetNewApplicationFormCommand implements Command {
      */
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }

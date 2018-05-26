@@ -4,14 +4,12 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.receiver.UserReceiver;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 /**
  * Class is used to obtain parameters from request,
@@ -21,53 +19,10 @@ import javax.servlet.http.HttpSession;
  * @see Command
  */
 public class SaveUserCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * Parameter name in the request
-     */
-    private static final String MESSAGE = "message";
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String FIRST_NAME = "fName";
-    /**
-     * Parameter name in the request
-     */
-    private static final String LAST_NAME = "lName";
-    /**
-     * Parameter name in the request
-     */
-    private static final String PHONE = "phone";
-    private UserReceiver receiver;
-
-    public SaveUserCommand(UserReceiver userReceiver) {
-        receiver = userReceiver;
-    }
 
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
-        try {
-            if (!receiver.checkUserStatus(loginedUser.getEmail())) {
-                session.setAttribute(LOGINED_USER, null);
-                LOGGER.log(Level.WARN, "User is blocked");
-                request.setAttribute(MESSAGE, "blockedUser.text");
-                return PagePath.PATH_SINGIN_PAGE.getPath();
-            }
-        } catch (ReceiverException e) {
-            request.setAttribute("exception", e.getMessage());
-            return PagePath.PATH_INF_PAGE.getPath();
-        }
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
@@ -83,7 +38,7 @@ public class SaveUserCommand implements Command {
         loginedUser.setPhone(phone);
         boolean result;
         try {
-            result = receiver.updateUser(loginedUser);
+            result = USER_RECEIVER.updateUser(loginedUser);
         } catch (ReceiverException e) {
             LOGGER.log(Level.WARN, e.getMessage());
             request.setAttribute("exception", e.getMessage());
@@ -91,11 +46,11 @@ public class SaveUserCommand implements Command {
         }
         if (result) {
             try {
-                loginedUser = receiver.getUserForSession(loginedUser.getEmail());
+                loginedUser = USER_RECEIVER.getUserForSession(loginedUser.getEmail());
             } catch (ReceiverException e) {
                 LOGGER.log(Level.WARN, e.getMessage());
             }
-            session.setAttribute(LOGINED_USER, loginedUser);
+            request.getSession().setAttribute(LOGINED_USER, loginedUser);
             return PagePath.PATH_USER_INFO_PAGE.getPath();
         } else {
             request.setAttribute(MESSAGE, "error.text");

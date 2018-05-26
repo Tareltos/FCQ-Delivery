@@ -26,7 +26,7 @@
             <form method="POST" action="${pageContext.request.contextPath}/saveCourier">
                 <div class="form-group"><label><fmt:message
                         key="loadingfile.button"/></label>
-                    <input type="text" class="form-control-file" name="files/img" value="${uploadInfo}" placeholder="img.png" >
+                    <input type="text" class="form-control-file" name="files/img" value="${uploadInfo}" placeholder="img.png">
                     <a data-toggle="modal" data-target="#loadModal" class="btn btn-primary" style="margin-left: 35%; margin-top: 2%;"><fmt:message
                             key="loadingfile.fild"/></a>
                 </div>

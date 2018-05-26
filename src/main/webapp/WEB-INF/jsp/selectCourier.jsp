@@ -47,7 +47,7 @@
                     <input required name="comment" type="text" class="form-control" value="${application.comment}">
                 </div>
                 <hr size="1px" style=" background-color: #1c7430">
-                <select required name="courier" type="text" class="form-control">
+                <select required name="courierId" type="text" class="form-control">
                     <c:forEach  items="${couriers}" var="courier">
                         <option value="${courier.carNumber}">${courier.carProducer} ${courier.carModel} ${courier.kmTax}</option>
                     </c:forEach>

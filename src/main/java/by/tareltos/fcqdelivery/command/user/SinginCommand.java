@@ -7,6 +7,8 @@ import by.tareltos.fcqdelivery.entity.user.User;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import static by.tareltos.fcqdelivery.command.ParameterStore.LOGINED_USER;
+
 /**
  * Class is used to obtain parameters from request,
  * send them into receiver and to return path to jsp page in controller.
@@ -15,19 +17,13 @@ import javax.servlet.http.HttpSession;
  * @see Command
  */
 public class SinginCommand implements Command {
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
 
     @Override
     public String execute(HttpServletRequest request) {
-
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
-        if (loginedUser != null) {
-            return PagePath.PATH_USER_INFO_PAGE.getPath();
+        User loginedUser = getUser(request);
+        if (null == loginedUser) {
+            return PagePath.PATH_SINGIN_PAGE.getPath();
         }
-        return PagePath.PATH_SINGIN_PAGE.getPath();
+        return PagePath.PATH_USER_INFO_PAGE.getPath();
     }
 }

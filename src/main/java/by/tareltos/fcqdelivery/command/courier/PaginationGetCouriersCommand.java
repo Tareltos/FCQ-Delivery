@@ -4,15 +4,15 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.CourierReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 /**
  * Class is used to obtain parameters from request,
@@ -22,45 +22,11 @@ import java.util.List;
  * @see Command
  */
 public class PaginationGetCouriersCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String MESSAGE = "message";
-    /**
-     * Parameter name in the request
-     */
-    private static final String FIRST_ROW = "firstRow";
-    /**
-     * Parameter name in the request
-     */
-    private static final String ROW_COUNT = "rowCount";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-
-    private CourierReceiver receiver;
-
-    public PaginationGetCouriersCommand(CourierReceiver receiver) {
-        this.receiver = receiver;
-    }
 
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
-            LOGGER.log(Level.DEBUG, "User is null");
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
         if (ADMIN_ROLE.equals(loginedUser.getRole().getRole())) {
@@ -73,12 +39,12 @@ public class PaginationGetCouriersCommand implements Command {
 
         List<Courier> courierList;
         try {
-            courierList = receiver.getCouriers(firstRow, rowCount, loginedUser.getRole().getRole());
+            courierList = COURIER_RECEIVER.getCouriers(firstRow, rowCount, loginedUser.getRole().getRole());
             if (courierList.isEmpty()) {
                 request.setAttribute(MESSAGE, "dataNotFound.text");
                 return PagePath.PATH_INF_PAGE.getPath();
             }
-            int allCount = receiver.getCouriers("0", String.valueOf(receiver.getCouriers().size()), loginedUser.getRole().getRole()).size();
+            int allCount = COURIER_RECEIVER.getCouriers("0", String.valueOf(COURIER_RECEIVER.getCouriers().size()), loginedUser.getRole().getRole()).size();
             request.setAttribute("courierList", courierList);
             request.setAttribute("firstRow", firstRow);
             request.setAttribute("rowCount", rowCount);

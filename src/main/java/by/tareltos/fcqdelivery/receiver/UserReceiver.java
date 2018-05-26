@@ -6,18 +6,19 @@ import by.tareltos.fcqdelivery.entity.user.UserStatus;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.user.AllUserSpecification;
+import by.tareltos.fcqdelivery.specification.user.UserByEmailAndPassowordSpecification;
 import by.tareltos.fcqdelivery.specification.user.UserByEmailSpecification;
 import by.tareltos.fcqdelivery.util.EmailSender;
 import by.tareltos.fcqdelivery.util.MessageManager;
-import by.tareltos.fcqdelivery.util.PasswordGenerator;
+import by.tareltos.fcqdelivery.util.PasswordUtil;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import sun.security.util.Password;
 
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -35,15 +36,24 @@ public class UserReceiver {
      */
     private static final Logger LOGGER = LogManager.getLogger();
     /**
-     * Parameter used to identify current user status
-     */
-    private static final String ACTIVE_USER_STATUS = "active";
-    /**
      * Object for work with user table in the database
      *
      * @see by.tareltos.fcqdelivery.repository.impl.UserRepository
      */
-    private UserRepository repository = new UserRepository();
+    private UserRepository repository = UserRepository.getInstance();
+    /**
+     * Parameter used to identify current user status
+     */
+    private static final String ACTIVE_USER_STATUS = "active";
+
+    private static UserReceiver instance = new UserReceiver();
+
+    public static UserReceiver getInstance(){
+        return instance;
+    }
+
+    private UserReceiver() {
+    }
 
     /**
      * Method is used to check user status
@@ -54,25 +64,33 @@ public class UserReceiver {
      * @see by.tareltos.fcqdelivery.entity.user.User
      */
     public boolean checkUserStatus(String email) throws ReceiverException {
-        return CheckUserStatusUtil.checkUserStatus(email, repository);
-    }
-
-    public boolean checkUser(String email, String password) throws ReceiverException {
         try {
             List<User> listUser = repository.query(new UserByEmailSpecification(email));
             if (listUser.isEmpty()) {
                 throw new ReceiverException("User not found");
             }
-            if (listUser.size() > 1) {
-                throw new ReceiverException("Count of users " + listUser.size() + " must be 1");
-            }
-            LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
-            User user = listUser.get(0);
-            if (email.equals(user.getEmail()) & password.equals(user.getPassword()) & ACTIVE_USER_STATUS.equals(user.getStatus().getStatus())) {
-                LOGGER.log(Level.DEBUG, "Result:" + true);
+            User u = listUser.get(0);
+            if (ACTIVE_USER_STATUS.equals(u.getStatus().getStatus())) {
                 return true;
             }
             return false;
+        } catch (RepositoryException e) {
+            throw new ReceiverException("Exception in checkUserStatus", e);
+        }
+    }
+
+    public boolean checkUser(String email, String password) throws ReceiverException {
+        try {
+            List<User> listUser = repository.query(new UserByEmailAndPassowordSpecification(email, password));
+            if (listUser.isEmpty()) {
+                throw new ReceiverException("User not found");
+            }
+            LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
+            User user = listUser.get(0);
+            LOGGER.log(Level.WARN, password);
+            PasswordUtil.clearString(password);
+            LOGGER.log(Level.WARN, password);
+            return user != null ? checkUserStatus(email) : false;
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception in checkUser", e);
         }
@@ -94,7 +112,7 @@ public class UserReceiver {
     public boolean resetUserPassword(String email, Properties props) throws ReceiverException {
         boolean result = false;
         try {
-            String password = PasswordGenerator.generatePassword();
+            String password = PasswordUtil.generatePassword();
             List<User> listUser = repository.query(new UserByEmailSpecification(email));
             LOGGER.log(Level.DEBUG, "Found : " + listUser.size() + " users, must be 1");
             if (listUser.size() == 1) {
@@ -102,6 +120,9 @@ public class UserReceiver {
                 user.setPassword(password);
                 result = repository.update(user);
                 EmailSender.sendMail(email, "FCQ-Delivery-Info", "New Password:" + password, props);
+                LOGGER.log(Level.DEBUG, password);
+                PasswordUtil.clearString(password);
+                LOGGER.log(Level.DEBUG, password);
             }
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception in resetPassword method", e);
@@ -112,7 +133,7 @@ public class UserReceiver {
     public boolean createUser(String email, String fName, String lName, String phone, String role, Properties props, String locale) throws ReceiverException {
         boolean result;
         try {
-            String pass = PasswordGenerator.generatePassword();
+            String pass = PasswordUtil.generatePassword();
             UserRole userRole = null;
             switch (role.toUpperCase()) {
                 case "CUSTOMER":
@@ -130,6 +151,9 @@ public class UserReceiver {
             result = repository.add(newUser);
             String mailText = MessageManager.getProperty("registrationMessage", locale) + newUser.getPassword();
             EmailSender.sendMail(newUser.getEmail(), "FCQ-Delivery-Registration", mailText, props);
+            LOGGER.log(Level.DEBUG, pass);
+            PasswordUtil.clearString(pass);
+            LOGGER.log(Level.DEBUG, pass);
         } catch (RepositoryException e) {
             throw new ReceiverException("Exception in createUser method", e);
         }

@@ -11,6 +11,6 @@
 
     <tag>
         <name>date</name>
-        <tag-class>by.tareltos.fcqdelivery.customtag.CurrentDateTag</tag-class>
+        <tag-class>by.tareltos.fcqdelivery.util.CurrentDateTag</tag-class>
     </tag>
 </taglib>

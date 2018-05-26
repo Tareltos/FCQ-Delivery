@@ -23,22 +23,14 @@ public class ConnectionPool {
     private static final String DB_USER_PASSWORD = "password";
     private static final String DB_POOL_SIZE = "poolSize";
     private LinkedBlockingQueue<Connection> connectionPool;
-    private static ConnectionPool instance;
-    private static AtomicBoolean isNull = new AtomicBoolean(true);
-    private static ReentrantLock lock = new ReentrantLock();
+    private static ConnectionPool instance = new ConnectionPool();
 
-    private ConnectionPool() throws ConnectionException {
+    private ConnectionPool() {
         try {
             DriverManager.registerDriver(new Driver());
             InputStream inputStream = ConnectionPool.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME);
             Properties properties = new Properties();
-            if (properties != null) {
-                try {
-                    properties.load(inputStream);
-                } catch (IOException e) {
-                    throw new ConnectionException("Exception in loading properties", e);
-                }
-            }
+            properties.load(inputStream);
             String url = properties.getProperty(DB_URL);
             String user = properties.getProperty(DB_USER_NAME);
             String password = properties.getProperty(DB_USER_PASSWORD);
@@ -48,23 +40,12 @@ public class ConnectionPool {
                 connectionPool.put(DriverManager.getConnection(url, user, password));
             }
             LOGGER.log(Level.DEBUG, "SIZE " + connectionPool.size());
-        } catch (SQLException | InterruptedException e) {
+        } catch (SQLException | InterruptedException | IOException e) {
             throw new ExceptionInInitializerError(e);
         }
     }
 
     public static ConnectionPool getInstance() throws ConnectionException {
-        if (isNull.get()) {
-            lock.lock();
-            try {
-                if (isNull.get()) {
-                    instance = new ConnectionPool();
-                    isNull.set(false);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
         return instance;
     }
 
@@ -90,16 +71,13 @@ public class ConnectionPool {
 
     public void closeAllConnections() throws ConnectionException {
         int countOfClosingConnection = 0;
-        while (connectionPool.size()>0) {
+        while (connectionPool.size() > 0) {
             LOGGER.log(Level.DEBUG, "SIZE " + connectionPool.size());
             try {
                 connectionPool.take().close();
                 countOfClosingConnection++;
                 LOGGER.log(Level.DEBUG, "Connection were closing, count of closing " + countOfClosingConnection);
-            } catch (SQLException e) {
-                LOGGER.log(Level.ERROR, "Connection were not closing, cause: " + e.getMessage());
-                throw new ConnectionException("Can not close connection", e);
-            } catch (InterruptedException e) {
+            } catch (SQLException | InterruptedException e) {
                 LOGGER.log(Level.ERROR, "Connection were not closing, cause: " + e.getMessage());
                 throw new ConnectionException("Can not close connection", e);
             }

@@ -4,16 +4,13 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.validator.DataValidator;
+import by.tareltos.fcqdelivery.util.DataValidator;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.xml.crypto.Data;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 /**
  * Class is used to obtain parameters from request,
@@ -24,33 +21,6 @@ import javax.xml.crypto.Data;
  */
 public class GetAppDetailsCommand implements Command {
     /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Parameter name in the request
-     */
-    private static final String APPLICATION_ID = "id";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-    /**
-     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
-     */
-    private ApplicationReceiver receiver;
-
-    public GetAppDetailsCommand(ApplicationReceiver receiver) {
-        this.receiver = receiver;
-    }
-
-    /**
      * Method returns the path to the jsp page
      *
      * @return return the path to the jsp page
@@ -58,8 +28,7 @@ public class GetAppDetailsCommand implements Command {
      */
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
@@ -71,7 +40,7 @@ public class GetAppDetailsCommand implements Command {
         String id = request.getParameter(APPLICATION_ID);
         if (DataValidator.validateApplicationId(id)) {
             try {
-                Application application = receiver.getApplication(id);
+                Application application = APPLICATION_RECEIVER.getApplication(id);
                 request.setAttribute("application", application);
                 return PagePath.PATH_APPLICATION_INFO_PAGE.getPath();
             } catch (ReceiverException e) {

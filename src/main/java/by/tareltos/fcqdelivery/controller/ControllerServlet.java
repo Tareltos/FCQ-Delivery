@@ -71,7 +71,7 @@ public class ControllerServlet extends HttpServlet {
         }
         if (REDIRECT.equals(request.getAttribute(METHOD))) {
             response.sendRedirect(String.valueOf(request.getAttribute(REDIRECT_URL))); //if idea
-             // response.sendRedirect(request.getContextPath() + "/" + String.valueOf(request.getAttribute(REDIRECT_URL)));  //if tomcat
+            // response.sendRedirect(request.getContextPath() + "/" + String.valueOf(request.getAttribute(REDIRECT_URL)));  //if tomcat
         } else {
             request.getRequestDispatcher(page).forward(request, response);
         }
@@ -83,7 +83,7 @@ public class ControllerServlet extends HttpServlet {
             LOGGER.log(Level.INFO, "Method destroy: Before Closing connection in pool");
             ConnectionPool.getInstance().closeAllConnections();
         } catch (ConnectionException e) {
-
+            LOGGER.log(Level.ERROR, "Exception in closeAllConnection" + e.getMessage());
         }
         super.destroy();
     }

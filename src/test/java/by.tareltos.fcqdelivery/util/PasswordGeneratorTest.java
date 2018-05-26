@@ -1,14 +1,10 @@
 package by.tareltos.fcqdelivery.util;
 
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.util.IdGenerator;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.Assert;
 import org.testng.annotations.*;
-
-import java.math.BigInteger;
 
 public class PasswordGeneratorTest {
 

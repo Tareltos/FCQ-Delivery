@@ -16,7 +16,7 @@ public class UserByEmailSpecification implements SqlSpecification {
     /**
      * Parameter stores an query to the database
      */
-    private String query = "SELECT email, password, role, firstName, lastName, phone, status FROM user WHERE email =? ";
+    private String query = "SELECT email, role, firstName, lastName, phone, status FROM user WHERE email =? ";
     /**Parameter that will be added in query like email*/
     private String email;
     /**

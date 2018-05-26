@@ -4,15 +4,13 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.application.Application;
 import by.tareltos.fcqdelivery.entity.user.User;
-import by.tareltos.fcqdelivery.receiver.ApplicationReceiver;
-import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+
+import static by.tareltos.fcqdelivery.command.ParameterStore.*;
 
 /**
  * Class is used to obtain parameters from request,
@@ -22,33 +20,10 @@ import java.util.List;
  * @see Command
  */
 public class GetApplicationsCommand implements Command {
-    /**
-     * The logger object, used to write logs
-     *
-     * @see org.apache.logging.log4j.Logger
-     */
-    private static final Logger LOGGER = LogManager.getLogger();
-    /**
-     * The variable stores the name of the session attribute
-     */
-    private static final String LOGINED_USER = "loginedUser";
-    /**
-     * Variable used to determine the role of the admin
-     */
-    private static final String ADMIN_ROLE = "admin";
-    /**
-     * @see by.tareltos.fcqdelivery.receiver.ApplicationReceiver
-     */
-    private ApplicationReceiver receiver;
-
-    public GetApplicationsCommand(ApplicationReceiver applicationReceiver) {
-        this.receiver = applicationReceiver;
-    }
 
     @Override
     public String execute(HttpServletRequest request) {
-        HttpSession session = request.getSession(true);
-        User loginedUser = (User) session.getAttribute(LOGINED_USER);
+        User loginedUser = getUser(request);
         if (null == loginedUser) {
             return PagePath.PATH_SINGIN_PAGE.getPath();
         }
@@ -57,7 +32,7 @@ public class GetApplicationsCommand implements Command {
             request.setAttribute("message", "accessDenied.text");
             return PagePath.PATH_INF_PAGE.getPath();
         }
-        List<Application> appList = receiver.getAllApplications(loginedUser.getEmail(), loginedUser.getRole());
+        List<Application> appList = APPLICATION_RECEIVER.getAllApplications(loginedUser.getEmail(), loginedUser.getRole());
         if (null == appList) {
             request.setAttribute("message", "dataNotFound.text");
             return PagePath.PATH_INF_PAGE.getPath();

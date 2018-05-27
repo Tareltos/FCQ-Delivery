@@ -1,25 +1,30 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Configuration status='warn'>
     <Properties>
-        <Property name='LOG_DIR'>.logs</Property>
+        <property name="console">%d{HH:mm:ss,SSS} [%thread] %highlight{%level}{FATAL=bg_red, ERROR=red,
+            WARN=yellow, INFO=green,
+            DEBUG=blue} %c{1} %msg%n
+        </property>
+        <property name="file">%.-19date[%thread] [%level] [%logger] %msg%n</property>
+        <property name="filename">D:/prj/pagination/FCQ-Delivery/log</property>
+
     </Properties>
 
     <Appenders>
 
         <Console name='console' target='SYSTEM_OUT'>
-            <PatternLayout>
-                <pattern>%d{HH:mm:ss,SSS} [%thread] %highlight{%level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green,
-                    DEBUG=blue} %c{1} %msg%n
-                </pattern>
-            </PatternLayout>
+            <patternLayout pattern="${console}"/>
         </Console>
-
-        <File name='fileLogger' fileName='${LOG_DIR}/logFile.log'>
-            <PatternLayout>
-                <pattern>%.-19date[%thread] [%level] [%logger] %msg%n</pattern>
-            </PatternLayout>
-        </File>
-
+        <rollingFile name="fileLogger" filePattern="${filename}/${date:yyyy-MM-dd}/%d{yyyy-MM-dd-hh}_%i.log"
+                     append="true"
+                     fileName="${filename}/fcq-delivery.log">
+            <patternLayout pattern="${file}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+                <SizeBasedTriggeringPolicy size="10 KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5"/>
+        </rollingFile>
     </Appenders>
 
     <Loggers>

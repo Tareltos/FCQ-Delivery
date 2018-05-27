@@ -33,20 +33,20 @@ public class ControllerServlet extends HttpServlet {
     /**
      * Parameter used to identify input command from request
      */
-    private final String ACTION = "action";
+    private static final String ACTION = "action";
     /**
      * Parameter used to identify method from request and
      * than send redirect or do forward
      */
-    private final String METHOD = "method";
+    private static final String METHOD = "method";
     /**
      * Parameter used to identify redirect action from request
      */
-    private final String REDIRECT = "redirect";
+    private static final String REDIRECT = "redirect";
     /**
      * Parameter used to identify redirectUrl for redirect from request
      */
-    private final String REDIRECT_URL = "redirectUrl";
+    private static final String REDIRECT_URL = "redirectUrl";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

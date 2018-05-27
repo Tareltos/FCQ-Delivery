@@ -1,4 +1,4 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7f8e89fcefcc484392ff735ba1a7d864)](https://app.codacy.com/app/Tareltos/FCQ-Delivery?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Tareltos/FCQ-Delivery&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/27a718adab8e4928b47cbbd886cb9b51)](https://www.codacy.com/app/Tareltos/FCQ-Delivery?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Tareltos/FCQ-Delivery&amp;utm_campaign=Badge_Grade)
 
 # FCQ-Delivery(Курьерская служба)
 Роли: Администратор, Менеджер, Клиент.

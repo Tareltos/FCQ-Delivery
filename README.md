@@ -1,5 +1,5 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7f8e89fcefcc484392ff735ba1a7d864)](https://app.codacy.com/app/Tareltos/FCQ-Delivery?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tarmax001/buber&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.org/Tareltos/FCQ-Delivery.svg?branch=master)](https://travis-ci.org/Tareltos/FCQ-Delivery)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/7f8e89fcefcc484392ff735ba1a7d864)](https://app.codacy.com/app/Tareltos/FCQ-Delivery?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Tareltos/FCQ-Delivery&amp;utm_campaign=Badge_Grade)
+
 # FCQ-Delivery(Курьерская служба)
 Роли: Администратор, Менеджер, Клиент.
 Администратор управляет пользователями:

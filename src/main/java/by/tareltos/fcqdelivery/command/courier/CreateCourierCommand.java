@@ -5,7 +5,7 @@ import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
 import by.tareltos.fcqdelivery.util.DataValidator;
-import org.apache.logging.log4j.Level;;
+import org.apache.logging.log4j.Level;
 
 import javax.servlet.http.HttpServletRequest;
 

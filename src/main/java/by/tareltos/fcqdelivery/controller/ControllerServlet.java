@@ -3,8 +3,6 @@ package by.tareltos.fcqdelivery.controller;
 import by.tareltos.fcqdelivery.command.*;
 import by.tareltos.fcqdelivery.dbconnection.ConnectionException;
 import by.tareltos.fcqdelivery.dbconnection.ConnectionPool;
-import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import com.sun.org.apache.regexp.internal.RE;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * Class controls the operation of the application,

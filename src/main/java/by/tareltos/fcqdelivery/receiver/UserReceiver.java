@@ -48,7 +48,7 @@ public class UserReceiver {
 
     private static UserReceiver instance = new UserReceiver();
 
-    public static UserReceiver getInstance(){
+    public static UserReceiver getInstance() {
         return instance;
     }
 
@@ -145,6 +145,8 @@ public class UserReceiver {
                 case "ADMIN":
                     userRole = UserRole.ADMIN;
                     break;
+                default:
+                    userRole = UserRole.CUSTOMER;
             }
             User newUser = new User(email, pass, fName, lName, phone, userRole, UserStatus.ACTIVE);
             LOGGER.log(Level.DEBUG, "Created new user: ", newUser.toString());

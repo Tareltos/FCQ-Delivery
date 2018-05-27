@@ -11,7 +11,6 @@ import javax.servlet.ServletContextListener;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
-import java.util.Set;
 
 public class ServletContextFinalizer implements ServletContextListener {
 

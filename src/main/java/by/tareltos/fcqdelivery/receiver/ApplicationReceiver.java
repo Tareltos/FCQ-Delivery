@@ -313,7 +313,7 @@ public class ApplicationReceiver {
     public List<Application> getSelectedApplications(String customerEmail, String applicationStatus) {
         List<Application> resultList = null;
         try {
-            if (customerEmail.equals("") && !applicationStatus.equals(ALL_APPLICATION_STATUS)) {
+            if ("".equals(customerEmail) && !applicationStatus.equals(ALL_APPLICATION_STATUS)) {
                 resultList = repository.query(new ApplicationByStatusSpecification(applicationStatus));
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
                 return resultList;

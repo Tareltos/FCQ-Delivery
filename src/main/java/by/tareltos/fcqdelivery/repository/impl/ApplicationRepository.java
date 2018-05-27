@@ -231,6 +231,8 @@ public class ApplicationRepository implements Repository<Application> {
                         application.setStatus(ApplicationStatus.CANCELED);
                         application.setCancelationReason(rs.getString("cancelation_reason"));
                         break;
+                    default:
+                        application.setStatus(ApplicationStatus.NEW);
                 }
                 LOGGER.log(Level.INFO, application.toString());
                 appList.add(application);

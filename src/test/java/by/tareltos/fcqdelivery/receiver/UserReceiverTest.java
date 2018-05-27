@@ -16,9 +16,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.io.*;
-import java.util.Properties;
-
 public class UserReceiverTest {
     final static Logger LOGGER = LogManager.getLogger();
     UserRepository userRepository = UserRepository.getInstance();

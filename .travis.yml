@@ -9,7 +9,7 @@ cache:
 
 before_install:
   - mysql -e 'CREATE DATABASE delivery;'
-   -mysql -e 'create user "user";'
+
 
 # https://docs.travis-ci.com/user/customizing-the-build#Building-Specific-Branches
 branches:

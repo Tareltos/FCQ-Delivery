@@ -10,7 +10,6 @@ import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.AccountRepository;
 import by.tareltos.fcqdelivery.repository.impl.ApplicationRepository;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
-import by.tareltos.fcqdelivery.repository.impl.UserRepository;
 import by.tareltos.fcqdelivery.specification.account.AccountByCadDetailsSpecification;
 import by.tareltos.fcqdelivery.specification.application.*;
 import by.tareltos.fcqdelivery.specification.courier.CourierByRegNumberSpecification;
@@ -67,12 +66,6 @@ public class ApplicationReceiver {
      * @see by.tareltos.fcqdelivery.repository.impl.AccountRepository
      */
     private AccountRepository accountRepository = AccountRepository.getInstance();
-    /**
-     * Object for work with user table in the database
-     *
-     * @see by.tareltos.fcqdelivery.repository.impl.UserRepository
-     */
-    private UserRepository userRepository = UserRepository.getInstance();
 
     private static  ApplicationReceiver instance = new ApplicationReceiver();
 
@@ -318,7 +311,7 @@ public class ApplicationReceiver {
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
                 return resultList;
             }
-            if (customerEmail.equals("") && applicationStatus.equals(ALL_APPLICATION_STATUS)) {
+            if ("".equals(customerEmail) && applicationStatus.equals(ALL_APPLICATION_STATUS)) {
                 resultList = repository.query(new AllApplicationSpecification());
                 LOGGER.log(Level.DEBUG, "Application List size:" + resultList.size());
                 return resultList;

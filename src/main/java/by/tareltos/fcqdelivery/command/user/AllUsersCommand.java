@@ -4,11 +4,9 @@ import by.tareltos.fcqdelivery.command.Command;
 import by.tareltos.fcqdelivery.command.PagePath;
 import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.receiver.ReceiverException;
-import by.tareltos.fcqdelivery.receiver.UserReceiver;
 import org.apache.logging.log4j.Level;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import static by.tareltos.fcqdelivery.command.ParameterStore.*;

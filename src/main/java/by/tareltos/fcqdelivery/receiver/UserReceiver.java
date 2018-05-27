@@ -15,8 +15,6 @@ import by.tareltos.fcqdelivery.util.PasswordUtil;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sun.security.util.Password;
-
 
 import java.util.List;
 import java.util.Properties;

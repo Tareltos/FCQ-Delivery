@@ -2,7 +2,6 @@ package by.tareltos.fcqdelivery.receiver;
 
 import by.tareltos.fcqdelivery.entity.courier.Courier;
 import by.tareltos.fcqdelivery.entity.courier.CourierStatus;
-import by.tareltos.fcqdelivery.entity.user.User;
 import by.tareltos.fcqdelivery.repository.RepositoryException;
 import by.tareltos.fcqdelivery.repository.impl.CourierRepository;
 import by.tareltos.fcqdelivery.repository.impl.UserRepository;

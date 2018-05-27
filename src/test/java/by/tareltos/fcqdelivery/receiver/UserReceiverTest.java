@@ -17,9 +17,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class UserReceiverTest {
-    final static Logger LOGGER = LogManager.getLogger();
-    UserRepository userRepository = UserRepository.getInstance();
-    UserReceiver userReceiver = UserReceiver.getInstance();
+    private final static Logger LOGGER = LogManager.getLogger();
+    private UserRepository userRepository = UserRepository.getInstance();
+    private UserReceiver userReceiver = UserReceiver.getInstance();
     private User testUser = new User("test@mail.com", "12345", "Vitali", "Tarelko", "+375297340877", UserRole.MANAGER, UserStatus.ACTIVE);
 
     @BeforeMethod
@@ -28,9 +28,10 @@ public class UserReceiverTest {
     }
 
     @AfterMethod
-    public void destroy() throws RepositoryException{
+    public void destroy() throws RepositoryException {
         userRepository.remove(testUser);
     }
+
     @AfterClass
     public void closeConnection() throws ConnectionException {
         ConnectionPool.getInstance().closeAllConnections();

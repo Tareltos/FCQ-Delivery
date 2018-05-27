@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.http.*;
 import java.io.File;
 import java.io.IOException;

@@ -67,8 +67,7 @@ public class ControllerServlet extends HttpServlet {
             page = PagePath.PATH_MAIN_PAGE.getPath();
         }
         if (REDIRECT.equals(request.getAttribute(METHOD))) {
-            response.sendRedirect(String.valueOf(request.getAttribute(REDIRECT_URL))); //if idea
-            // response.sendRedirect(request.getContextPath() + "/" + String.valueOf(request.getAttribute(REDIRECT_URL)));  //if tomcat
+            response.sendRedirect(request.getContextPath() + request.getAttribute(REDIRECT_URL));  //if tomcat
         } else {
             request.getRequestDispatcher(page).forward(request, response);
         }
